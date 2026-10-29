@@ -20,18 +20,22 @@ pub const VIDEO_EXTENSIONS: &[&str] = &[
 pub fn resolution_badge(width: i32, height: i32) -> String {
     let short_side = width.min(height);
     let long_side = width.max(height);
-    if long_side >= 3800 || short_side >= 2160 {
+    if long_side >= 3800 && short_side >= 2000 {
         format!("4K ({width}×{height})")
-    } else if long_side >= 2500 || short_side >= 1440 {
+    } else if long_side >= 2400 && short_side >= 1300 {
         format!("1440p ({width}×{height})")
-    } else if long_side >= 1900 || short_side >= 1080 {
+    } else if long_side >= 1800 && short_side >= 950 {
         format!("1080p ({width}×{height})")
-    } else if long_side >= 1200 || short_side >= 720 {
+    } else if long_side >= 1200 && short_side >= 650 {
         format!("720p ({width}×{height})")
-    } else if short_side >= 480 {
+    } else if short_side >= 440 {
         format!("480p ({width}×{height})")
-    } else {
+    } else if short_side >= 320 {
+        format!("360p ({width}×{height})")
+    } else if width > 0 && height > 0 {
         format!("{width}×{height}")
+    } else {
+        "Auto".to_string()
     }
 }
 

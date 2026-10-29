@@ -29,7 +29,16 @@ impl CineApplication {
             .resource_base_path("/io/github/diegopvlk/Cine")
             .build();
 
-        let settings: SharedSettings = Rc::new(RefCell::new(AppSettings::default()));
+        app.add_main_option(
+            "new-window",
+            glib::Char::from(b'n'),
+            glib::OptionFlags::NONE,
+            glib::OptionArg::None,
+            "Abrir una nueva ventana de Cine",
+            None,
+        );
+
+        let settings: SharedSettings = Rc::new(RefCell::new(AppSettings::load_from_disk()));
         let mpris = MprisController::new();
 
         {
@@ -121,7 +130,7 @@ impl CineApplication {
 
     fn show_about_dialog(app: &adw::Application) {
         let about = adw::AboutDialog::builder()
-            .application_name("Cine Rust")
+            .application_name("Cine (Rust)")
             .application_icon(ICON_NAME)
             .developer_name("Daniel Lazaro (basado en Cine de Diego Povliuk)")
             .version(VERSION)

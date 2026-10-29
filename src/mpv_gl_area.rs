@@ -170,6 +170,74 @@ impl VideoGLArea {
         }
     }
 
+    pub fn command(&self, args: &[&str]) {
+        if let Some(engine) = self.mpv.borrow().as_ref() {
+            engine.command(args);
+        }
+    }
+
+    pub fn set_property(&self, name: &str, val: &str) {
+        if let Some(engine) = self.mpv.borrow().as_ref() {
+            engine.command(&["set", name, val]);
+        }
+    }
+
+    pub fn set_speed(&self, speed: f64) {
+        self.set_property("speed", &format!("{speed:.2}"));
+    }
+
+    pub fn set_aspect_ratio(&self, aspect: &str) {
+        self.set_property("video-aspect-override", aspect);
+    }
+
+    pub fn set_video_rotate(&self, deg: i32) {
+        self.set_property("video-rotate", &deg.to_string());
+    }
+
+    pub fn set_video_zoom(&self, zoom: f64) {
+        self.set_property("video-zoom", &format!("{zoom:.2}"));
+    }
+
+    pub fn set_sub_delay(&self, delay: f64) {
+        self.set_property("sub-delay", &format!("{delay:.2}"));
+    }
+
+    pub fn set_audio_delay(&self, delay: f64) {
+        self.set_property("audio-delay", &format!("{delay:.2}"));
+    }
+
+    pub fn set_contrast(&self, val: i32) {
+        self.set_property("contrast", &val.to_string());
+    }
+
+    pub fn set_brightness(&self, val: i32) {
+        self.set_property("brightness", &val.to_string());
+    }
+
+    pub fn set_gamma(&self, val: i32) {
+        self.set_property("gamma", &val.to_string());
+    }
+
+    pub fn set_saturation(&self, val: i32) {
+        self.set_property("saturation", &val.to_string());
+    }
+
+    pub fn set_hue(&self, val: i32) {
+        self.set_property("hue", &val.to_string());
+    }
+
+    pub fn set_loop_file(&self, loop_mode: bool) {
+        self.set_property("loop-file", if loop_mode { "inf" } else { "no" });
+    }
+
+    pub fn set_loop_playlist(&self, loop_mode: bool) {
+        self.set_property("loop-playlist", if loop_mode { "inf" } else { "no" });
+    }
+
+    pub fn get_property_str(&self, name: &str) -> Option<String> {
+        self.mpv.borrow().as_ref().and_then(|e| e.get_property_str(name))
+    }
+
     pub fn toggle_stats(&self) {
         if let Some(engine) = self.mpv.borrow().as_ref() {
             engine.command(&["script-binding", "stats/display-stats-toggle"]);

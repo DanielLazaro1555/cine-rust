@@ -22,7 +22,7 @@ use gtk::{gio, glib};
 
 use crate::application::CineApplication;
 
-pub const APP_ID: &str = "io.github.daniellazaro.CineRust";
+pub const APP_ID: &str = "io.github.diegopvlk.Cine";
 pub const ICON_NAME: &str = "io.github.diegopvlk.Cine";
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
@@ -41,8 +41,8 @@ fn main() -> glib::ExitCode {
         );
     }
 
-    glib::set_prgname(Some("cine-rust"));
-    glib::set_application_name("Cine Rust");
+    glib::set_prgname(Some("cine"));
+    glib::set_application_name("Cine (Rust)");
 
     let resource = gio::Resource::from_data(&glib::Bytes::from_static(GRESOURCE_BYTES))
         .expect("No se pudo cargar cine.gresource embebido");

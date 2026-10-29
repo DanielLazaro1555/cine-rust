@@ -15,12 +15,13 @@ use adw::prelude::*;
 use gtk::{gdk, gio, glib};
 
 use crate::ICON_NAME;
-use crate::history::present_history_dialog;
+use crate::history::{present_history_dialog, record_history_entry};
 use crate::mpris::MprisController;
 use crate::mpv_gl_area::VideoGLArea;
-use crate::options::PlaybackOptions;
+use crate::options::{PlaybackOptions, create_options_menu_button};
 use crate::playlist::{PlaylistItem, present_playlist_dialog};
 use crate::preferences::SharedSettings;
+use crate::save_session::{load_playlist_session, save_playlist_session};
 use crate::shortcuts::present_shortcuts_dialog;
 use crate::utils::{
     calculate_window_size, center_window_on_screen, collect_media_files, format_time,
@@ -49,6 +50,8 @@ pub struct CineWindow {
     inhibit_cookie: Rc<Cell<u32>>,
     is_playing: Rc<Cell<bool>>,
     updating_slider: Rc<Cell<bool>>,
+    loop_mode: Rc<Cell<u8>>,
+    shuffle_enabled: Rc<Cell<bool>>,
 }
 
 impl CineWindow {
@@ -59,7 +62,7 @@ impl CineWindow {
     ) -> Self {
         let window = adw::ApplicationWindow::builder()
             .application(app)
-            .title("Cine Rust")
+            .title("Cine (Rust)")
             .default_width(1024)
             .default_height(620)
             .width_request(332)
@@ -92,7 +95,7 @@ impl CineWindow {
         video_overlay.set_child(Some(video_area.widget()));
 
         // Título de la barra superior
-        let title_widget = adw::WindowTitle::new("Cine Rust", "");
+        let title_widget = adw::WindowTitle::new("Cine (Rust)", "");
         title_widget.set_visible(false);
 
         let headerbar = adw::HeaderBar::builder()
@@ -158,7 +161,7 @@ impl CineWindow {
             .valign(gtk::Align::Center)
             .halign(gtk::Align::Center)
             .icon_name(ICON_NAME)
-            .title("Cine Rust")
+            .title("Cine (Rust)")
             .description("Arrastra y suelta archivos o carpetas aquí")
             .build();
         start_page.add_css_class("start-page");
@@ -269,17 +272,18 @@ impl CineWindow {
         playlist_bar_btn.add_css_class("circular");
         playlist_bar_btn.add_css_class("flat");
 
-        // Menú selector de Calidad de Video (4K / 1440p / 1080p / 720p / 480p)
+        // Menú selector de Calidad de Video (Automático por defecto, 4K, 1440p, 1080p, 720p, 480p)
         let quality_menu = gio::Menu::new();
-        quality_menu.append(Some("Máxima disponible (Auto / 4K)"), Some("win.set-quality('best')"));
-        quality_menu.append(Some("1440p (2K QHD)"), Some("win.set-quality('1440')"));
-        quality_menu.append(Some("1080p (Full HD)"), Some("win.set-quality('1080')"));
-        quality_menu.append(Some("720p (HD)"), Some("win.set-quality('720')"));
-        quality_menu.append(Some("480p (SD)"), Some("win.set-quality('480')"));
+        quality_menu.append(Some("Automático (Calidad óptima del video)"), Some("win.set-quality('best')"));
+        quality_menu.append(Some("4K UHD (2160p)"), Some("win.set-quality('2160')"));
+        quality_menu.append(Some("1440p QHD (2K)"), Some("win.set-quality('1440')"));
+        quality_menu.append(Some("1080p FHD"), Some("win.set-quality('1080')"));
+        quality_menu.append(Some("720p HD"), Some("win.set-quality('720')"));
+        quality_menu.append(Some("480p SD"), Some("win.set-quality('480')"));
 
         let quality_menu_btn = gtk::MenuButton::builder()
-            .label("Calidad")
-            .tooltip_text("Calidad de video actual y selector de resolución")
+            .label("Auto")
+            .tooltip_text("Calidad de video (Automático por defecto)")
             .menu_model(&quality_menu)
             .direction(gtk::ArrowType::Up)
             .build();
@@ -305,6 +309,26 @@ impl CineWindow {
         let time_total_label = gtk::Label::new(Some(&format_time(0.0)));
         time_total_label.add_css_class("numeric");
 
+        // Botón de opciones de video y transformación
+        let options = Rc::new(RefCell::new(PlaybackOptions::default()));
+        let options_menu_btn = create_options_menu_button(video_area.clone(), options.clone());
+
+        // Botón de reproducción aleatoria (Shuffle)
+        let shuffle_btn = gtk::Button::builder()
+            .icon_name("cine-playlist-shuffle-symbolic")
+            .tooltip_text("Modo aleatorio")
+            .build();
+        shuffle_btn.add_css_class("circular");
+        shuffle_btn.add_css_class("flat");
+
+        // Botón de repetición (Loop)
+        let repeat_btn = gtk::Button::builder()
+            .icon_name("cine-playlist-repeat-symbolic")
+            .tooltip_text("Repetir: Desactivado")
+            .build();
+        repeat_btn.add_css_class("circular");
+        repeat_btn.add_css_class("flat");
+
         let time_row = gtk::Box::builder()
             .orientation(gtk::Orientation::Horizontal)
             .spacing(8)
@@ -322,6 +346,9 @@ impl CineWindow {
         time_row.append(&gtk::Label::new(Some("/")));
         time_row.append(&time_total_label);
         time_row.append(&quality_menu_btn);
+        time_row.append(&options_menu_btn);
+        time_row.append(&shuffle_btn);
+        time_row.append(&repeat_btn);
         time_row.append(&playlist_bar_btn);
         time_row.append(&fullscreen_btn);
         controls_box.append(&time_row);
@@ -360,13 +387,69 @@ impl CineWindow {
             playlist_items: Rc::new(RefCell::new(Vec::new())),
             current_index: Rc::new(Cell::new(0)),
             last_video_dims: Rc::new(Cell::new((0, 0))),
-            options: Rc::new(RefCell::new(PlaybackOptions::default())),
-            settings,
+            options,
+            settings: settings.clone(),
             mpris,
             inhibit_cookie: Rc::new(Cell::new(0)),
             is_playing: Rc::new(Cell::new(false)),
             updating_slider: Rc::new(Cell::new(false)),
+            loop_mode: Rc::new(Cell::new(0)),
+            shuffle_enabled: Rc::new(Cell::new(false)),
         };
+
+        // Botón Shuffle (aleatorio)
+        {
+            let this = cine_win.clone();
+            let s_btn = shuffle_btn.clone();
+            shuffle_btn.connect_clicked(move |_| {
+                let current = this.shuffle_enabled.get();
+                let new_val = !current;
+                this.shuffle_enabled.set(new_val);
+                if new_val {
+                    s_btn.add_css_class("suggested-action");
+                    this.show_toast("Modo aleatorio activado");
+                } else {
+                    s_btn.remove_css_class("suggested-action");
+                    this.show_toast("Modo aleatorio desactivado");
+                }
+            });
+        }
+
+        // Botón Repeat (bucle de archivo o lista)
+        {
+            let this = cine_win.clone();
+            let r_btn = repeat_btn.clone();
+            repeat_btn.connect_clicked(move |_| {
+                let next_mode = (this.loop_mode.get() + 1) % 3;
+                this.loop_mode.set(next_mode);
+                match next_mode {
+                    1 => {
+                        r_btn.set_icon_name("cine-repeat-file-symbolic");
+                        r_btn.add_css_class("suggested-action");
+                        r_btn.set_tooltip_text(Some("Repetir: Archivo actual"));
+                        this.video_area.set_loop_file(true);
+                        this.video_area.set_loop_playlist(false);
+                        this.show_toast("Repetir: Archivo actual");
+                    }
+                    2 => {
+                        r_btn.set_icon_name("cine-playlist-repeat-symbolic");
+                        r_btn.add_css_class("suggested-action");
+                        r_btn.set_tooltip_text(Some("Repetir: Toda la lista"));
+                        this.video_area.set_loop_file(false);
+                        this.video_area.set_loop_playlist(true);
+                        this.show_toast("Repetir: Toda la lista");
+                    }
+                    _ => {
+                        r_btn.set_icon_name("cine-playlist-repeat-symbolic");
+                        r_btn.remove_css_class("suggested-action");
+                        r_btn.set_tooltip_text(Some("Repetir: Desactivado"));
+                        this.video_area.set_loop_file(false);
+                        this.video_area.set_loop_playlist(false);
+                        this.show_toast("Repetición desactivada");
+                    }
+                }
+            });
+        }
 
         // Botón Play/Pause
         {
@@ -425,6 +508,14 @@ impl CineWindow {
         cine_win.setup_progress_timer();
         cine_win.setup_close_request();
 
+        if settings.borrow().save_session {
+            let saved = load_playlist_session();
+            if !saved.is_empty() {
+                let gfiles: Vec<gio::File> = saved.into_iter().map(gio::File::for_path).collect();
+                cine_win.open_files(&gfiles, true);
+            }
+        }
+
         cine_win
     }
 
@@ -460,13 +551,28 @@ impl CineWindow {
 
     pub fn play_next(&self) {
         let len = self.playlist_items.borrow().len();
-        let idx = self.current_index.get();
-        if idx + 1 < len {
-            self.play_index(idx + 1);
+        if len == 0 {
+            return;
+        }
+        let cur = self.current_index.get();
+        if self.shuffle_enabled.get() && len > 1 {
+            let now = std::time::SystemTime::now()
+                .duration_since(std::time::SystemTime::UNIX_EPOCH)
+                .map(|d| d.as_millis() as usize)
+                .unwrap_or(0);
+            let mut next_idx = now % len;
+            if next_idx == cur {
+                next_idx = (cur + 1) % len;
+            }
+            self.play_index(next_idx);
+        } else if cur + 1 < len {
+            self.play_index(cur + 1);
+        } else if self.loop_mode.get() == 2 {
+            self.play_index(0);
         }
     }
 
-    fn play_index(&self, new_idx: usize) {
+    pub fn play_index(&self, new_idx: usize) {
         let mut items = self.playlist_items.borrow_mut();
         if new_idx >= items.len() {
             return;
@@ -483,6 +589,66 @@ impl CineWindow {
         self.video_area.load_file(&target_path, "replace");
         self.window.set_title(Some(&target_title));
         self.title_widget.set_title(&target_title);
+    }
+
+    pub fn remove_playlist_index(&self, idx: usize) {
+        let mut items = self.playlist_items.borrow_mut();
+        if idx >= items.len() {
+            return;
+        }
+        items.remove(idx);
+        let len = items.len();
+        let cur = self.current_index.get();
+        if len == 0 {
+            drop(items);
+            self.clear_playlist();
+            return;
+        }
+
+        let new_cur = if idx < cur {
+            cur - 1
+        } else if idx == cur {
+            if idx >= len { len - 1 } else { idx }
+        } else {
+            cur
+        };
+        self.current_index.set(new_cur);
+
+        if idx == cur {
+            for (i, item) in items.iter_mut().enumerate() {
+                item.playing = i == new_cur;
+            }
+            let target_path = items[new_cur].path.to_string_lossy().into_owned();
+            let target_title = items[new_cur].title.clone();
+            drop(items);
+
+            self.last_video_dims.set((0, 0));
+            self.video_area.load_file(&target_path, "replace");
+            self.window.set_title(Some(&target_title));
+            self.title_widget.set_title(&target_title);
+        } else {
+            drop(items);
+        }
+
+        if self.settings.borrow().save_session {
+            save_playlist_session(&self.playlist_items.borrow());
+        }
+    }
+
+    pub fn clear_playlist(&self) {
+        self.playlist_items.borrow_mut().clear();
+        self.current_index.set(0);
+        self.video_area.load_file("", "replace");
+        self.window.set_title(Some("Cine (Rust)"));
+        self.title_widget.set_visible(false);
+        self.controls_box.set_visible(false);
+        self.start_page.set_visible(true);
+        self.is_playing.set(false);
+        self.sync_inhibit();
+
+        if self.settings.borrow().save_session {
+            save_playlist_session(&[]);
+        }
     }
 
     /// Redimensiona la ventana automáticamente según las dimensiones reales del video (`vid_w` x `vid_h`)
@@ -583,6 +749,14 @@ impl CineWindow {
                 } else {
                     "cine-playback-pause-symbolic"
                 });
+
+                if !paused && dur > 2.0 && pos >= dur - 0.4 {
+                    if this.loop_mode.get() == 1 {
+                        this.video_area.seek_absolute(0.0);
+                    } else {
+                        this.play_next();
+                    }
+                }
             }
             glib::ControlFlow::Continue
         });
@@ -629,6 +803,29 @@ impl CineWindow {
                     this.video_area.toggle_stats();
                     glib::Propagation::Stop
                 }
+                gdk::Key::a | gdk::Key::A => {
+                    this.video_area.command(&["cycle", "audio"]);
+                    if let Some(lang) = this.video_area.get_property_str("current-tracks/audio/lang") {
+                        this.show_toast(&format!("Pista de audio: {lang}"));
+                    } else if let Some(title) = this.video_area.get_property_str("current-tracks/audio/title") {
+                        this.show_toast(&format!("Pista de audio: {title}"));
+                    } else {
+                        this.show_toast("Cambiando pista de audio");
+                    }
+                    glib::Propagation::Stop
+                }
+                gdk::Key::s | gdk::Key::S => {
+                    this.video_area.command(&["cycle", "sub"]);
+                    let sub_vis = this.video_area.get_property_str("sub-visibility").unwrap_or_default();
+                    if sub_vis == "no" {
+                        this.show_toast("Subtítulos desactivados");
+                    } else if let Some(lang) = this.video_area.get_property_str("current-tracks/sub/lang") {
+                        this.show_toast(&format!("Subtítulos: {lang}"));
+                    } else {
+                        this.show_toast("Cambiando subtítulos");
+                    }
+                    glib::Propagation::Stop
+                }
                 _ => glib::Propagation::Proceed,
             }
         });
@@ -650,6 +847,9 @@ impl CineWindow {
     fn setup_close_request(&self) {
         let this = self.clone();
         self.window.connect_close_request(move |_| {
+            if this.settings.borrow().save_session {
+                save_playlist_session(&this.playlist_items.borrow());
+            }
             this.is_playing.set(false);
             this.sync_inhibit();
             this.video_area.shutdown();
@@ -733,11 +933,17 @@ impl CineWindow {
 
         // win.open-history (Ctrl+H)
         let action_history = gio::SimpleAction::new("open-history", None);
-        let win_weak = self.window.downgrade();
+        let this = self.clone();
         action_history.connect_activate(move |_, _| {
-            if let Some(win) = win_weak.upgrade() {
-                present_history_dialog(&win);
-            }
+            let th = this.clone();
+            present_history_dialog(&this.window, move |path| {
+                if path.starts_with("http://") || path.starts_with("https://") {
+                    th.open_url(path, true);
+                } else {
+                    let file = gio::File::for_path(path);
+                    th.open_files(&[file], true);
+                }
+            });
         });
         self.window.add_action(&action_history);
 
@@ -745,7 +951,17 @@ impl CineWindow {
         let action_playlist = gio::SimpleAction::new("open-playlist-dialog", None);
         let this = self.clone();
         action_playlist.connect_activate(move |_, _| {
-            present_playlist_dialog(&this.window, &this.playlist_items.borrow());
+            let th_sel = this.clone();
+            let th_rem = this.clone();
+            let th_clr = this.clone();
+            let items = this.playlist_items.borrow().clone();
+            present_playlist_dialog(
+                &this.window,
+                &items,
+                move |idx| th_sel.play_index(idx),
+                move |idx| th_rem.remove_playlist_index(idx),
+                move || th_clr.clear_playlist(),
+            );
         });
         self.window.add_action(&action_playlist);
 
@@ -767,12 +983,13 @@ impl CineWindow {
             let Some(tier) = param.and_then(|p| p.str()) else {
                 return;
             };
-            let fmt = match tier {
-                "1440" => "bestvideo[height<=1440]+bestaudio/best[height<=1440]",
-                "1080" => "bestvideo[height<=1080]+bestaudio/best[height<=1080]",
-                "720" => "bestvideo[height<=720]+bestaudio/best[height<=720]",
-                "480" => "bestvideo[height<=480]+bestaudio/best[height<=480]",
-                _ => "bestvideo+bestaudio/best",
+            let (fmt, toast_msg) = match tier {
+                "2160" => ("bestvideo[height<=2160]+bestaudio/best[height<=2160]", "Calidad fijada a 4K UHD"),
+                "1440" => ("bestvideo[height<=1440]+bestaudio/best[height<=1440]", "Calidad fijada a 1440p QHD"),
+                "1080" => ("bestvideo[height<=1080]+bestaudio/best[height<=1080]", "Calidad fijada a 1080p FHD"),
+                "720" => ("bestvideo[height<=720]+bestaudio/best[height<=720]", "Calidad fijada a 720p HD"),
+                "480" => ("bestvideo[height<=480]+bestaudio/best[height<=480]", "Calidad fijada a 480p SD"),
+                _ => ("bestvideo+bestaudio/best", "Calidad en Automático"),
             };
             this.video_area.set_ytdl_format(fmt);
             this.last_video_dims.set((0, 0));
@@ -792,7 +1009,7 @@ impl CineWindow {
                         va.seek_absolute(pos);
                     });
                 }
-                this.show_toast(&format!("Calidad cambiada a {tier}p"));
+                this.show_toast(toast_msg);
             }
         });
         self.window.add_action(&action_quality);
@@ -942,6 +1159,7 @@ impl CineWindow {
     pub fn open_url(&self, url: &str, clear_existing: bool) {
         eprintln!("[CineRust] Abriendo URL: {url}");
         self.show_toast("Cargando URL con yt-dlp…");
+        record_history_entry(url, url);
         self.last_video_dims.set((0, 0));
         let mode = if clear_existing { "replace" } else { "append-play" };
         self.video_area.load_file(url, mode);
@@ -957,6 +1175,9 @@ impl CineWindow {
             title: url.to_string(),
             playing: is_first,
         });
+        if self.settings.borrow().save_session {
+            save_playlist_session(&items);
+        }
         drop(items);
 
         self.window.set_title(Some(url));
@@ -1001,6 +1222,7 @@ impl CineWindow {
                 .file_name()
                 .map(|p| p.to_string_lossy().into_owned())
                 .unwrap_or_else(|| "Video".to_string());
+            record_history_entry(&path.to_string_lossy(), &title);
             let mode = if clear_existing && idx == 0 {
                 "replace"
             } else {
@@ -1014,6 +1236,9 @@ impl CineWindow {
             });
         }
         let total_loaded = media_paths.len();
+        if self.settings.borrow().save_session {
+            save_playlist_session(&items);
+        }
         drop(items);
 
         if clear_existing || start_empty {

@@ -1,6 +1,56 @@
 {
   "communities": {
     "0": [
+      "adjustment",
+      "applicationwindow",
+      "box",
+      "button",
+      "file",
+      "label",
+      "menubutton",
+      "mpriscontroller",
+      "option",
+      "overlay",
+      "playbackoptions",
+      "playlistitem",
+      "rc",
+      "refcell",
+      "src_application",
+      "src_history_record_history_entry",
+      "src_mpv_engine_mpvengine_drop",
+      "src_save_session_save_playlist_session",
+      "src_utils_center_window_on_screen",
+      "src_window",
+      "src_window_cinewindow",
+      "src_window_cinewindow_add_external_track_dialog",
+      "src_window_cinewindow_clear_playlist",
+      "src_window_cinewindow_new",
+      "src_window_cinewindow_open_file_dialog",
+      "src_window_cinewindow_open_files",
+      "src_window_cinewindow_open_folder_dialog",
+      "src_window_cinewindow_open_url",
+      "src_window_cinewindow_open_url_dialog",
+      "src_window_cinewindow_play_index",
+      "src_window_cinewindow_play_next",
+      "src_window_cinewindow_play_prev",
+      "src_window_cinewindow_present",
+      "src_window_cinewindow_remove_playlist_index",
+      "src_window_cinewindow_setup_actions",
+      "src_window_cinewindow_setup_close_request",
+      "src_window_cinewindow_setup_keyboard_and_drop",
+      "src_window_cinewindow_show_toast",
+      "src_window_cinewindow_sync_inhibit",
+      "src_window_cinewindow_toggle_pause",
+      "src_window_rs_application",
+      "src_window_rs_self",
+      "src_window_rs_sharedsettings",
+      "statuspage",
+      "toastoverlay",
+      "vec",
+      "videoglarea",
+      "windowtitle"
+    ],
+    "1": [
       "c_char",
       "c_int",
       "c_uint",
@@ -50,62 +100,39 @@
       "src_mpv_engine_rs_self",
       "src_mpv_engine_rs_string"
     ],
-    "1": [
-      "adjustment",
-      "applicationwindow",
-      "box",
-      "button",
-      "file",
-      "label",
-      "menubutton",
-      "overlay",
-      "src_mpv_engine_mpvengine_drop",
-      "src_window",
-      "src_window_cinewindow",
-      "src_window_cinewindow_add_external_track_dialog",
-      "src_window_cinewindow_new",
-      "src_window_cinewindow_open_file_dialog",
-      "src_window_cinewindow_open_files",
-      "src_window_cinewindow_open_folder_dialog",
-      "src_window_cinewindow_open_url",
-      "src_window_cinewindow_open_url_dialog",
-      "src_window_cinewindow_play_index",
-      "src_window_cinewindow_play_next",
-      "src_window_cinewindow_play_prev",
-      "src_window_cinewindow_present",
-      "src_window_cinewindow_setup_actions",
-      "src_window_cinewindow_setup_close_request",
-      "src_window_cinewindow_setup_keyboard_and_drop",
-      "src_window_cinewindow_show_toast",
-      "src_window_cinewindow_sync_inhibit",
-      "src_window_cinewindow_toggle_pause",
-      "src_window_rs_application",
-      "src_window_rs_rc",
-      "src_window_rs_refcell",
-      "src_window_rs_self",
-      "src_window_rs_sharedsettings",
-      "src_window_rs_vec",
-      "statuspage",
-      "toastoverlay",
-      "windowtitle"
-    ],
     "2": [
+      "c_void",
       "cell",
       "glarea",
       "graphicsoffload",
+      "mpvengine",
       "src_mpv_gl_area",
       "src_mpv_gl_area_on_mpv_render_update",
-      "src_mpv_gl_area_rs_c_void",
       "src_mpv_gl_area_rs_option",
       "src_mpv_gl_area_rs_rc",
       "src_mpv_gl_area_rs_refcell",
       "src_mpv_gl_area_rs_self",
       "src_mpv_gl_area_rs_string",
       "src_mpv_gl_area_videoglarea",
+      "src_mpv_gl_area_videoglarea_command",
       "src_mpv_gl_area_videoglarea_load_file",
       "src_mpv_gl_area_videoglarea_new",
       "src_mpv_gl_area_videoglarea_seek_absolute",
       "src_mpv_gl_area_videoglarea_seek_relative",
+      "src_mpv_gl_area_videoglarea_set_aspect_ratio",
+      "src_mpv_gl_area_videoglarea_set_audio_delay",
+      "src_mpv_gl_area_videoglarea_set_brightness",
+      "src_mpv_gl_area_videoglarea_set_contrast",
+      "src_mpv_gl_area_videoglarea_set_gamma",
+      "src_mpv_gl_area_videoglarea_set_hue",
+      "src_mpv_gl_area_videoglarea_set_loop_file",
+      "src_mpv_gl_area_videoglarea_set_loop_playlist",
+      "src_mpv_gl_area_videoglarea_set_property",
+      "src_mpv_gl_area_videoglarea_set_saturation",
+      "src_mpv_gl_area_videoglarea_set_speed",
+      "src_mpv_gl_area_videoglarea_set_sub_delay",
+      "src_mpv_gl_area_videoglarea_set_video_rotate",
+      "src_mpv_gl_area_videoglarea_set_video_zoom",
       "src_mpv_gl_area_videoglarea_set_visible",
       "src_mpv_gl_area_videoglarea_set_volume",
       "src_mpv_gl_area_videoglarea_set_ytdl_format",
@@ -118,7 +145,58 @@
       "src_mpv_gl_area_videoglarea_widget"
     ],
     "3": [
-      "src_application",
+      "spinbutton",
+      "src_options",
+      "src_options_create_options_menu_button",
+      "src_options_make_option_row",
+      "src_options_make_spin_row",
+      "src_options_playbackoptions",
+      "src_options_playbackoptions_default",
+      "src_options_rs_box",
+      "src_options_rs_button",
+      "src_options_rs_default",
+      "src_options_rs_isa",
+      "src_options_rs_menubutton",
+      "src_options_rs_rc",
+      "src_options_rs_refcell",
+      "src_options_rs_self",
+      "src_options_rs_widget"
+    ],
+    "4": [
+      "fclear",
+      "fremove",
+      "fselect",
+      "src_playlist",
+      "src_playlist_playlistitem",
+      "src_playlist_present_playlist_dialog",
+      "src_playlist_rs_isa",
+      "src_playlist_rs_pathbuf",
+      "src_playlist_rs_string",
+      "src_playlist_rs_widget",
+      "src_save_session",
+      "src_save_session_last_playlist_file",
+      "src_save_session_load_playlist_session",
+      "src_save_session_rs_pathbuf",
+      "src_save_session_rs_vec"
+    ],
+    "5": [
+      "path",
+      "pathbuf",
+      "src_utils",
+      "src_utils_calculate_window_size",
+      "src_utils_collect_media_files",
+      "src_utils_config_dir",
+      "src_utils_format_time",
+      "src_utils_is_media_file",
+      "src_utils_resolution_badge",
+      "src_utils_rs_vec",
+      "src_utils_video_extensions",
+      "src_utils_watch_history_path",
+      "src_window_cinewindow_apply_video_window_size",
+      "src_window_cinewindow_setup_progress_timer",
+      "string"
+    ],
+    "6": [
       "src_application_cineapplication",
       "src_application_cineapplication_new",
       "src_application_cineapplication_on_startup",
@@ -128,16 +206,6 @@
       "src_application_rs_exitcode",
       "src_application_rs_self",
       "src_application_rs_sharedsettings",
-      "src_preferences",
-      "src_preferences_appsettings",
-      "src_preferences_appsettings_default",
-      "src_preferences_present_preferences_dialog",
-      "src_preferences_rs_default",
-      "src_preferences_rs_isa",
-      "src_preferences_rs_self",
-      "src_preferences_rs_sharedsettings",
-      "src_preferences_rs_string",
-      "src_preferences_rs_widget",
       "src_shortcuts",
       "src_shortcuts_present_shortcuts_dialog",
       "src_shortcuts_register_window_accels",
@@ -145,33 +213,48 @@
       "src_shortcuts_rs_isa",
       "src_shortcuts_rs_widget"
     ],
-    "4": [
-      "path",
+    "7": [
+      "fopen",
       "src_history",
+      "src_history_clear_history",
+      "src_history_historyentry",
+      "src_history_parse_json_line",
       "src_history_present_history_dialog",
+      "src_history_read_history_entries",
       "src_history_rs_isa",
-      "src_history_rs_widget",
-      "src_save_session",
-      "src_save_session_last_playlist_file",
-      "src_save_session_rs_pathbuf",
-      "src_utils",
-      "src_utils_calculate_window_size",
-      "src_utils_center_window_on_screen",
-      "src_utils_collect_media_files",
-      "src_utils_config_dir",
-      "src_utils_format_time",
-      "src_utils_is_media_file",
-      "src_utils_resolution_badge",
-      "src_utils_rs_option",
-      "src_utils_rs_pathbuf",
-      "src_utils_rs_string",
-      "src_utils_rs_vec",
-      "src_utils_video_extensions",
-      "src_utils_watch_history_path",
-      "src_window_cinewindow_apply_video_window_size",
-      "src_window_cinewindow_setup_progress_timer"
+      "src_history_rs_option",
+      "src_history_rs_string",
+      "src_history_rs_vec",
+      "src_history_rs_widget"
     ],
-    "5": [
+    "8": [
+      "src_preferences",
+      "src_preferences_appsettings",
+      "src_preferences_appsettings_default",
+      "src_preferences_appsettings_load_from_disk",
+      "src_preferences_appsettings_save_to_disk",
+      "src_preferences_present_preferences_dialog",
+      "src_preferences_rs_default",
+      "src_preferences_rs_isa",
+      "src_preferences_rs_self",
+      "src_preferences_rs_sharedsettings",
+      "src_preferences_rs_string",
+      "src_preferences_rs_widget"
+    ],
+    "9": [
+      "src_mpris",
+      "src_mpris_mpriscontroller",
+      "src_mpris_mpriscontroller_default",
+      "src_mpris_mpriscontroller_new",
+      "src_mpris_mpriscontroller_set_title",
+      "src_mpris_mpriscontroller_update_metadata",
+      "src_mpris_rs_default",
+      "src_mpris_rs_rc",
+      "src_mpris_rs_refcell",
+      "src_mpris_rs_self",
+      "src_mpris_rs_string"
+    ],
+    "10": [
       "src_main",
       "src_main_app_id",
       "src_main_gresource_bytes",
@@ -180,69 +263,101 @@
       "src_main_rs_exitcode",
       "src_main_version"
     ],
-    "6": [
-      "src_playlist",
-      "src_playlist_playlistitem",
-      "src_playlist_present_playlist_dialog",
-      "src_playlist_rs_isa",
-      "src_playlist_rs_pathbuf",
-      "src_playlist_rs_string",
-      "src_playlist_rs_widget"
-    ],
-    "7": [
-      "src_mpris",
-      "src_mpris_mpriscontroller",
-      "src_mpris_mpriscontroller_new",
-      "src_mpris_mpriscontroller_update_metadata",
-      "src_mpris_rs_self",
-      "src_mpris_rs_string"
-    ],
-    "8": [
+    "11": [
       "CineRust",
       "DanielLazaro",
       "DiegoPovliuk",
       "GtkGraphicsOffload",
       "HardwareDecodingNVDEC"
     ],
-    "9": [
-      "src_options",
-      "src_options_playbackoptions",
-      "src_options_playbackoptions_default",
-      "src_options_rs_default",
-      "src_options_rs_self"
+    "12": [
+      "install",
+      "install_sh__entry"
     ],
-    "10": [
+    "13": [
+      "uninstall",
+      "uninstall_sh__entry"
+    ],
+    "14": [
+      "exitcode"
+    ],
+    "15": [
       "pkg_cine_rust"
+    ],
+    "16": [
+      "src_mpv_gl_area_rs_c_void"
+    ],
+    "17": [
+      "src_utils_rs_option"
+    ],
+    "18": [
+      "src_utils_rs_pathbuf"
+    ],
+    "19": [
+      "src_utils_rs_string"
+    ],
+    "20": [
+      "src_window_rs_box"
+    ],
+    "21": [
+      "src_window_rs_button"
+    ],
+    "22": [
+      "src_window_rs_menubutton"
+    ],
+    "23": [
+      "src_window_rs_rc"
+    ],
+    "24": [
+      "src_window_rs_refcell"
+    ],
+    "25": [
+      "src_window_rs_vec"
     ]
   },
   "cohesion": {
-    "0": 0.1099290780141844,
-    "1": 0.10960960960960961,
-    "2": 0.09538461538461539,
-    "3": 0.09230769230769231,
-    "4": 0.12318840579710146,
-    "5": 0.2857142857142857,
-    "6": 0.38095238095238093,
-    "7": 0.3333333333333333,
-    "8": 0.4,
-    "9": 0.4,
-    "10": 1.0
+    "0": 0.09219858156028368,
+    "1": 0.1099290780141844,
+    "2": 0.07781649245063879,
+    "3": 0.19166666666666668,
+    "4": 0.18095238095238095,
+    "5": 0.21904761904761905,
+    "6": 0.17142857142857143,
+    "7": 0.24242424242424243,
+    "8": 0.21212121212121213,
+    "9": 0.2545454545454545,
+    "10": 0.2857142857142857,
+    "11": 0.4,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0,
+    "15": 1.0,
+    "16": 1.0,
+    "17": 1.0,
+    "18": 1.0,
+    "19": 1.0,
+    "20": 1.0,
+    "21": 1.0,
+    "22": 1.0,
+    "23": 1.0,
+    "24": 1.0,
+    "25": 1.0
   },
   "gods": [
     {
       "id": "src_window_cinewindow",
       "label": "CineWindow",
-      "degree": 38
+      "degree": 40
     },
     {
       "id": "src_mpv_gl_area_videoglarea",
       "label": "VideoGLArea",
-      "degree": 23
+      "degree": 38
     },
     {
       "id": "src_mpv_engine_mpvengine",
       "label": "MpvEngine",
-      "degree": 18
+      "degree": 16
     },
     {
       "id": "src_mpv_engine_mpvhandle",
@@ -250,8 +365,23 @@
       "degree": 11
     },
     {
+      "id": "src_options_create_options_menu_button",
+      "label": "create_options_menu_button()",
+      "degree": 9
+    },
+    {
       "id": "src_mpris_mpriscontroller",
       "label": "MprisController",
+      "degree": 9
+    },
+    {
+      "id": "src_save_session_save_playlist_session",
+      "label": "save_playlist_session()",
+      "degree": 8
+    },
+    {
+      "id": "src_playlist_present_playlist_dialog",
+      "label": "present_playlist_dialog()",
       "degree": 8
     },
     {
@@ -260,29 +390,14 @@
       "degree": 7
     },
     {
-      "id": "src_application_cineapplication",
-      "label": "CineApplication",
-      "degree": 6
-    },
-    {
-      "id": "src_mpv_engine_mpvrendercontext",
-      "label": "MpvRenderContext",
-      "degree": 6
-    },
-    {
-      "id": "src_mpv_engine_mpv_get_property_string",
-      "label": "mpv_get_property_string()",
-      "degree": 6
-    },
-    {
-      "id": "src_mpv_engine_mpv_render_context_create",
-      "label": "mpv_render_context_create()",
-      "degree": 6
+      "id": "src_options_make_option_row",
+      "label": "make_option_row()",
+      "degree": 7
     }
   ],
   "surprises": [
     {
-      "source": "present_history_dialog()",
+      "source": "record_history_entry()",
       "target": "watch_history_path()",
       "source_files": [
         "src/history.rs",
@@ -290,47 +405,47 @@
       ],
       "confidence": "INFERRED",
       "relation": "calls",
-      "why": "inferred connection - not explicitly stated in source"
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "CineWindow",
-      "target": "MprisController",
+      "source": "last_playlist_file()",
+      "target": "config_dir()",
       "source_files": [
-        "src/window.rs",
-        "src/mpris.rs"
+        "src/save_session.rs",
+        "src/utils.rs"
       ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities"
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "VideoGLArea",
-      "target": "MpvEngine",
+      "source": "clear_history()",
+      "target": "watch_history_path()",
       "source_files": [
-        "src/mpv_gl_area.rs",
-        "src/mpv_engine.rs"
+        "src/history.rs",
+        "src/utils.rs"
       ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities"
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "CineWindow",
-      "target": "VideoGLArea",
+      "source": "read_history_entries()",
+      "target": "watch_history_path()",
       "source_files": [
-        "src/window.rs",
-        "src/mpv_gl_area.rs"
+        "src/history.rs",
+        "src/utils.rs"
       ],
-      "confidence": "EXTRACTED",
-      "relation": "references",
-      "why": "bridges separate communities"
+      "confidence": "INFERRED",
+      "relation": "calls",
+      "why": "inferred connection - not explicitly stated in source; bridges separate communities"
     },
     {
-      "source": "CineWindow",
-      "target": "PlaybackOptions",
+      "source": "save_playlist_session()",
+      "target": "PlaylistItem",
       "source_files": [
-        "src/window.rs",
-        "src/options.rs"
+        "src/save_session.rs",
+        "src/playlist.rs"
       ],
       "confidence": "EXTRACTED",
       "relation": "references",
@@ -340,38 +455,38 @@
   "questions": [
     {
       "type": "bridge_node",
-      "question": "Why does `VideoGLArea` connect `Community 2` to `Community 0`, `Community 1`?",
-      "why": "High betweenness centrality (0.419) - this node is a cross-community bridge."
+      "question": "Why does `MpvEngine` connect `mpv_engine.rs` to `CineWindow`?",
+      "why": "High betweenness centrality (0.222) - this node is a cross-community bridge."
     },
     {
       "type": "bridge_node",
-      "question": "Why does `CineWindow` connect `Community 1` to `Community 2`, `Community 4`, `Community 6`, `Community 7`, `Community 9`?",
-      "why": "High betweenness centrality (0.391) - this node is a cross-community bridge."
+      "question": "Why does `VideoGLArea` connect `VideoGLArea` to `create_options_menu_button`?",
+      "why": "High betweenness centrality (0.214) - this node is a cross-community bridge."
     },
     {
       "type": "bridge_node",
-      "question": "Why does `MpvEngine` connect `Community 0` to `Community 1`, `Community 2`?",
-      "why": "High betweenness centrality (0.337) - this node is a cross-community bridge."
+      "question": "Why does `CineWindow` connect `CineWindow` to `VideoGLArea`, `utils.rs`?",
+      "why": "High betweenness centrality (0.171) - this node is a cross-community bridge."
     },
     {
       "type": "isolated_nodes",
-      "question": "What connects `cine-rust`, `APP_ID`, `ICON_NAME` to the rest of the system?",
-      "why": "10 weakly-connected nodes found - possible documentation gaps or missing edges."
+      "question": "What connects `APP_ID`, `GRESOURCE_BYTES`, `ICON_NAME` to the rest of the system?",
+      "why": "12 weakly-connected nodes found - possible documentation gaps or missing edges."
     },
     {
       "type": "low_cohesion",
-      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "question": "Should `CineWindow` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.09219858156028368 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `mpv_engine.rs` be split into smaller, more focused modules?",
       "why": "Cohesion score 0.1099290780141844 - nodes in this community are weakly interconnected."
     },
     {
       "type": "low_cohesion",
-      "question": "Should `Community 1` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.10960960960960961 - nodes in this community are weakly interconnected."
-    },
-    {
-      "type": "low_cohesion",
-      "question": "Should `Community 2` be split into smaller, more focused modules?",
-      "why": "Cohesion score 0.09538461538461539 - nodes in this community are weakly interconnected."
+      "question": "Should `VideoGLArea` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07781649245063879 - nodes in this community are weakly interconnected."
     }
   ]
 }
