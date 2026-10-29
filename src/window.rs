@@ -54,6 +54,7 @@ pub struct CineWindow {
     loop_mode: Rc<Cell<u8>>,
     shuffle_enabled: Rc<Cell<bool>>,
     autohide_timer_id: Rc<RefCell<Option<glib::SourceId>>>,
+    controls_locked_hidden: Rc<Cell<bool>>,
 }
 
 impl CineWindow {
@@ -399,6 +400,7 @@ impl CineWindow {
             loop_mode: Rc::new(Cell::new(0)),
             shuffle_enabled: Rc::new(Cell::new(false)),
             autohide_timer_id: Rc::new(RefCell::new(None)),
+            controls_locked_hidden: Rc::new(Cell::new(false)),
         };
 
         // Botón Shuffle (aleatorio)
@@ -556,9 +558,14 @@ impl CineWindow {
             return;
         }
         let currently_visible = self.controls_box.is_visible();
-        let new_vis = !currently_visible;
-        self.set_controls_visible(new_vis);
-        if new_vis {
+        if currently_visible {
+            // El usuario hizo clic para ocultar deliberadamente los controles
+            self.controls_locked_hidden.set(true);
+            self.set_controls_visible(false);
+        } else {
+            // El usuario hizo clic de nuevo para restaurar los controles
+            self.controls_locked_hidden.set(false);
+            self.set_controls_visible(true);
             self.reset_autohide_timer();
         }
     }
@@ -596,6 +603,7 @@ impl CineWindow {
         });
         self.sync_inhibit();
         if paused {
+            self.controls_locked_hidden.set(false);
             self.set_controls_visible(true);
             self.cancel_autohide_timer();
         } else {
@@ -650,6 +658,7 @@ impl CineWindow {
         self.video_area.load_file(&target_path, "replace");
         self.window.set_title(Some(&target_title));
         self.title_widget.set_title(&target_title);
+        self.controls_locked_hidden.set(false);
         self.set_controls_visible(true);
         self.reset_autohide_timer();
     }
@@ -707,6 +716,7 @@ impl CineWindow {
         self.controls_box.set_visible(false);
         self.headerbar.set_visible(true);
         self.cancel_autohide_timer();
+        self.controls_locked_hidden.set(false);
         self.start_page.set_visible(true);
         self.is_playing.set(false);
         self.sync_inhibit();
@@ -961,6 +971,11 @@ impl CineWindow {
 
         motion_ctrl.connect_motion(move |_, _x, _y| {
             if this.start_page.is_visible() {
+                return;
+            }
+
+            // Si el usuario los ocultó explícitamente con un clic, se mantienen ocultos al mover el cursor
+            if this.controls_locked_hidden.get() {
                 return;
             }
 
@@ -1337,6 +1352,7 @@ impl CineWindow {
         self.title_widget.set_title(url);
         self.title_widget.set_visible(true);
         self.start_page.set_visible(false);
+        self.controls_locked_hidden.set(false);
         self.set_controls_visible(true);
         self.reset_autohide_timer();
         self.is_playing.set(true);
@@ -1407,6 +1423,7 @@ impl CineWindow {
 
         self.title_widget.set_visible(true);
         self.start_page.set_visible(false);
+        self.controls_locked_hidden.set(false);
         self.set_controls_visible(true);
         self.reset_autohide_timer();
         self.is_playing.set(true);
