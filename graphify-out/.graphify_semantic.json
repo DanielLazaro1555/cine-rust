@@ -1,0 +1,72 @@
+{
+  "nodes": [
+    {
+      "id": "CineRust",
+      "label": "Cine (Rust Edition)",
+      "type": "System",
+      "source_file": "README.md",
+      "description": "Reescritura nativa en Rust de Cine con GTK4, Libadwaita y libmpv"
+    },
+    {
+      "id": "DiegoPovliuk",
+      "label": "Diego Povliuk",
+      "type": "Person",
+      "source_file": "README.md",
+      "description": "Autor y diseñador original de Cine"
+    },
+    {
+      "id": "DanielLazaro",
+      "label": "Daniel Lazaro",
+      "type": "Person",
+      "source_file": "README.md",
+      "description": "Autor del port nativo modular en Rust"
+    },
+    {
+      "id": "GtkGraphicsOffload",
+      "label": "GtkGraphicsOffload",
+      "type": "Component",
+      "source_file": "README.md",
+      "description": "Subsuperficie Wayland para renderizado directo de GPU sin sobrecarga de composición GTK"
+    },
+    {
+      "id": "HardwareDecodingNVDEC",
+      "label": "Aceleración HWDEC / NVDEC",
+      "type": "Feature",
+      "source_file": "README.md",
+      "description": "Decodificación por hardware con GPU NVIDIA RTX"
+    }
+  ],
+  "edges": [
+    {
+      "source": "CineRust",
+      "target": "DiegoPovliuk",
+      "relation": "based_on",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md"
+    },
+    {
+      "source": "CineRust",
+      "target": "DanielLazaro",
+      "relation": "authored_by",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md"
+    },
+    {
+      "source": "CineRust",
+      "target": "GtkGraphicsOffload",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md"
+    },
+    {
+      "source": "CineRust",
+      "target": "HardwareDecodingNVDEC",
+      "relation": "supports",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md"
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 250,
+  "output_tokens": 150
+}

@@ -1,0 +1,17 @@
+[package]
+name = "cine-rust"
+version = "0.1.0"
+edition = "2024"
+license = "GPL-3.0-or-later"
+description = "Rust port of Cine video player (GTK4 + Libadwaita + libmpv)"
+
+[[bin]]
+name = "cine"
+path = "src/main.rs"
+
+[dependencies]
+gtk = { package = "gtk4", version = "0.9", features = ["v4_16"] }
+adw = { package = "libadwaita", version = "0.7", features = ["v1_6"] }
+glib = "0.20"
+gio = "0.20"
+libc = "0.2"
