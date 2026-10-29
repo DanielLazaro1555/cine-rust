@@ -130,9 +130,18 @@ impl MpvEngine {
             Self::set_opt(handle, "load-console", "no");
             Self::set_opt(handle, "load-scripts", "yes");
             Self::set_opt(handle, "ytdl", "yes");
-            Self::set_opt(handle, "ytdl-format", "bestvideo+bestaudio/best");
-            Self::set_opt(handle, "alang", "es,spa,es-419,es-ES,en");
-            Self::set_opt(handle, "slang", "es,spa,es-419,en");
+            Self::set_opt(
+                handle,
+                "ytdl-format",
+                "bestvideo+bestaudio[language~=es]/bestvideo+bestaudio/best",
+            );
+            Self::set_opt(
+                handle,
+                "ytdl-raw-options",
+                "write-auto-sub=,write-sub=,sub-lang=es,sub-langs=all",
+            );
+            Self::set_opt(handle, "alang", "es,es-US,es-419,es-ES,spa,Spanish,en");
+            Self::set_opt(handle, "slang", "es,es-US,es-419,es-ES,spa,Spanish,en");
             Self::set_opt(handle, "volume", "100");
             Self::set_opt(handle, "mute", "no");
             Self::set_opt(handle, "audio-client-name", "Cine Rust");

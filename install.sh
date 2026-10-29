@@ -71,9 +71,8 @@ fi
 
 echo ""
 echo "=========================================================="
-echo " ¡Cine se instaló y limpió con éxito!"
+echo " ¡Cine (Rust) se instaló y limpió con éxito!"
 echo " - Ejecutable: $BIN_DEST/cine"
 echo " - Lanzador:   $DESKTOP_DEST/io.github.diegopvlk.Cine.desktop"
-echo " Se eliminó el duplicado anterior 'Cine Rust'."
-echo " Ya figura como único 'Cine' en 'Abrir con...' y en el menú del sistema."
+echo " Ya figura como 'Cine (Rust)' en 'Abrir con...' y en el menú del sistema."
 echo "=========================================================="

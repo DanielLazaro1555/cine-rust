@@ -34,6 +34,7 @@ pub struct CineWindow {
     toast_overlay: adw::ToastOverlay,
     video_area: VideoGLArea,
     start_page: adw::StatusPage,
+    headerbar: adw::HeaderBar,
     title_widget: adw::WindowTitle,
     controls_box: gtk::Box,
     play_pause_btn: gtk::Button,
@@ -52,6 +53,7 @@ pub struct CineWindow {
     updating_slider: Rc<Cell<bool>>,
     loop_mode: Rc<Cell<u8>>,
     shuffle_enabled: Rc<Cell<bool>>,
+    autohide_timer_id: Rc<RefCell<Option<glib::SourceId>>>,
 }
 
 impl CineWindow {
@@ -377,6 +379,7 @@ impl CineWindow {
             toast_overlay,
             video_area,
             start_page,
+            headerbar: headerbar.clone(),
             title_widget,
             controls_box,
             play_pause_btn: play_pause_btn.clone(),
@@ -395,6 +398,7 @@ impl CineWindow {
             updating_slider: Rc::new(Cell::new(false)),
             loop_mode: Rc::new(Cell::new(0)),
             shuffle_enabled: Rc::new(Cell::new(false)),
+            autohide_timer_id: Rc::new(RefCell::new(None)),
         };
 
         // Botón Shuffle (aleatorio)
@@ -505,6 +509,7 @@ impl CineWindow {
 
         cine_win.setup_actions();
         cine_win.setup_keyboard_and_drop(&video_overlay);
+        cine_win.setup_mouse_gestures(&video_overlay);
         cine_win.setup_progress_timer();
         cine_win.setup_close_request();
 
@@ -531,6 +536,56 @@ impl CineWindow {
         self.toast_overlay.add_toast(toast);
     }
 
+    pub fn set_controls_visible(&self, visible: bool) {
+        if self.start_page.is_visible() {
+            self.headerbar.set_visible(true);
+            self.controls_box.set_visible(false);
+            return;
+        }
+
+        self.headerbar.set_visible(visible);
+        self.controls_box.set_visible(visible);
+
+        if !visible {
+            self.cancel_autohide_timer();
+        }
+    }
+
+    pub fn toggle_controls_visible(&self) {
+        if self.start_page.is_visible() {
+            return;
+        }
+        let currently_visible = self.controls_box.is_visible();
+        let new_vis = !currently_visible;
+        self.set_controls_visible(new_vis);
+        if new_vis {
+            self.reset_autohide_timer();
+        }
+    }
+
+    pub fn cancel_autohide_timer(&self) {
+        if let Some(source_id) = self.autohide_timer_id.borrow_mut().take() {
+            source_id.remove();
+        }
+    }
+
+    pub fn reset_autohide_timer(&self) {
+        self.cancel_autohide_timer();
+        if self.start_page.is_visible() {
+            return;
+        }
+
+        let this = self.clone();
+        let source_id = glib::timeout_add_local(Duration::from_secs(3), move || {
+            if this.is_playing.get() && this.window.visible_dialog().is_none() {
+                this.set_controls_visible(false);
+            }
+            *this.autohide_timer_id.borrow_mut() = None;
+            glib::ControlFlow::Break
+        });
+        *self.autohide_timer_id.borrow_mut() = Some(source_id);
+    }
+
     pub fn toggle_pause(&self) {
         let paused = self.video_area.toggle_pause();
         self.is_playing.set(!paused);
@@ -540,6 +595,12 @@ impl CineWindow {
             "cine-playback-pause-symbolic"
         });
         self.sync_inhibit();
+        if paused {
+            self.set_controls_visible(true);
+            self.cancel_autohide_timer();
+        } else {
+            self.reset_autohide_timer();
+        }
     }
 
     pub fn play_prev(&self) {
@@ -589,6 +650,8 @@ impl CineWindow {
         self.video_area.load_file(&target_path, "replace");
         self.window.set_title(Some(&target_title));
         self.title_widget.set_title(&target_title);
+        self.set_controls_visible(true);
+        self.reset_autohide_timer();
     }
 
     pub fn remove_playlist_index(&self, idx: usize) {
@@ -642,6 +705,8 @@ impl CineWindow {
         self.window.set_title(Some("Cine (Rust)"));
         self.title_widget.set_visible(false);
         self.controls_box.set_visible(false);
+        self.headerbar.set_visible(true);
+        self.cancel_autohide_timer();
         self.start_page.set_visible(true);
         self.is_playing.set(false);
         self.sync_inhibit();
@@ -844,6 +909,76 @@ impl CineWindow {
         overlay.add_controller(drop_target);
     }
 
+    fn setup_mouse_gestures(&self, overlay: &gtk::Overlay) {
+        let last_hide_time = Rc::new(Cell::new(None::<std::time::Instant>));
+
+        // Gesto de clic: 1 clic = alternar controles y barra de ventana, 2 clics = alternar pantalla completa
+        let click_gesture = gtk::GestureClick::new();
+        click_gesture.set_button(gdk::BUTTON_PRIMARY);
+
+        let this = self.clone();
+        let overlay_weak = overlay.downgrade();
+        let lht = last_hide_time.clone();
+
+        click_gesture.connect_pressed(move |_gesture, n_press, x, y| {
+            if this.start_page.is_visible() {
+                return;
+            }
+
+            // Si el clic cayó sobre la barra superior o los controles inferiores, no ocultar
+            if let Some(ov) = overlay_weak.upgrade() {
+                if let Some(target) = ov.pick(x, y, gtk::PickFlags::DEFAULT) {
+                    let is_in_controls = target == *this.headerbar.upcast_ref::<gtk::Widget>()
+                        || target.is_ancestor(&this.headerbar)
+                        || target == *this.controls_box.upcast_ref::<gtk::Widget>()
+                        || target.is_ancestor(&this.controls_box);
+                    if is_in_controls {
+                        return;
+                    }
+                }
+            }
+
+            if n_press == 1 {
+                let will_hide = this.controls_box.is_visible();
+                if will_hide {
+                    lht.set(Some(std::time::Instant::now()));
+                }
+                this.toggle_controls_visible();
+            } else if n_press == 2 {
+                if this.window.is_fullscreen() {
+                    this.window.unfullscreen();
+                } else {
+                    this.window.fullscreen();
+                }
+            }
+        });
+        overlay.add_controller(click_gesture);
+
+        // Movimiento de ratón: muestra los controles y renueva el temporizador de auto-ocultado (3s)
+        let motion_ctrl = gtk::EventControllerMotion::new();
+        let this = self.clone();
+        let lht = last_hide_time;
+
+        motion_ctrl.connect_motion(move |_, _x, _y| {
+            if this.start_page.is_visible() {
+                return;
+            }
+
+            // Evitar reaparecer por vibración del ratón justo al hacer clic para ocultar
+            if let Some(t) = lht.get() {
+                if t.elapsed() < Duration::from_millis(500) {
+                    return;
+                }
+            }
+
+            if !this.controls_box.is_visible() || !this.headerbar.is_visible() {
+                this.set_controls_visible(true);
+            }
+            this.reset_autohide_timer();
+        });
+        overlay.add_controller(motion_ctrl);
+    }
+
     fn setup_close_request(&self) {
         let this = self.clone();
         self.window.connect_close_request(move |_| {
@@ -984,12 +1119,30 @@ impl CineWindow {
                 return;
             };
             let (fmt, toast_msg) = match tier {
-                "2160" => ("bestvideo[height<=2160]+bestaudio/best[height<=2160]", "Calidad fijada a 4K UHD"),
-                "1440" => ("bestvideo[height<=1440]+bestaudio/best[height<=1440]", "Calidad fijada a 1440p QHD"),
-                "1080" => ("bestvideo[height<=1080]+bestaudio/best[height<=1080]", "Calidad fijada a 1080p FHD"),
-                "720" => ("bestvideo[height<=720]+bestaudio/best[height<=720]", "Calidad fijada a 720p HD"),
-                "480" => ("bestvideo[height<=480]+bestaudio/best[height<=480]", "Calidad fijada a 480p SD"),
-                _ => ("bestvideo+bestaudio/best", "Calidad en Automático"),
+                "2160" => (
+                    "bestvideo[height<=2160]+bestaudio[language~=es]/bestvideo[height<=2160]+bestaudio/best[height<=2160]/best",
+                    "Calidad fijada a 4K UHD",
+                ),
+                "1440" => (
+                    "bestvideo[height<=1440]+bestaudio[language~=es]/bestvideo[height<=1440]+bestaudio/best[height<=1440]/best",
+                    "Calidad fijada a 1440p QHD",
+                ),
+                "1080" => (
+                    "bestvideo[height<=1080]+bestaudio[language~=es]/bestvideo[height<=1080]+bestaudio/best[height<=1080]/best",
+                    "Calidad fijada a 1080p FHD",
+                ),
+                "720" => (
+                    "bestvideo[height<=720]+bestaudio[language~=es]/bestvideo[height<=720]+bestaudio/best[height<=720]/best",
+                    "Calidad fijada a 720p HD",
+                ),
+                "480" => (
+                    "bestvideo[height<=480]+bestaudio[language~=es]/bestvideo[height<=480]+bestaudio/best[height<=480]/best",
+                    "Calidad fijada a 480p SD",
+                ),
+                _ => (
+                    "bestvideo+bestaudio[language~=es]/bestvideo+bestaudio/best",
+                    "Calidad en Automático",
+                ),
             };
             this.video_area.set_ytdl_format(fmt);
             this.last_video_dims.set((0, 0));
@@ -1184,7 +1337,8 @@ impl CineWindow {
         self.title_widget.set_title(url);
         self.title_widget.set_visible(true);
         self.start_page.set_visible(false);
-        self.controls_box.set_visible(true);
+        self.set_controls_visible(true);
+        self.reset_autohide_timer();
         self.is_playing.set(true);
         self.play_pause_btn
             .set_icon_name("cine-playback-pause-symbolic");
@@ -1253,7 +1407,8 @@ impl CineWindow {
 
         self.title_widget.set_visible(true);
         self.start_page.set_visible(false);
-        self.controls_box.set_visible(true);
+        self.set_controls_visible(true);
+        self.reset_autohide_timer();
         self.is_playing.set(true);
         self.play_pause_btn
             .set_icon_name("cine-playback-pause-symbolic");
