@@ -15,6 +15,7 @@ pub mod playlist;
 pub mod preferences;
 pub mod save_session;
 pub mod shortcuts;
+pub mod tracks;
 pub mod utils;
 pub mod window;
 

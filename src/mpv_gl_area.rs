@@ -238,6 +238,10 @@ impl VideoGLArea {
         self.mpv.borrow().as_ref().and_then(|e| e.get_property_str(name))
     }
 
+    pub fn get_property_bool(&self, name: &str) -> Option<bool> {
+        self.mpv.borrow().as_ref().and_then(|e| e.get_property_bool(name))
+    }
+
     pub fn toggle_stats(&self) {
         if let Some(engine) = self.mpv.borrow().as_ref() {
             engine.command(&["script-binding", "stats/display-stats-toggle"]);

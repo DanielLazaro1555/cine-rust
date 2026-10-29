@@ -23,6 +23,7 @@ use crate::playlist::{PlaylistItem, present_playlist_dialog};
 use crate::preferences::SharedSettings;
 use crate::save_session::{load_playlist_session, save_playlist_session};
 use crate::shortcuts::present_shortcuts_dialog;
+use crate::tracks::{create_audio_menu_button, create_subtitles_menu_button};
 use crate::utils::{
     calculate_window_size, center_window_on_screen, collect_media_files, format_time,
     resolution_badge,
@@ -55,6 +56,7 @@ pub struct CineWindow {
     shuffle_enabled: Rc<Cell<bool>>,
     autohide_timer_id: Rc<RefCell<Option<glib::SourceId>>>,
     controls_locked_hidden: Rc<Cell<bool>>,
+    max_detected_height: Rc<Cell<i32>>,
 }
 
 impl CineWindow {
@@ -275,14 +277,9 @@ impl CineWindow {
         playlist_bar_btn.add_css_class("circular");
         playlist_bar_btn.add_css_class("flat");
 
-        // Menú selector de Calidad de Video (Automático por defecto, 4K, 1440p, 1080p, 720p, 480p)
+        // Menú selector de Calidad de Video (Automático por defecto; se adapta dinámicamente al video real)
         let quality_menu = gio::Menu::new();
         quality_menu.append(Some("Automático (Calidad óptima del video)"), Some("win.set-quality('best')"));
-        quality_menu.append(Some("4K UHD (2160p)"), Some("win.set-quality('2160')"));
-        quality_menu.append(Some("1440p QHD (2K)"), Some("win.set-quality('1440')"));
-        quality_menu.append(Some("1080p FHD"), Some("win.set-quality('1080')"));
-        quality_menu.append(Some("720p HD"), Some("win.set-quality('720')"));
-        quality_menu.append(Some("480p SD"), Some("win.set-quality('480')"));
 
         let quality_menu_btn = gtk::MenuButton::builder()
             .label("Auto")
@@ -291,6 +288,40 @@ impl CineWindow {
             .direction(gtk::ArrowType::Up)
             .build();
         quality_menu_btn.add_css_class("flat");
+
+        // Selectores interactivos de pistas de audio y subtítulos
+        let toast_overlay_weak = toast_overlay.downgrade();
+        let toast_notifier = move |msg: &str| {
+            if let Some(ov) = toast_overlay_weak.upgrade() {
+                let toast = adw::Toast::builder().title(msg).timeout(2).build();
+                ov.add_toast(toast);
+            }
+        };
+
+        let add_audio_cb = {
+            let win_weak = window.downgrade();
+            let va = video_area.clone();
+            let t_notify = toast_notifier.clone();
+            move || {
+                if let Some(win) = win_weak.upgrade() {
+                    Self::open_track_file_dialog(&win, &va, "audio-add", "Añadir pista de audio externa", t_notify.clone());
+                }
+            }
+        };
+
+        let add_sub_cb = {
+            let win_weak = window.downgrade();
+            let va = video_area.clone();
+            let t_notify = toast_notifier.clone();
+            move || {
+                if let Some(win) = win_weak.upgrade() {
+                    Self::open_track_file_dialog(&win, &va, "sub-add", "Añadir archivo de subtítulos", t_notify.clone());
+                }
+            }
+        };
+
+        let audio_menu_btn = create_audio_menu_button(video_area.clone(), toast_notifier.clone(), add_audio_cb);
+        let subtitles_menu_btn = create_subtitles_menu_button(video_area.clone(), toast_notifier, add_sub_cb);
 
         let fullscreen_btn = gtk::Button::builder()
             .icon_name("cine-view-fullscreen-symbolic")
@@ -349,6 +380,8 @@ impl CineWindow {
         time_row.append(&gtk::Label::new(Some("/")));
         time_row.append(&time_total_label);
         time_row.append(&quality_menu_btn);
+        time_row.append(&audio_menu_btn);
+        time_row.append(&subtitles_menu_btn);
         time_row.append(&options_menu_btn);
         time_row.append(&shuffle_btn);
         time_row.append(&repeat_btn);
@@ -401,6 +434,7 @@ impl CineWindow {
             shuffle_enabled: Rc::new(Cell::new(false)),
             autohide_timer_id: Rc::new(RefCell::new(None)),
             controls_locked_hidden: Rc::new(Cell::new(false)),
+            max_detected_height: Rc::new(Cell::new(0)),
         };
 
         // Botón Shuffle (aleatorio)
@@ -538,6 +572,35 @@ impl CineWindow {
         self.toast_overlay.add_toast(toast);
     }
 
+    pub fn update_quality_menu(&self, max_height: i32) {
+        let quality_menu = gio::Menu::new();
+        quality_menu.append(
+            Some("Automático (Calidad óptima del video)"),
+            Some("win.set-quality('best')"),
+        );
+
+        if max_height >= 2100 {
+            quality_menu.append(Some("4K UHD (2160p)"), Some("win.set-quality('2160')"));
+        }
+        if max_height >= 1400 {
+            quality_menu.append(Some("1440p QHD (2K)"), Some("win.set-quality('1440')"));
+        }
+        if max_height >= 1000 {
+            quality_menu.append(Some("1080p FHD"), Some("win.set-quality('1080')"));
+        }
+        if max_height >= 700 {
+            quality_menu.append(Some("720p HD"), Some("win.set-quality('720')"));
+        }
+        if max_height >= 440 {
+            quality_menu.append(Some("480p SD"), Some("win.set-quality('480')"));
+        }
+        if max_height >= 320 {
+            quality_menu.append(Some("360p"), Some("win.set-quality('360')"));
+        }
+
+        self.quality_menu_btn.set_menu_model(Some(&quality_menu));
+    }
+
     pub fn set_controls_visible(&self, visible: bool) {
         if self.start_page.is_visible() {
             self.headerbar.set_visible(true);
@@ -655,6 +718,9 @@ impl CineWindow {
 
         self.current_index.set(new_idx);
         self.last_video_dims.set((0, 0));
+        self.max_detected_height.set(0);
+        self.update_quality_menu(0);
+        self.quality_menu_btn.set_label("Auto");
         self.video_area.load_file(&target_path, "replace");
         self.window.set_title(Some(&target_title));
         self.title_widget.set_title(&target_title);
@@ -710,6 +776,9 @@ impl CineWindow {
     pub fn clear_playlist(&self) {
         self.playlist_items.borrow_mut().clear();
         self.current_index.set(0);
+        self.max_detected_height.set(0);
+        self.update_quality_menu(0);
+        self.quality_menu_btn.set_label("Auto");
         self.video_area.load_file("", "replace");
         self.window.set_title(Some("Cine (Rust)"));
         self.title_widget.set_visible(false);
@@ -772,7 +841,7 @@ impl CineWindow {
             let cookie = app.inhibit(
                 Some(&self.window),
                 gtk::ApplicationInhibitFlags::IDLE,
-                Some("Playing Media"),
+                Some("Reproduciendo contenido"),
             );
             self.inhibit_cookie.set(cookie);
         } else if !should_inhibit && current_cookie != 0 {
@@ -799,6 +868,10 @@ impl CineWindow {
                 }
             }
             if let Some((w, h, fps, codec, hwdec)) = q_info {
+                if h > this.max_detected_height.get() {
+                    this.max_detected_height.set(h);
+                    this.update_quality_menu(h);
+                }
                 let badge = resolution_badge(w, h);
                 let short_badge = badge.split_whitespace().next().unwrap_or("HD");
                 this.quality_menu_btn.set_label(short_badge);
@@ -1154,6 +1227,10 @@ impl CineWindow {
                     "bestvideo[height<=480]+bestaudio[language~=es]/bestvideo[height<=480]+bestaudio/best[height<=480]/best",
                     "Calidad fijada a 480p SD",
                 ),
+                "360" => (
+                    "bestvideo[height<=360]+bestaudio[language~=es]/bestvideo[height<=360]+bestaudio/best[height<=360]/best",
+                    "Calidad fijada a 360p",
+                ),
                 _ => (
                     "bestvideo+bestaudio[language~=es]/bestvideo+bestaudio/best",
                     "Calidad en Automático",
@@ -1324,11 +1401,50 @@ impl CineWindow {
         dialog.present();
     }
 
+    #[allow(deprecated)]
+    fn open_track_file_dialog<FToast>(
+        parent: &adw::ApplicationWindow,
+        video_area: &VideoGLArea,
+        mpv_cmd: &'static str,
+        title: &str,
+        toast_fn: FToast,
+    ) where
+        FToast: Fn(&str) + 'static,
+    {
+        let dialog = gtk::FileChooserDialog::new(
+            Some(title),
+            Some(parent),
+            gtk::FileChooserAction::Open,
+            &[
+                ("Cancelar", gtk::ResponseType::Cancel),
+                ("Añadir", gtk::ResponseType::Accept),
+            ],
+        );
+        dialog.set_modal(true);
+
+        let va = video_area.clone();
+        dialog.connect_response(move |dlg, response| {
+            if response == gtk::ResponseType::Accept {
+                if let Some(file) = dlg.file() {
+                    if let Some(path) = file.path() {
+                        va.command(&[mpv_cmd, &path.to_string_lossy(), "select"]);
+                        toast_fn("Pista añadida correctamente");
+                    }
+                }
+            }
+            dlg.destroy();
+        });
+        dialog.present();
+    }
+
     pub fn open_url(&self, url: &str, clear_existing: bool) {
         eprintln!("[CineRust] Abriendo URL: {url}");
         self.show_toast("Cargando URL con yt-dlp…");
         record_history_entry(url, url);
         self.last_video_dims.set((0, 0));
+        self.max_detected_height.set(0);
+        self.update_quality_menu(0);
+        self.quality_menu_btn.set_label("Auto");
         let mode = if clear_existing { "replace" } else { "append-play" };
         self.video_area.load_file(url, mode);
 
@@ -1413,6 +1529,9 @@ impl CineWindow {
 
         if clear_existing || start_empty {
             self.last_video_dims.set((0, 0));
+            self.max_detected_height.set(0);
+            self.update_quality_menu(0);
+            self.quality_menu_btn.set_label("Auto");
             let display_name = first_path
                 .file_name()
                 .map(|p| p.to_string_lossy().into_owned())
