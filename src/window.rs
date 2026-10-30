@@ -25,7 +25,8 @@ use crate::save_session::{load_playlist_session, save_playlist_session};
 use crate::shortcuts::present_shortcuts_dialog;
 use crate::tracks::{create_audio_menu_button, create_subtitles_menu_button};
 use crate::utils::{
-    calculate_window_size, collect_media_files, format_time, resolution_badge,
+    calculate_window_size, center_active_cine_window, collect_media_files, format_time,
+    resolution_badge,
 };
 
 #[derive(Clone)]
@@ -639,6 +640,9 @@ impl CineWindow {
 
     pub fn present(&self) {
         self.window.present();
+        glib::timeout_add_local_once(Duration::from_millis(80), || {
+            center_active_cine_window();
+        });
     }
 
     pub fn show_toast(&self, msg: &str) {
@@ -938,6 +942,9 @@ impl CineWindow {
 
         let (target_w, target_h) = calculate_window_size(vid_w, vid_h, mon_w, mon_h);
         self.window.set_default_size(target_w, target_h);
+        glib::timeout_add_local_once(Duration::from_millis(150), || {
+            center_active_cine_window();
+        });
     }
 
     pub fn sync_inhibit(&self) {
