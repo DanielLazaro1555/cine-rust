@@ -10,10 +10,21 @@ Reescritura nativa en **Rust** (`gtk4-rs` + `libadwaita-rs` + `libmpv` FFI) del 
 
 ## Estructura del proyecto (Paso a Paso)
 - `src/main.rs`: Punto de entrada, registro de recursos embebidos (`cine.gresource`), configuración de `Adw::Application` y acciones globales (`app.new-window`, `app.preferences`, `app.about`, `app.quit`).
-- `src/window.rs`: Ventana principal (`CineWindow`), controles de interfaz, inhibición segura de suspensión y gestión de acciones de ventana.
+- `src/window.rs` y `src/window/`: Ventana principal (`CineWindow`) y módulos separados para interfaz, reproducción, controles, diálogos y acciones.
 - `src/mpv_gl_area.rs`: Integración FFI con `libmpv` y `libEGL`/`libGL` sobre `GtkGLArea`.
+- `install.sh`: Compila e instala Cine en el perfil del usuario, incluyendo el lanzador del menú.
 - `resources/`: Archivos de interfaz `.blp` / `.ui`, hojas de estilo `style.css` y shaders.
 - `data/`: Iconos, archivo `.desktop`, esquema `GSettings` y metadatos AppStream.
+
+## Instalar o actualizar en el equipo
+
+Desde la raíz del repositorio, ejecuta:
+
+```bash
+./install.sh
+```
+
+El script compila la versión optimizada, la copia a `~/.local/bin/cine` y actualiza el lanzador. Puedes repetir el mismo comando cada vez que quieras instalar los cambios recientes.
 
 ## Licencia y Créditos
 Distribuido bajo la licencia **GPL-3.0-or-later**.

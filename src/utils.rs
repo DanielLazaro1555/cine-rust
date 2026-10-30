@@ -135,98 +135,59 @@ pub fn calculate_window_size(vid_w: i32, vid_h: i32, monitor_w: i32, monitor_h: 
     )
 }
 
-/// Centra únicamente la ventana activa de Cine en KDE Plasma Wayland.
-/// El filtro usa la identidad de la aplicación y el script no cambia su tamaño.
+/// Centra la ventana de Cine en KDE Plasma.
 pub fn center_active_cine_window() {
+    static CENTER_SCRIPT_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
     std::thread::spawn(|| {
-        let script_path = "/tmp/cine_rust_center.js";
-        let script = r#"
-const c = workspace.activeWindow;
+        let _guard = CENTER_SCRIPT_LOCK.lock().unwrap_or_else(|p| p.into_inner());
+        run_kwin_center_script("/tmp/cine_rust_center.js", "cine_rust_center", r#"
+const cineIds = ["cine", "io.github.diegopvlk.cine"];
+const candidates = workspace.stackingOrder.filter(w => {
+    const rc = String(w.resourceClass || "").toLowerCase();
+    const rn = String(w.resourceName || "").toLowerCase();
+    return cineIds.includes(rc) || cineIds.includes(rn);
+});
+const c = candidates.find(w => w === workspace.activeWindow) || candidates[candidates.length - 1];
 if (c && !c.dialog && !c.popupWindow) {
+    const area = workspace.clientArea(KWin.PlacementArea, c);
+    const fg = c.frameGeometry;
+    c.frameGeometry = {x: Math.round(area.x + (area.width - fg.width) / 2), y: Math.round(area.y + (area.height - fg.height) / 2), width: fg.width, height: fg.height};
+}
+"#);
+    });
+}
+
+/// Instala antes del primer mapeo un observador persistente de ventanas nuevas.
+pub fn install_cine_window_added_centering() {
+    static INSTALLED: std::sync::OnceLock<()> = std::sync::OnceLock::new();
+    INSTALLED.get_or_init(|| {
+        run_kwin_center_script("/tmp/cine_rust_center_on_add.js", "cine_rust_center_on_add", r#"
+const cineIds = ["cine", "io.github.diegopvlk.cine"];
+function centerCineWindow(c) {
+    if (!c || c.deleted || c.dialog || c.popupWindow) return;
     const rc = String(c.resourceClass || "").toLowerCase();
     const rn = String(c.resourceName || "").toLowerCase();
-    const cineIds = ["cine", "io.github.diegopvlk.cine"];
-    if (cineIds.includes(rc) || cineIds.includes(rn)) {
-        const area = workspace.clientArea(KWin.PlacementArea, c);
-        const fg = c.frameGeometry;
-        c.frameGeometry = {
-            x: Math.round(area.x + (area.width - fg.width) / 2),
-            y: Math.round(area.y + (area.height - fg.height) / 2),
-            width: fg.width,
-            height: fg.height
-        };
-    }
+    if (!cineIds.includes(rc) && !cineIds.includes(rn)) return;
+    const area = workspace.clientArea(KWin.PlacementArea, c);
+    const fg = c.frameGeometry;
+    c.frameGeometry = {x: Math.round(area.x + (area.width - fg.width) / 2), y: Math.round(area.y + (area.height - fg.height) / 2), width: fg.width, height: fg.height};
 }
-"#;
-
-        if std::fs::write(script_path, script).is_err() {
-            return;
-        }
-
-        let _ = Command::new("gdbus")
-            .args([
-                "call",
-                "--session",
-                "--dest",
-                "org.kde.KWin",
-                "--object-path",
-                "/Scripting",
-                "--method",
-                "org.kde.kwin.Scripting.unloadScript",
-                "cine_rust_center",
-            ])
-            .output();
-
-        if let Ok(output) = Command::new("gdbus")
-            .args([
-                "call",
-                "--session",
-                "--dest",
-                "org.kde.KWin",
-                "--object-path",
-                "/Scripting",
-                "--method",
-                "org.kde.kwin.Scripting.loadScript",
-                script_path,
-                "cine_rust_center",
-            ])
-            .output()
-        {
-            let id: String = String::from_utf8_lossy(&output.stdout)
-                .chars()
-                .filter(char::is_ascii_digit)
-                .collect();
-            if !id.is_empty() {
-                let object_path = format!("/Scripting/Script{id}");
-                let _ = Command::new("gdbus")
-                    .args([
-                        "call",
-                        "--session",
-                        "--dest",
-                        "org.kde.KWin",
-                        "--object-path",
-                        &object_path,
-                        "--method",
-                        "org.kde.kwin.Script.run",
-                    ])
-                    .output();
-            }
-        }
-
-        let _ = Command::new("gdbus")
-            .args([
-                "call",
-                "--session",
-                "--dest",
-                "org.kde.KWin",
-                "--object-path",
-                "/Scripting",
-                "--method",
-                "org.kde.kwin.Scripting.unloadScript",
-                "cine_rust_center",
-            ])
-            .output();
+workspace.windowAdded.connect(c => centerCineWindow(c));
+for (const c of workspace.stackingOrder) centerCineWindow(c);
+"#);
     });
+}
+
+fn run_kwin_center_script(script_path: &str, script_name: &str, script: &str) {
+    if std::fs::write(script_path, script).is_err() { return; }
+    let _ = Command::new("gdbus").args(["call", "--session", "--dest", "org.kde.KWin", "--object-path", "/Scripting", "--method", "org.kde.kwin.Scripting.unloadScript", script_name]).output();
+    if let Ok(output) = Command::new("gdbus").args(["call", "--session", "--dest", "org.kde.KWin", "--object-path", "/Scripting", "--method", "org.kde.kwin.Scripting.loadScript", script_path, script_name]).output() {
+        let id = String::from_utf8_lossy(&output.stdout).split(|c: char| !c.is_ascii_digit()).filter(|part| !part.is_empty()).last().unwrap_or("").to_string();
+        if !id.is_empty() {
+            let object_path = format!("/Scripting/Script{id}");
+            let _ = Command::new("gdbus").args(["call", "--session", "--dest", "org.kde.KWin", "--object-path", &object_path, "--method", "org.kde.kwin.Script.run"]).output();
+        }
+    }
 }
 
 /// Verifica si un archivo tiene extensión multimedia soportada.

@@ -6,6 +6,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 pub mod application;
+pub mod gestures;
 pub mod history;
 pub mod mpris;
 pub mod mpv_engine;

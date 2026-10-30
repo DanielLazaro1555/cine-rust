@@ -370,6 +370,14 @@ pub fn create_options_menu_button(
         .build();
 
     let popover = gtk::Popover::builder().child(&scrolled).build();
+    {
+        let zoom_spin = zoom_spin.clone();
+        let options = options.clone();
+        popover.connect_show(move |_| {
+            let zoom = options.borrow().video_zoom;
+            zoom_spin.set_value(zoom);
+        });
+    }
 
     let menu_btn = gtk::MenuButton::builder()
         .icon_name("cine-options-symbolic")

@@ -198,6 +198,18 @@ impl VideoGLArea {
         self.set_property("video-zoom", &format!("{zoom:.2}"));
     }
 
+    pub fn set_normalize_volume(&self, enabled: bool) {
+        if enabled {
+            self.command(&[
+                "af",
+                "add",
+                "@cine_loudnorm:lavfi=[loudnorm=I=-20]",
+            ]);
+        } else {
+            self.command(&["af", "remove", "@cine_loudnorm"]);
+        }
+    }
+
     pub fn set_sub_delay(&self, delay: f64) {
         self.set_property("sub-delay", &format!("{delay:.2}"));
     }

@@ -75,6 +75,9 @@ impl AppSettings {
             if let Ok(v) = keyfile.boolean("General", "graphics_offload") {
                 settings.graphics_offload = v;
             }
+            if let Ok(v) = keyfile.boolean("General", "normalize_volume") {
+                settings.normalize_volume = v;
+            }
             if let Ok(v) = keyfile.boolean("General", "save_video_position") {
                 settings.save_video_position = v;
             }
@@ -105,6 +108,7 @@ impl AppSettings {
         keyfile.set_boolean("General", "auto_resize_window", self.auto_resize_window);
         keyfile.set_boolean("General", "hwdec", self.hwdec);
         keyfile.set_boolean("General", "graphics_offload", self.graphics_offload);
+        keyfile.set_boolean("General", "normalize_volume", self.normalize_volume);
         keyfile.set_boolean("General", "save_video_position", self.save_video_position);
         keyfile.set_boolean("General", "save_session", self.save_session);
         keyfile.set_integer("General", "volume", self.volume);
@@ -118,7 +122,7 @@ impl AppSettings {
 pub type SharedSettings = Rc<RefCell<AppSettings>>;
 
 /// Abre el diálogo de Preferencias de Cine.
-pub fn present_preferences_dialog(parent: &impl IsA<gtk::Widget>, settings: SharedSettings) {
+pub fn present_preferences_dialog(parent: &gtk::Window, settings: SharedSettings) {
     let dialog = adw::PreferencesDialog::builder()
         .title("Preferencias")
         .build();
@@ -140,6 +144,26 @@ pub fn present_preferences_dialog(parent: &impl IsA<gtk::Widget>, settings: Shar
         hwdec_row.connect_active_notify(move |row| {
             settings.borrow_mut().hwdec = row.is_active();
             settings.borrow().save_to_disk();
+        });
+    }
+
+    let normalize_volume_row = adw::SwitchRow::builder()
+        .title("Normalizar volumen")
+        .subtitle("Equilibra el volumen percibido entre pasajes suaves y fuertes")
+        .active(settings.borrow().normalize_volume)
+        .build();
+    {
+        let settings = settings.clone();
+        let app = parent.application();
+        normalize_volume_row.connect_active_notify(move |row| {
+            settings.borrow_mut().normalize_volume = row.is_active();
+            settings.borrow().save_to_disk();
+
+            if let Some(app) = &app {
+                for window in app.windows() {
+                    let _ = window.activate_action("win.apply-normalize-volume", None);
+                }
+            }
         });
     }
 
@@ -193,6 +217,7 @@ pub fn present_preferences_dialog(parent: &impl IsA<gtk::Widget>, settings: Shar
     }
 
     group_general.add(&hwdec_row);
+    group_general.add(&normalize_volume_row);
     group_general.add(&auto_resize_row);
     group_general.add(&open_new_row);
     group_general.add(&save_pos_row);
