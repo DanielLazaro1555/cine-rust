@@ -7,8 +7,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 use std::path::{Path, PathBuf};
-use std::process::Command;
-
 use gtk::glib;
 
 pub const VIDEO_EXTENSIONS: &[&str] = &[
@@ -125,100 +123,15 @@ pub fn calculate_window_size(vid_w: i32, vid_h: i32, monitor_w: i32, monitor_h: 
         }
     }
 
-    (final_w.max(332), final_h.max(187))
-}
-
-/// Centra la ventana de Cine Rust en el monitor activo (soporta KDE Plasma 6 Wayland vía KWin)
-/// y opcionalmente aplica el nuevo tamaño `(target_w, target_h)` de forma atómica.
-pub fn center_window_on_screen(target_size: Option<(i32, i32)>) {
-    std::thread::spawn(move || {
-        let (tw, th) = target_size.unwrap_or((0, 0));
-        let script_path = "/tmp/cine_rust_center.js";
-        let script = format!(
-            r#"
-const clients = workspace.windowList();
-for (const c of clients) {{
-    const rc = String(c.resourceClass || "").toLowerCase();
-    const rn = String(c.resourceName || "").toLowerCase();
-    const cap = String(c.caption || "").toLowerCase();
-    if ((rc.includes("cine") || rn.includes("cine") || cap.includes("cine")) && !c.dialog && !c.popupWindow) {{
-        const area = workspace.clientArea(KWin.PlacementArea, c);
-        const fg = c.frameGeometry;
-        const w = ({tw} > 0) ? {tw} : fg.width;
-        const h = ({th} > 0) ? {th} : fg.height;
-        c.frameGeometry = {{
-            x: Math.round(area.x + (area.width - w) / 2),
-            y: Math.round(area.y + (area.height - h) / 2),
-            width: Math.round(w),
-            height: Math.round(h)
-        }};
-    }}
-}}
-"#
-        );
-        if std::fs::write(script_path, script).is_ok() {
-            let _ = Command::new("gdbus")
-                .args([
-                    "call",
-                    "--session",
-                    "--dest",
-                    "org.kde.KWin",
-                    "--object-path",
-                    "/Scripting",
-                    "--method",
-                    "org.kde.kwin.Scripting.unloadScript",
-                    "cine_rust_center",
-                ])
-                .output();
-
-            if let Ok(out) = Command::new("gdbus")
-                .args([
-                    "call",
-                    "--session",
-                    "--dest",
-                    "org.kde.KWin",
-                    "--object-path",
-                    "/Scripting",
-                    "--method",
-                    "org.kde.kwin.Scripting.loadScript",
-                    script_path,
-                    "cine_rust_center",
-                ])
-                .output()
-            {
-                let stdout = String::from_utf8_lossy(&out.stdout);
-                let id: String = stdout.chars().filter(|c| c.is_ascii_digit()).collect();
-                if !id.is_empty() {
-                    let obj_path = format!("/Scripting/Script{id}");
-                    let _ = Command::new("gdbus")
-                        .args([
-                            "call",
-                            "--session",
-                            "--dest",
-                            "org.kde.KWin",
-                            "--object-path",
-                            &obj_path,
-                            "--method",
-                            "org.kde.kwin.Script.run",
-                        ])
-                        .output();
-                }
-            }
-            let _ = Command::new("gdbus")
-                .args([
-                    "call",
-                    "--session",
-                    "--dest",
-                    "org.kde.KWin",
-                    "--object-path",
-                    "/Scripting",
-                    "--method",
-                    "org.kde.kwin.Scripting.unloadScript",
-                    "cine_rust_center",
-                ])
-                .output();
-        }
-    });
+    // Si el tamaño calculado es menor que el mínimo de la ventana, ampliar ambos
+    // lados con la misma escala para conservar la relación de aspecto del video.
+    let min_scale = (360.0 / final_w as f64)
+        .max(202.0 / final_h as f64)
+        .max(1.0);
+    (
+        (final_w as f64 * min_scale).round() as i32,
+        (final_h as f64 * min_scale).round() as i32,
+    )
 }
 
 /// Verifica si un archivo tiene extensión multimedia soportada.

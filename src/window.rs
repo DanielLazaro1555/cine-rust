@@ -25,8 +25,7 @@ use crate::save_session::{load_playlist_session, save_playlist_session};
 use crate::shortcuts::present_shortcuts_dialog;
 use crate::tracks::{create_audio_menu_button, create_subtitles_menu_button};
 use crate::utils::{
-    calculate_window_size, center_window_on_screen, collect_media_files, format_time,
-    resolution_badge,
+    calculate_window_size, collect_media_files, format_time, resolution_badge,
 };
 
 #[derive(Clone)]
@@ -55,7 +54,9 @@ pub struct CineWindow {
     loop_mode: Rc<Cell<u8>>,
     shuffle_enabled: Rc<Cell<bool>>,
     autohide_timer_id: Rc<RefCell<Option<glib::SourceId>>>,
-    controls_locked_hidden: Rc<Cell<bool>>,
+    floating_lock_btn: gtk::Button,
+    is_locked: Rc<Cell<bool>>,
+    lock_timer_id: Rc<RefCell<Option<glib::SourceId>>>,
     max_detected_height: Rc<Cell<i32>>,
 }
 
@@ -70,15 +71,17 @@ impl CineWindow {
             .title("Cine (Rust)")
             .default_width(1024)
             .default_height(620)
-            .width_request(332)
-            .height_request(187)
+            .width_request(360)
+            .height_request(202)
             .build();
 
         gtk::WindowGroup::new().add_window(&window);
 
-        // Cargar CSS personalizado de Cine desde el recurso embebido
+        // Incluir el CSS directamente para que cada compilación use los estilos actuales.
         let css_provider = gtk::CssProvider::new();
-        css_provider.load_from_resource("/io/github/diegopvlk/Cine/style.css");
+        css_provider.load_from_bytes(&glib::Bytes::from_static(include_bytes!(
+            "../resources/style.css"
+        )));
         if let Some(display) = gdk::Display::default() {
             gtk::style_context_add_provider_for_display(
                 &display,
@@ -222,8 +225,8 @@ impl CineWindow {
             .orientation(gtk::Orientation::Vertical)
             .valign(gtk::Align::End)
             .spacing(4)
-            .margin_start(16)
-            .margin_end(16)
+            .margin_start(8)
+            .margin_end(8)
             .margin_bottom(12)
             .visible(false)
             .build();
@@ -320,8 +323,8 @@ impl CineWindow {
             }
         };
 
-        let audio_menu_btn = create_audio_menu_button(video_area.clone(), toast_notifier.clone(), add_audio_cb);
-        let subtitles_menu_btn = create_subtitles_menu_button(video_area.clone(), toast_notifier, add_sub_cb);
+        let audio_menu_btn = create_audio_menu_button(video_area.clone(), add_audio_cb);
+        let subtitles_menu_btn = create_subtitles_menu_button(video_area.clone(), add_sub_cb);
 
         let fullscreen_btn = gtk::Button::builder()
             .icon_name("cine-view-fullscreen-symbolic")
@@ -363,31 +366,86 @@ impl CineWindow {
         repeat_btn.add_css_class("circular");
         repeat_btn.add_css_class("flat");
 
-        let time_row = gtk::Box::builder()
-            .orientation(gtk::Orientation::Horizontal)
-            .spacing(8)
-            .margin_start(10)
-            .margin_end(10)
-            .margin_top(6)
-            .margin_bottom(6)
+        // Botón de bloqueo (candado) en barra inferior
+        let lock_btn = gtk::Button::builder()
+            .icon_name("changes-prevent-symbolic")
+            .tooltip_text("Bloquear controles (L)")
             .build();
-        time_row.append(&prev_btn);
-        time_row.append(&play_pause_btn);
-        time_row.append(&next_btn);
-        time_row.append(&volume_menu_btn);
-        time_row.append(&progress_scale);
-        time_row.append(&time_elapsed_label);
-        time_row.append(&gtk::Label::new(Some("/")));
-        time_row.append(&time_total_label);
-        time_row.append(&quality_menu_btn);
-        time_row.append(&audio_menu_btn);
-        time_row.append(&subtitles_menu_btn);
-        time_row.append(&options_menu_btn);
-        time_row.append(&shuffle_btn);
-        time_row.append(&repeat_btn);
-        time_row.append(&playlist_bar_btn);
-        time_row.append(&fullscreen_btn);
-        controls_box.append(&time_row);
+        lock_btn.add_css_class("circular");
+        lock_btn.add_css_class("flat");
+
+        // Botón candado flotante sobre el video (se muestra durante 5 segundos si se mueve el cursor)
+        let floating_lock_btn = gtk::Button::builder()
+            .icon_name("changes-prevent-symbolic")
+            .tooltip_text("Desbloquear controles (L)")
+            .halign(gtk::Align::End)
+            .valign(gtk::Align::Start)
+            .margin_top(16)
+            .margin_end(16)
+            .visible(false)
+            .build();
+        floating_lock_btn.add_css_class("circular");
+        floating_lock_btn.add_css_class("osd");
+        floating_lock_btn.add_css_class("suggested-action");
+
+        let progress_row = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .hexpand(true)
+            .margin_start(8)
+            .margin_end(8)
+            .margin_top(4)
+            .margin_bottom(0)
+            .build();
+        progress_row.append(&progress_scale);
+
+        let time_box = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .spacing(3)
+            .margin_start(4)
+            .valign(gtk::Align::Center)
+            .build();
+        time_box.append(&time_elapsed_label);
+        let time_sep = gtk::Label::new(Some("/"));
+        time_sep.add_css_class("dim-label");
+        time_box.append(&time_sep);
+        time_box.append(&time_total_label);
+
+        // FlowBox mueve los controles a otra línea cuando la ventana se estrecha.
+        let buttons_row = gtk::FlowBox::builder()
+            .selection_mode(gtk::SelectionMode::None)
+            .row_spacing(2)
+            .column_spacing(2)
+            .homogeneous(false)
+            .halign(gtk::Align::Fill)
+            .margin_start(6)
+            .margin_end(6)
+            .margin_bottom(4)
+            .build();
+        buttons_row.add_css_class("controls-wrap");
+
+        // Cada botón puede pasar individualmente a la siguiente línea, sin reservar
+        // espacio para un grupo completo que ya no cabe.
+        for control in [
+            prev_btn.upcast_ref::<gtk::Widget>(),
+            play_pause_btn.upcast_ref::<gtk::Widget>(),
+            next_btn.upcast_ref::<gtk::Widget>(),
+            volume_menu_btn.upcast_ref::<gtk::Widget>(),
+            time_box.upcast_ref::<gtk::Widget>(),
+            quality_menu_btn.upcast_ref::<gtk::Widget>(),
+            audio_menu_btn.upcast_ref::<gtk::Widget>(),
+            subtitles_menu_btn.upcast_ref::<gtk::Widget>(),
+            options_menu_btn.upcast_ref::<gtk::Widget>(),
+            shuffle_btn.upcast_ref::<gtk::Widget>(),
+            repeat_btn.upcast_ref::<gtk::Widget>(),
+            lock_btn.upcast_ref::<gtk::Widget>(),
+            playlist_bar_btn.upcast_ref::<gtk::Widget>(),
+            fullscreen_btn.upcast_ref::<gtk::Widget>(),
+        ] {
+            buttons_row.append(control);
+        }
+
+        controls_box.append(&progress_row);
+        controls_box.append(&buttons_row);
 
         // Contenedor vertical para HeaderBar arriba y controles abajo
         let ui_box = gtk::Box::new(gtk::Orientation::Vertical, 0);
@@ -400,6 +458,7 @@ impl CineWindow {
         ui_box.append(&controls_box);
 
         video_overlay.add_overlay(&ui_box);
+        video_overlay.add_overlay(&floating_lock_btn);
         video_overlay.add_overlay(&start_page);
 
         let window_handle = gtk::WindowHandle::builder()
@@ -433,9 +492,27 @@ impl CineWindow {
             loop_mode: Rc::new(Cell::new(0)),
             shuffle_enabled: Rc::new(Cell::new(false)),
             autohide_timer_id: Rc::new(RefCell::new(None)),
-            controls_locked_hidden: Rc::new(Cell::new(false)),
+            floating_lock_btn: floating_lock_btn.clone(),
+            is_locked: Rc::new(Cell::new(false)),
+            lock_timer_id: Rc::new(RefCell::new(None)),
             max_detected_height: Rc::new(Cell::new(0)),
         };
+
+        // Clic en candado de controles para bloquear
+        {
+            let this = cine_win.clone();
+            lock_btn.connect_clicked(move |_| {
+                this.lock_controls();
+            });
+        }
+
+        // Clic en candado flotante para desbloquear
+        {
+            let this = cine_win.clone();
+            floating_lock_btn.connect_clicked(move |_| {
+                this.unlock_controls();
+            });
+        }
 
         // Botón Shuffle (aleatorio)
         {
@@ -562,9 +639,6 @@ impl CineWindow {
 
     pub fn present(&self) {
         self.window.present();
-        glib::timeout_add_local_once(Duration::from_millis(80), || {
-            center_window_on_screen(None);
-        });
     }
 
     pub fn show_toast(&self, msg: &str) {
@@ -608,6 +682,12 @@ impl CineWindow {
             return;
         }
 
+        if self.is_locked.get() {
+            self.headerbar.set_visible(false);
+            self.controls_box.set_visible(false);
+            return;
+        }
+
         self.headerbar.set_visible(visible);
         self.controls_box.set_visible(visible);
 
@@ -616,21 +696,57 @@ impl CineWindow {
         }
     }
 
-    pub fn toggle_controls_visible(&self) {
+    pub fn lock_controls(&self) {
         if self.start_page.is_visible() {
             return;
         }
-        let currently_visible = self.controls_box.is_visible();
-        if currently_visible {
-            // El usuario hizo clic para ocultar deliberadamente los controles
-            self.controls_locked_hidden.set(true);
-            self.set_controls_visible(false);
+        self.is_locked.set(true);
+        self.headerbar.set_visible(false);
+        self.controls_box.set_visible(false);
+        self.cancel_autohide_timer();
+        self.reset_floating_lock_timer();
+    }
+
+    pub fn unlock_controls(&self) {
+        self.is_locked.set(false);
+        self.cancel_floating_lock_timer();
+        self.floating_lock_btn.set_visible(false);
+        self.headerbar.set_visible(true);
+        self.controls_box.set_visible(true);
+        self.reset_autohide_timer();
+    }
+
+    pub fn toggle_lock(&self) {
+        if self.is_locked.get() {
+            self.unlock_controls();
         } else {
-            // El usuario hizo clic de nuevo para restaurar los controles
-            self.controls_locked_hidden.set(false);
-            self.set_controls_visible(true);
-            self.reset_autohide_timer();
+            self.lock_controls();
         }
+    }
+
+    pub fn cancel_floating_lock_timer(&self) {
+        if let Some(source_id) = self.lock_timer_id.borrow_mut().take() {
+            source_id.remove();
+        }
+    }
+
+    pub fn reset_floating_lock_timer(&self) {
+        self.cancel_floating_lock_timer();
+        if !self.is_locked.get() {
+            return;
+        }
+
+        self.floating_lock_btn.set_visible(true);
+
+        let this = self.clone();
+        let source_id = glib::timeout_add_local(Duration::from_secs(5), move || {
+            if this.is_locked.get() {
+                this.floating_lock_btn.set_visible(false);
+            }
+            *this.lock_timer_id.borrow_mut() = None;
+            glib::ControlFlow::Break
+        });
+        *self.lock_timer_id.borrow_mut() = Some(source_id);
     }
 
     pub fn cancel_autohide_timer(&self) {
@@ -666,7 +782,6 @@ impl CineWindow {
         });
         self.sync_inhibit();
         if paused {
-            self.controls_locked_hidden.set(false);
             self.set_controls_visible(true);
             self.cancel_autohide_timer();
         } else {
@@ -724,7 +839,9 @@ impl CineWindow {
         self.video_area.load_file(&target_path, "replace");
         self.window.set_title(Some(&target_title));
         self.title_widget.set_title(&target_title);
-        self.controls_locked_hidden.set(false);
+        self.is_locked.set(false);
+        self.cancel_floating_lock_timer();
+        self.floating_lock_btn.set_visible(false);
         self.set_controls_visible(true);
         self.reset_autohide_timer();
     }
@@ -785,7 +902,9 @@ impl CineWindow {
         self.controls_box.set_visible(false);
         self.headerbar.set_visible(true);
         self.cancel_autohide_timer();
-        self.controls_locked_hidden.set(false);
+        self.is_locked.set(false);
+        self.cancel_floating_lock_timer();
+        self.floating_lock_btn.set_visible(false);
         self.start_page.set_visible(true);
         self.is_playing.set(false);
         self.sync_inhibit();
@@ -819,10 +938,6 @@ impl CineWindow {
 
         let (target_w, target_h) = calculate_window_size(vid_w, vid_h, mon_w, mon_h);
         self.window.set_default_size(target_w, target_h);
-        center_window_on_screen(Some((target_w, target_h)));
-        glib::timeout_add_local_once(Duration::from_millis(150), move || {
-            center_window_on_screen(Some((target_w, target_h)));
-        });
     }
 
     pub fn sync_inhibit(&self) {
@@ -868,9 +983,23 @@ impl CineWindow {
                 }
             }
             if let Some((w, h, fps, codec, hwdec)) = q_info {
-                if h > this.max_detected_height.get() {
+                let is_network_stream = this
+                    .playlist_items
+                    .borrow()
+                    .get(this.current_index.get())
+                    .map(|item| {
+                        let path = item.path.to_string_lossy();
+                        path.starts_with("http://") || path.starts_with("https://")
+                    })
+                    .unwrap_or(false);
+
+                if is_network_stream && h > this.max_detected_height.get() {
                     this.max_detected_height.set(h);
                     this.update_quality_menu(h);
+                } else if !is_network_stream && this.max_detected_height.replace(0) != 0 {
+                    // Los archivos locales solo tienen la calidad original; no ofrecer
+                    // límites de resolución que no corresponden a variantes disponibles.
+                    this.update_quality_menu(0);
                 }
                 let badge = resolution_badge(w, h);
                 let short_badge = badge.split_whitespace().next().unwrap_or("HD");
@@ -916,6 +1045,14 @@ impl CineWindow {
         key_ctrl.set_propagation_phase(gtk::PropagationPhase::Capture);
         let this = self.clone();
         key_ctrl.connect_key_pressed(move |_, key, _, _| {
+            // Bloquear todas las teclas del reproductor; solo 'L' vuelve a habilitar controles.
+            if this.is_locked.get() {
+                if matches!(key, gdk::Key::l | gdk::Key::L) {
+                    this.unlock_controls();
+                }
+                return glib::Propagation::Stop;
+            }
+
             // Si hay un diálogo abierto (por ejemplo "Abrir URL"), permitir escribir normalmente
             if this.window.visible_dialog().is_some() {
                 return glib::Propagation::Proceed;
@@ -927,6 +1064,10 @@ impl CineWindow {
             }
 
             match key {
+                gdk::Key::l | gdk::Key::L => {
+                    this.toggle_lock();
+                    glib::Propagation::Stop
+                }
                 gdk::Key::space | gdk::Key::k | gdk::Key::K => {
                     this.toggle_pause();
                     glib::Propagation::Stop
@@ -953,25 +1094,10 @@ impl CineWindow {
                 }
                 gdk::Key::a | gdk::Key::A => {
                     this.video_area.command(&["cycle", "audio"]);
-                    if let Some(lang) = this.video_area.get_property_str("current-tracks/audio/lang") {
-                        this.show_toast(&format!("Pista de audio: {lang}"));
-                    } else if let Some(title) = this.video_area.get_property_str("current-tracks/audio/title") {
-                        this.show_toast(&format!("Pista de audio: {title}"));
-                    } else {
-                        this.show_toast("Cambiando pista de audio");
-                    }
                     glib::Propagation::Stop
                 }
                 gdk::Key::s | gdk::Key::S => {
                     this.video_area.command(&["cycle", "sub"]);
-                    let sub_vis = this.video_area.get_property_str("sub-visibility").unwrap_or_default();
-                    if sub_vis == "no" {
-                        this.show_toast("Subtítulos desactivados");
-                    } else if let Some(lang) = this.video_area.get_property_str("current-tracks/sub/lang") {
-                        this.show_toast(&format!("Subtítulos: {lang}"));
-                    } else {
-                        this.show_toast("Cambiando subtítulos");
-                    }
                     glib::Propagation::Stop
                 }
                 _ => glib::Propagation::Proceed,
@@ -993,41 +1119,17 @@ impl CineWindow {
     }
 
     fn setup_mouse_gestures(&self, overlay: &gtk::Overlay) {
-        let last_hide_time = Rc::new(Cell::new(None::<std::time::Instant>));
-
-        // Gesto de clic: 1 clic = alternar controles y barra de ventana, 2 clics = alternar pantalla completa
+        // Gesto de doble clic en video: alternar pantalla completa
         let click_gesture = gtk::GestureClick::new();
         click_gesture.set_button(gdk::BUTTON_PRIMARY);
 
         let this = self.clone();
-        let overlay_weak = overlay.downgrade();
-        let lht = last_hide_time.clone();
-
-        click_gesture.connect_pressed(move |_gesture, n_press, x, y| {
-            if this.start_page.is_visible() {
+        click_gesture.connect_pressed(move |_gesture, n_press, _x, _y| {
+            if this.start_page.is_visible() || this.is_locked.get() {
                 return;
             }
 
-            // Si el clic cayó sobre la barra superior o los controles inferiores, no ocultar
-            if let Some(ov) = overlay_weak.upgrade() {
-                if let Some(target) = ov.pick(x, y, gtk::PickFlags::DEFAULT) {
-                    let is_in_controls = target == *this.headerbar.upcast_ref::<gtk::Widget>()
-                        || target.is_ancestor(&this.headerbar)
-                        || target == *this.controls_box.upcast_ref::<gtk::Widget>()
-                        || target.is_ancestor(&this.controls_box);
-                    if is_in_controls {
-                        return;
-                    }
-                }
-            }
-
-            if n_press == 1 {
-                let will_hide = this.controls_box.is_visible();
-                if will_hide {
-                    lht.set(Some(std::time::Instant::now()));
-                }
-                this.toggle_controls_visible();
-            } else if n_press == 2 {
+            if n_press == 2 {
                 if this.window.is_fullscreen() {
                     this.window.unfullscreen();
                 } else {
@@ -1037,26 +1139,20 @@ impl CineWindow {
         });
         overlay.add_controller(click_gesture);
 
-        // Movimiento de ratón: muestra los controles y renueva el temporizador de auto-ocultado (3s)
+        // Movimiento de ratón: muestra los controles (o el candado flotante si está bloqueado)
         let motion_ctrl = gtk::EventControllerMotion::new();
         let this = self.clone();
-        let lht = last_hide_time;
 
         motion_ctrl.connect_motion(move |_, _x, _y| {
             if this.start_page.is_visible() {
                 return;
             }
 
-            // Si el usuario los ocultó explícitamente con un clic, se mantienen ocultos al mover el cursor
-            if this.controls_locked_hidden.get() {
+            // Si está bloqueado con el candado, los controles no aparecen
+            // y solo se renueva la visibilidad temporal del candado durante 5 segundos
+            if this.is_locked.get() {
+                this.reset_floating_lock_timer();
                 return;
-            }
-
-            // Evitar reaparecer por vibración del ratón justo al hacer clic para ocultar
-            if let Some(t) = lht.get() {
-                if t.elapsed() < Duration::from_millis(500) {
-                    return;
-                }
             }
 
             if !this.controls_box.is_visible() || !this.headerbar.is_visible() {
@@ -1177,6 +1273,8 @@ impl CineWindow {
             let th_sel = this.clone();
             let th_rem = this.clone();
             let th_clr = this.clone();
+            let th_add_files = this.clone();
+            let th_add_url = this.clone();
             let items = this.playlist_items.borrow().clone();
             present_playlist_dialog(
                 &this.window,
@@ -1184,6 +1282,8 @@ impl CineWindow {
                 move |idx| th_sel.play_index(idx),
                 move |idx| th_rem.remove_playlist_index(idx),
                 move || th_clr.clear_playlist(),
+                move || th_add_files.open_file_dialog(false),
+                move || th_add_url.open_url_dialog(false),
             );
         });
         self.window.add_action(&action_playlist);
@@ -1439,7 +1539,6 @@ impl CineWindow {
 
     pub fn open_url(&self, url: &str, clear_existing: bool) {
         eprintln!("[CineRust] Abriendo URL: {url}");
-        self.show_toast("Cargando URL con yt-dlp…");
         record_history_entry(url, url);
         self.last_video_dims.set((0, 0));
         self.max_detected_height.set(0);
@@ -1468,14 +1567,15 @@ impl CineWindow {
         self.title_widget.set_title(url);
         self.title_widget.set_visible(true);
         self.start_page.set_visible(false);
-        self.controls_locked_hidden.set(false);
+        self.is_locked.set(false);
+        self.cancel_floating_lock_timer();
+        self.floating_lock_btn.set_visible(false);
         self.set_controls_visible(true);
         self.reset_autohide_timer();
         self.is_playing.set(true);
         self.play_pause_btn
             .set_icon_name("cine-playback-pause-symbolic");
         self.sync_inhibit();
-        center_window_on_screen(None);
     }
 
     pub fn open_files(&self, files: &[gio::File], clear_existing: bool) {
@@ -1542,7 +1642,9 @@ impl CineWindow {
 
         self.title_widget.set_visible(true);
         self.start_page.set_visible(false);
-        self.controls_locked_hidden.set(false);
+        self.is_locked.set(false);
+        self.cancel_floating_lock_timer();
+        self.floating_lock_btn.set_visible(false);
         self.set_controls_visible(true);
         self.reset_autohide_timer();
         self.is_playing.set(true);

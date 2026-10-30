@@ -126,13 +126,11 @@ pub fn get_available_tracks(video_area: &VideoGLArea, track_type: &str) -> Vec<T
 }
 
 /// Crea el botón de menú para pistas de audio con su popover dinámico.
-pub fn create_audio_menu_button<FToast, FAdd>(
+pub fn create_audio_menu_button<FAdd>(
     video_area: VideoGLArea,
-    on_toast: FToast,
     on_add_external: FAdd,
 ) -> gtk::MenuButton
 where
-    FToast: Fn(&str) + Clone + 'static,
     FAdd: Fn() + Clone + 'static,
 {
     let popover = gtk::Popover::builder()
@@ -153,7 +151,6 @@ where
         let va = video_area.clone();
         let scroll_weak = scroll.downgrade();
         let pop_weak = popover.downgrade();
-        let toast = on_toast;
         let f_add = on_add_external;
 
         popover.connect_show(move |_| {
@@ -198,13 +195,14 @@ where
                         .halign(gtk::Align::Fill)
                         .build();
                     row_btn.add_css_class("flat");
+                    row_btn.add_css_class("track-row");
 
                     let row_box = gtk::Box::new(gtk::Orientation::Horizontal, 8);
                     if track.selected {
                         let check_icon = gtk::Image::from_icon_name("emblem-ok-symbolic");
                         check_icon.add_css_class("accent");
                         row_box.append(&check_icon);
-                        row_btn.add_css_class("suggested-action");
+                        row_btn.add_css_class("selected");
                     } else {
                         let space = gtk::Box::new(gtk::Orientation::Horizontal, 0);
                         space.set_width_request(16);
@@ -232,13 +230,10 @@ where
 
                     let v_clone = va.clone();
                     let t_id = track.id;
-                    let t_name = title_text.clone();
-                    let t_fn = toast.clone();
                     let p_weak = pop_weak.clone();
 
                     row_btn.connect_clicked(move |_| {
                         v_clone.command(&["set", "aid", &t_id.to_string()]);
-                        t_fn(&format!("Audio: {t_name}"));
                         if let Some(pop) = p_weak.upgrade() {
                             pop.popdown();
                         }
@@ -284,13 +279,11 @@ where
 }
 
 /// Crea el botón de menú para subtítulos con su popover dinámico.
-pub fn create_subtitles_menu_button<FToast, FAdd>(
+pub fn create_subtitles_menu_button<FAdd>(
     video_area: VideoGLArea,
-    on_toast: FToast,
     on_add_external: FAdd,
 ) -> gtk::MenuButton
 where
-    FToast: Fn(&str) + Clone + 'static,
     FAdd: Fn() + Clone + 'static,
 {
     let popover = gtk::Popover::builder()
@@ -311,7 +304,6 @@ where
         let va = video_area.clone();
         let scroll_weak = scroll.downgrade();
         let pop_weak = popover.downgrade();
-        let toast = on_toast;
         let f_add = on_add_external;
 
         popover.connect_show(move |_| {
@@ -352,13 +344,14 @@ where
                 .halign(gtk::Align::Fill)
                 .build();
             off_btn.add_css_class("flat");
+            off_btn.add_css_class("track-row");
 
             let off_box = gtk::Box::new(gtk::Orientation::Horizontal, 8);
             if subs_disabled {
                 let check_icon = gtk::Image::from_icon_name("emblem-ok-symbolic");
                 check_icon.add_css_class("accent");
                 off_box.append(&check_icon);
-                off_btn.add_css_class("suggested-action");
+                off_btn.add_css_class("selected");
             } else {
                 let space = gtk::Box::new(gtk::Orientation::Horizontal, 0);
                 space.set_width_request(16);
@@ -375,12 +368,10 @@ where
 
             {
                 let v_clone = va.clone();
-                let t_fn = toast.clone();
                 let p_weak = pop_weak.clone();
                 off_btn.connect_clicked(move |_| {
                     v_clone.command(&["set", "sub-visibility", "no"]);
                     v_clone.command(&["set", "sid", "no"]);
-                    t_fn("Subtítulos desactivados");
                     if let Some(pop) = p_weak.upgrade() {
                         pop.popdown();
                     }
@@ -408,6 +399,7 @@ where
                         .halign(gtk::Align::Fill)
                         .build();
                     row_btn.add_css_class("flat");
+                    row_btn.add_css_class("track-row");
 
                     let row_box = gtk::Box::new(gtk::Orientation::Horizontal, 8);
                     let is_active = !subs_disabled && track.selected;
@@ -415,7 +407,7 @@ where
                         let check_icon = gtk::Image::from_icon_name("emblem-ok-symbolic");
                         check_icon.add_css_class("accent");
                         row_box.append(&check_icon);
-                        row_btn.add_css_class("suggested-action");
+                        row_btn.add_css_class("selected");
                     } else {
                         let space = gtk::Box::new(gtk::Orientation::Horizontal, 0);
                         space.set_width_request(16);
@@ -443,14 +435,11 @@ where
 
                     let v_clone = va.clone();
                     let t_id = track.id;
-                    let t_name = title_text.clone();
-                    let t_fn = toast.clone();
                     let p_weak = pop_weak.clone();
 
                     row_btn.connect_clicked(move |_| {
                         v_clone.command(&["set", "sub-visibility", "yes"]);
                         v_clone.command(&["set", "sid", &t_id.to_string()]);
-                        t_fn(&format!("Subtítulos: {t_name}"));
                         if let Some(pop) = p_weak.upgrade() {
                             pop.popdown();
                         }

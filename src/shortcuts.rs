@@ -136,6 +136,12 @@ const SHORTCUTS_UI_XML: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
         </child>
         <child>
           <object class="AdwShortcutsItem">
+            <property name="title">Bloquear / Desbloquear controles</property>
+            <property name="accelerator">l</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
             <property name="title">Información técnica y estadísticas</property>
             <property name="accelerator">i</property>
           </object>

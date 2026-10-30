@@ -19,25 +19,68 @@ pub struct PlaylistItem {
 }
 
 /// Presenta el diálogo interactivo de la lista de reproducción actual.
-pub fn present_playlist_dialog<FSelect, FRemove, FClear>(
+pub fn present_playlist_dialog<FSelect, FRemove, FClear, FAddFiles, FAddUrl>(
     parent: &impl IsA<gtk::Widget>,
     items: &[PlaylistItem],
     on_select: FSelect,
     on_remove: FRemove,
     on_clear: FClear,
+    on_add_files: FAddFiles,
+    on_add_url: FAddUrl,
 ) where
     FSelect: Fn(usize) + 'static,
     FRemove: Fn(usize) + 'static,
     FClear: Fn() + 'static,
+    FAddFiles: Fn() + 'static,
+    FAddUrl: Fn() + 'static,
 {
     let dialog = adw::Dialog::builder()
         .title("Lista de reproducción")
-        .content_width(520)
-        .content_height(460)
+        .content_width(540)
+        .content_height(480)
         .build();
 
     let toolbar_view = adw::ToolbarView::new();
     let header = adw::HeaderBar::new();
+
+    let f_add_files = Rc::new(on_add_files);
+    let f_add_url = Rc::new(on_add_url);
+
+    // Botón para añadir archivos locales a la lista
+    let add_files_btn = gtk::Button::builder()
+        .icon_name("cine-list-add-symbolic")
+        .tooltip_text("Añadir archivos a la lista (Ctrl+Shift+O)")
+        .build();
+    add_files_btn.add_css_class("flat");
+    {
+        let f_af = f_add_files.clone();
+        let dlg_weak = dialog.downgrade();
+        add_files_btn.connect_clicked(move |_| {
+            if let Some(dlg) = dlg_weak.upgrade() {
+                dlg.close();
+            }
+            f_af();
+        });
+    }
+    header.pack_start(&add_files_btn);
+
+    // Botón para añadir enlace URL a la lista
+    let add_url_btn = gtk::Button::builder()
+        .icon_name("cine-globe-symbolic")
+        .tooltip_text("Añadir enlace URL a la lista (Ctrl+Shift+U)")
+        .build();
+    add_url_btn.add_css_class("flat");
+    {
+        let f_au = f_add_url.clone();
+        let dlg_weak = dialog.downgrade();
+        add_url_btn.connect_clicked(move |_| {
+            if let Some(dlg) = dlg_weak.upgrade() {
+                dlg.close();
+            }
+            f_au();
+        });
+    }
+    header.pack_start(&add_url_btn);
 
     // Botón para vaciar toda la lista
     if !items.is_empty() {
@@ -55,7 +98,7 @@ pub fn present_playlist_dialog<FSelect, FRemove, FClear>(
                 dlg.close();
             }
         });
-        header.pack_start(&clear_btn);
+        header.pack_end(&clear_btn);
     }
 
     toolbar_view.add_top_bar(&header);
@@ -73,8 +116,51 @@ pub fn present_playlist_dialog<FSelect, FRemove, FClear>(
         let status = adw::StatusPage::builder()
             .icon_name("cine-playlist-symbolic")
             .title("La lista está vacía")
-            .description("Añade videos desde el menú 'Abrir' o arrastrando archivos a la ventana")
+            .description("Añade videos locales o enlaces para reproducir en cola")
             .build();
+
+        let empty_btn_box = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .spacing(12)
+            .halign(gtk::Align::Center)
+            .margin_top(12)
+            .build();
+
+        let empty_files_btn = gtk::Button::builder()
+            .label("Añadir archivos")
+            .icon_name("cine-list-add-symbolic")
+            .build();
+        empty_files_btn.add_css_class("pill");
+        {
+            let f_af = f_add_files.clone();
+            let dlg_weak = dialog.downgrade();
+            empty_files_btn.connect_clicked(move |_| {
+                if let Some(dlg) = dlg_weak.upgrade() {
+                    dlg.close();
+                }
+                f_af();
+            });
+        }
+        empty_btn_box.append(&empty_files_btn);
+
+        let empty_url_btn = gtk::Button::builder()
+            .label("Añadir URL")
+            .icon_name("cine-globe-symbolic")
+            .build();
+        empty_url_btn.add_css_class("pill");
+        {
+            let f_au = f_add_url.clone();
+            let dlg_weak = dialog.downgrade();
+            empty_url_btn.connect_clicked(move |_| {
+                if let Some(dlg) = dlg_weak.upgrade() {
+                    dlg.close();
+                }
+                f_au();
+            });
+        }
+        empty_btn_box.append(&empty_url_btn);
+
+        status.set_child(Some(&empty_btn_box));
         toolbar_view.set_content(Some(&status));
     } else {
         let f_select = Rc::new(on_select);
