@@ -18,10 +18,10 @@
     "semantic_hash": "0fc1ddf5876a39364ae33ad55685bb24"
   },
   "src/main.rs": {
-    "mtime": 1793445101.2286022,
-    "seen": 1793446901.5002713,
-    "ast_hash": "7ad3cda24136d12deb38484e9c2f3927",
-    "semantic_hash": ""
+    "mtime": 1793452193.7173896,
+    "seen": 1793456862.8666632,
+    "ast_hash": "eb226391a0fbfc0cc3e1bfaa68b03db1",
+    "semantic_hash": "eb226391a0fbfc0cc3e1bfaa68b03db1"
   },
   "src/mpris.rs": {
     "mtime": 1793359814.6456342,
@@ -30,34 +30,34 @@
     "semantic_hash": "1fb6c4cae1da623a9f73cbefef4c26ea"
   },
   "src/mpv_engine.rs": {
-    "mtime": 1793445801.0541718,
-    "seen": 1793446901.5002735,
-    "ast_hash": "4855868499871f562655f94a9e88024a",
-    "semantic_hash": ""
+    "mtime": 1793453205.4524078,
+    "seen": 1793456862.8666658,
+    "ast_hash": "a23ae0c102c14034b2c1d0c675d76548",
+    "semantic_hash": "a23ae0c102c14034b2c1d0c675d76548"
   },
   "src/mpv_gl_area.rs": {
-    "mtime": 1793445802.8961685,
-    "seen": 1793446901.5002742,
-    "ast_hash": "73a69278827644732075eee263591f5a",
-    "semantic_hash": ""
+    "mtime": 1793454706.2304583,
+    "seen": 1793456862.8666668,
+    "ast_hash": "3cf26d8b3e714f7bc696f86cd4297af4",
+    "semantic_hash": "3cf26d8b3e714f7bc696f86cd4297af4"
   },
   "src/options.rs": {
     "mtime": 1793434531.2264774,
-    "seen": 1793446901.5002751,
+    "seen": 1793456862.8666677,
     "ast_hash": "00b068e0200661a474a6d0d2ed2c5423",
-    "semantic_hash": ""
+    "semantic_hash": "00b068e0200661a474a6d0d2ed2c5423"
   },
   "src/playlist.rs": {
     "mtime": 1793262487.5396163,
-    "seen": 1793357139.9943388,
+    "seen": 1793456862.866669,
     "ast_hash": "385db1aa43d82111802607a409359a20",
-    "semantic_hash": ""
+    "semantic_hash": "385db1aa43d82111802607a409359a20"
   },
   "src/preferences.rs": {
     "mtime": 1793439671.4617267,
-    "seen": 1793446901.5002773,
+    "seen": 1793456862.8666701,
     "ast_hash": "8ed0036dbfce94b720b50eca8a38c6fe",
-    "semantic_hash": ""
+    "semantic_hash": "8ed0036dbfce94b720b50eca8a38c6fe"
   },
   "src/save_session.rs": {
     "mtime": 1793255274.403604,
@@ -66,28 +66,28 @@
     "semantic_hash": "3dd8ecbe7e682939ce4db9fb23f000ad"
   },
   "src/shortcuts.rs": {
-    "mtime": 1793439818.224578,
-    "seen": 1793446901.5002787,
-    "ast_hash": "ac014f224e015512a351e581076aadcf",
-    "semantic_hash": ""
+    "mtime": 1793449331.3008175,
+    "seen": 1793456862.866672,
+    "ast_hash": "9397c880ebf53e21ade22ddb7fdbaf1b",
+    "semantic_hash": "9397c880ebf53e21ade22ddb7fdbaf1b"
   },
   "src/utils.rs": {
     "mtime": 1793445477.2269244,
-    "seen": 1793446901.5002809,
+    "seen": 1793456862.8666747,
     "ast_hash": "36909c2f154e1d8d46bbeed3f3eea801",
-    "semantic_hash": ""
+    "semantic_hash": "36909c2f154e1d8d46bbeed3f3eea801"
   },
   "src/window.rs": {
     "mtime": 1793446277.5332687,
-    "seen": 1793446901.5002816,
+    "seen": 1793456862.8666759,
     "ast_hash": "3d25bc9811122bb0fc49fc57932ea9d2",
-    "semantic_hash": ""
+    "semantic_hash": "3d25bc9811122bb0fc49fc57932ea9d2"
   },
   "README.md": {
-    "mtime": 1793363995.3010345,
-    "seen": 1793446901.5002916,
-    "ast_hash": "e29aa8ec8481900c73e1a07f2bd1fbf1",
-    "semantic_hash": ""
+    "mtime": 1793452212.0363538,
+    "seen": 1793456862.8666873,
+    "ast_hash": "66905d847be47d18523cb23e5ab04393",
+    "semantic_hash": "66905d847be47d18523cb23e5ab04393"
   },
   "data/icons/hicolor/scalable/apps/io.github.diegopvlk.Cine.svg": {
     "mtime": 1793255228.7268515,
@@ -355,9 +355,9 @@
   },
   "install.sh": {
     "mtime": 1793255326.1868787,
-    "seen": 1793357139.994331,
+    "seen": 1793456862.8666556,
     "ast_hash": "7412218d3783f707c49d2a26a5714a5e",
-    "semantic_hash": ""
+    "semantic_hash": "7412218d3783f707c49d2a26a5714a5e"
   },
   "uninstall.sh": {
     "mtime": 1793255274.4038024,
@@ -367,74 +367,86 @@
   },
   "src/tracks.rs": {
     "mtime": 1793446345.184147,
-    "seen": 1793446901.50028,
+    "seen": 1793456862.8666735,
     "ast_hash": "f52ee2bdcd5414d777ba298f1151ef1a",
-    "semantic_hash": ""
+    "semantic_hash": "f52ee2bdcd5414d777ba298f1151ef1a"
   },
   "1793338624985-azmw8.mp4": {
     "mtime": 1793338670.574442,
-    "seen": 1793357139.9943824,
+    "seen": 1793456862.8666923,
     "ast_hash": "95de3500010fa53aefea2242b57bf5fe",
-    "semantic_hash": ""
+    "semantic_hash": "95de3500010fa53aefea2242b57bf5fe"
   },
   "graphify-out/memory/query_20261030_104733_fb828ca7_c\u00f3mo_conecta_videoglarea_el_motor_mpv_con_la_vent.md": {
     "mtime": 1793357253.490619,
-    "seen": 1793357483.7609415,
+    "seen": 1793456862.866691,
     "ast_hash": "bb26b57a9c88574d782e0f2404cc6d8d",
-    "semantic_hash": ""
+    "semantic_hash": "bb26b57a9c88574d782e0f2404cc6d8d"
   },
   "src/gestures.rs": {
-    "mtime": 1793433520.6925535,
-    "seen": 1793446901.500268,
-    "ast_hash": "2da29b15a6869845626d91f7c73e0c0c",
-    "semantic_hash": ""
+    "mtime": 1793449130.58123,
+    "seen": 1793456862.866659,
+    "ast_hash": "d0e0b2fb4661c81e012b1245068b0b5e",
+    "semantic_hash": "d0e0b2fb4661c81e012b1245068b0b5e"
   },
   "src/window/actions.rs": {
-    "mtime": 1793445482.7629116,
-    "seen": 1793446901.5002823,
-    "ast_hash": "5e65ad37e062a22c0b3ace913440dfc4",
-    "semantic_hash": ""
+    "mtime": 1793449331.2338176,
+    "seen": 1793456862.8666773,
+    "ast_hash": "e454398fcee671f7932df62b1de8e4b2",
+    "semantic_hash": "e454398fcee671f7932df62b1de8e4b2"
   },
   "src/window/controls.rs": {
     "mtime": 1793363409.368522,
-    "seen": 1793363427.8768423,
+    "seen": 1793456862.8666801,
     "ast_hash": "0d51da43d8715777c3cbdd78d08bb18a",
-    "semantic_hash": ""
+    "semantic_hash": "0d51da43d8715777c3cbdd78d08bb18a"
   },
   "src/window/dialogs.rs": {
     "mtime": 1793432489.5255878,
-    "seen": 1793446901.5002854,
+    "seen": 1793456862.866681,
     "ast_hash": "237a148804d7fb4214534991677c4d75",
-    "semantic_hash": ""
+    "semantic_hash": "237a148804d7fb4214534991677c4d75"
   },
   "src/window/input.rs": {
-    "mtime": 1793442291.4103136,
-    "seen": 1793446901.5002866,
-    "ast_hash": "25843abfb79bf92d7497cdeba9b5aed9",
-    "semantic_hash": ""
+    "mtime": 1793453619.1476142,
+    "seen": 1793456862.8666818,
+    "ast_hash": "0681f21f65bfdf8b87c1047b4a6680f3",
+    "semantic_hash": "0681f21f65bfdf8b87c1047b4a6680f3"
   },
   "src/window/playback.rs": {
-    "mtime": 1793445562.2737265,
-    "seen": 1793446901.5002875,
-    "ast_hash": "7ab93f368daf4985f8a886e9298498a4",
-    "semantic_hash": ""
+    "mtime": 1793451480.2738726,
+    "seen": 1793456862.8666828,
+    "ast_hash": "58f9b22c2c77e9d2c1aaae182b78422f",
+    "semantic_hash": "58f9b22c2c77e9d2c1aaae182b78422f"
   },
   "src/window/builder.rs": {
-    "mtime": 1793446279.7902646,
-    "seen": 1793446901.5002835,
-    "ast_hash": "64b5a91c2e80a413dff68ea4777842be",
-    "semantic_hash": ""
+    "mtime": 1793449331.2668176,
+    "seen": 1793456862.8666787,
+    "ast_hash": "3bf79f859e29a98eef97c0bca0d011c6",
+    "semantic_hash": "3bf79f859e29a98eef97c0bca0d011c6"
   },
   "src/window/surface.rs": {
     "mtime": 1793363573.6531453,
-    "seen": 1793363599.387709,
+    "seen": 1793456862.866684,
     "ast_hash": "af26949a571700c5872e05774de76c23",
-    "semantic_hash": ""
+    "semantic_hash": "af26949a571700c5872e05774de76c23"
   },
   "src/window/ui.rs": {
     "mtime": 1793446770.0044317,
-    "seen": 1793446901.500289,
+    "seen": 1793456862.8666852,
     "ast_hash": "8244fb9651f1b596a3a62f50c6ac1da6",
-    "semantic_hash": ""
+    "semantic_hash": "8244fb9651f1b596a3a62f50c6ac1da6"
+  },
+  "src/logging.rs": {
+    "mtime": 1793452199.6223779,
+    "seen": 1793456862.8666615,
+    "ast_hash": "c9bb1409216a2a3201258546b5f473f4",
+    "semantic_hash": "c9bb1409216a2a3201258546b5f473f4"
+  },
+  "docs/reproduccion-y-renderizado.md": {
+    "mtime": 1793454717.4254367,
+    "seen": 1793456862.8666883,
+    "ast_hash": "22a294e7395ed711c28926d3f95ebf13",
+    "semantic_hash": "22a294e7395ed711c28926d3f95ebf13"
   }
 }
