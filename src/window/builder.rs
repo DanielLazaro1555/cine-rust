@@ -243,11 +243,7 @@ impl CineWindow {
 
         {
             let this = cine_win.clone();
-            rotate_btn.connect_clicked(move |_| {
-                let rotation = (this.video_rotation.get() + 90) % 360;
-                this.video_rotation.set(rotation);
-                this.video_area.set_video_rotate(rotation);
-            });
+            rotate_btn.connect_clicked(move |_| this.rotate_video());
         }
 
         // Botón Pantalla Completa

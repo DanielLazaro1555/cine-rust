@@ -11,6 +11,7 @@ use std::rc::Rc;
 /// Instala rueda de zoom, doble clic para pantalla completa y movimiento para mostrar controles.
 pub fn setup_video_gestures<F, D, L, M>(
     overlay: &gtk::Overlay,
+    control_regions: &[&gtk::Widget],
     window: &adw::ApplicationWindow,
     start_page: &adw::StatusPage,
     is_locked: &Rc<Cell<bool>>,
@@ -40,13 +41,25 @@ where
     let drag = gtk::GestureDrag::new();
     drag.set_button(gtk::gdk::BUTTON_PRIMARY);
     drag.set_propagation_phase(gtk::PropagationPhase::Capture);
+    let control_regions: Vec<gtk::Widget> = control_regions
+        .iter()
+        .map(|widget| (*widget).clone())
+        .collect();
     let on_pan_drag = std::rc::Rc::new(on_pan_drag);
     let pan_active = Rc::new(Cell::new(false));
     let on_begin = on_pan_drag.clone();
     let pan_active_begin = pan_active.clone();
     let drag_begin = drag.clone();
-    drag.connect_drag_begin(move |_, _, _| {
-        let active = on_begin(0.0, 0.0, true);
+    let overlay_for_begin = overlay.clone();
+    drag.connect_drag_begin(move |_, x, y| {
+        let starts_on_control = overlay_for_begin
+            .pick(x, y, gtk::PickFlags::DEFAULT)
+            .is_some_and(|widget| {
+                control_regions
+                    .iter()
+                    .any(|region| widget == *region || widget.is_ancestor(region))
+            });
+        let active = !starts_on_control && on_begin(0.0, 0.0, true);
         pan_active_begin.set(active);
         if !active {
             drag_begin.set_state(gtk::EventSequenceState::Denied);

@@ -154,6 +154,12 @@ const SHORTCUTS_UI_XML: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
         </child>
         <child>
           <object class="AdwShortcutsItem">
+            <property name="title">Girar video 90°</property>
+            <property name="action-name">win.rotate-video</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
             <property name="title">Restablecer zoom y encuadre</property>
             <property name="accelerator">0</property>
           </object>
@@ -183,5 +189,6 @@ pub fn register_window_accels(app: &adw::Application) {
     app.set_accels_for_action("win.clear-and-add", &["<Primary>o"]);
     app.set_accels_for_action("win.add-playlist-files", &["<Shift><Primary>o"]);
     app.set_accels_for_action("win.custom-shortcuts", &["<Primary>question"]);
+    app.set_accels_for_action("win.rotate-video", &["<Primary><Shift>g"]);
     app.set_accels_for_action("win.quit", &["q", "<Primary>w"]);
 }

@@ -111,6 +111,11 @@ impl CineWindow {
         let this = self.clone();
         crate::gestures::setup_video_gestures(
             overlay,
+            &[
+                self.controls_box.upcast_ref::<gtk::Widget>(),
+                self.headerbar.upcast_ref::<gtk::Widget>(),
+                self.floating_lock_btn.upcast_ref::<gtk::Widget>(),
+            ],
             &self.window,
             &self.start_page,
             &self.is_locked,
@@ -139,6 +144,8 @@ impl CineWindow {
                 let this = self.clone();
                 let overlay = overlay.clone();
                 let start_pan = Rc::new(Cell::new((0.0_f64, 0.0_f64)));
+                let pending_pan = Rc::new(Cell::new((0.0_f64, 0.0_f64)));
+                let pan_update_scheduled = Rc::new(Cell::new(false));
                 move |dx, dy, begin| {
                     let zoom = this.options.borrow().video_zoom;
                     if zoom <= 0.0 || this.start_page.is_visible() || this.is_locked.get() {
@@ -150,12 +157,19 @@ impl CineWindow {
                         return true;
                     }
                     let (pan_x, pan_y) = start_pan.get();
-                    if let Some((video_w, video_h)) = this.video_area.video_dimensions() {
-                        let scale = 2.0_f64.powf(zoom);
-                        let x = pan_x + dx / (video_w as f64 * scale);
-                        let y = pan_y + dy / (video_h as f64 * scale);
-                        let (x, y) = this.video_area.clamp_video_pan(x, y, zoom);
-                        this.video_area.set_video_pan(x, y);
+                    let (x, y) = this
+                        .video_area
+                        .video_pan_for_drag(pan_x, pan_y, dx, dy, zoom);
+                    pending_pan.set((x, y));
+                    if !pan_update_scheduled.replace(true) {
+                        let this = this.clone();
+                        let pending_pan = pending_pan.clone();
+                        let pan_update_scheduled = pan_update_scheduled.clone();
+                        glib::timeout_add_local_once(Duration::from_millis(16), move || {
+                            pan_update_scheduled.set(false);
+                            let (x, y) = pending_pan.get();
+                            this.video_area.set_video_pan(x, y);
+                        });
                     }
                     overlay.set_cursor_from_name(Some("grabbing"));
                     true

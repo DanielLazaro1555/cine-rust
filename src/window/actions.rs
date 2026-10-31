@@ -3,6 +3,12 @@ use super::*;
 use crate::utils::{save_window_position, x11_surface_position};
 
 impl CineWindow {
+    pub(super) fn rotate_video(&self) {
+        let rotation = (self.video_rotation.get() + 90) % 360;
+        self.video_rotation.set(rotation);
+        self.video_area.set_video_rotate(rotation);
+    }
+
     pub(super) fn setup_close_request(&self) {
         let this = self.clone();
         self.window.connect_close_request(move |_| {
@@ -40,6 +46,12 @@ impl CineWindow {
                 .set_normalize_volume(this.settings.borrow().normalize_volume);
         });
         self.window.add_action(&action_normalize);
+
+        // win.rotate-video (Ctrl+Shift+G)
+        let action_rotate = gio::SimpleAction::new("rotate-video", None);
+        let this = self.clone();
+        action_rotate.connect_activate(move |_, _| this.rotate_video());
+        self.window.add_action(&action_rotate);
 
         // win.clear-and-add (Ctrl+O): Abrir archivos reemplazando lista
         let action_open = gio::SimpleAction::new("clear-and-add", None);

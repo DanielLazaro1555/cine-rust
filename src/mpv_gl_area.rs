@@ -193,6 +193,10 @@ impl VideoGLArea {
 
     pub fn set_video_rotate(&self, deg: i32) {
         self.set_property("video-rotate", &deg.to_string());
+        // The pan bounds depend on the displayed dimensions. A quarter turn
+        // changes those dimensions, so retaining the old pan can leave the
+        // newly rotated frame already pressed against one of its new bounds.
+        self.set_video_pan(0.0, 0.0);
     }
 
     pub fn set_video_zoom(&self, zoom: f64) {
@@ -216,6 +220,32 @@ impl VideoGLArea {
     pub fn set_video_pan(&self, x: f64, y: f64) {
         self.set_property("video-pan-x", &format!("{x:.4}"));
         self.set_property("video-pan-y", &format!("{y:.4}"));
+    }
+
+    pub fn video_pan_for_drag(
+        &self,
+        start_x: f64,
+        start_y: f64,
+        dx: f64,
+        dy: f64,
+        zoom: f64,
+    ) -> (f64, f64) {
+        let Some((video_w, video_h)) = self.video_dimensions() else {
+            return (start_x, start_y);
+        };
+        let area_w = self.gl_area.width() as f64;
+        let area_h = self.gl_area.height() as f64;
+        if area_w <= 0.0 || area_h <= 0.0 {
+            return (start_x, start_y);
+        }
+
+        let fit_scale = (area_w / video_w as f64).min(area_h / video_h as f64);
+        let zoom_scale = 2.0_f64.powf(zoom);
+        let displayed_w = video_w as f64 * fit_scale * zoom_scale;
+        let displayed_h = video_h as f64 * fit_scale * zoom_scale;
+        let pan_x = start_x + dx / displayed_w;
+        let pan_y = start_y + dy / displayed_h;
+        self.clamp_video_pan(pan_x, pan_y, zoom)
     }
 
     pub fn clamp_video_pan(&self, x: f64, y: f64, zoom: f64) -> (f64, f64) {
@@ -310,11 +340,22 @@ impl VideoGLArea {
     }
 
     /// Obtiene las dimensiones reales de visualización (`dwidth` x `dheight`) del video actual
-    /// (incluyendo rotación o relación de aspecto de píxeles).
+    /// (incluyendo relación de aspecto de píxeles y la rotación manual de mpv).
     pub fn video_dimensions(&self) -> Option<(i32, i32)> {
         if let Some(engine) = self.mpv.borrow().as_ref() {
-            let dw = engine.get_property_f64("dwidth")? as i32;
-            let dh = engine.get_property_f64("dheight")? as i32;
+            let mut dw = engine.get_property_f64("dwidth")? as i32;
+            let mut dh = engine.get_property_f64("dheight")? as i32;
+            let rotation = engine
+                .get_property_f64("video-rotate")
+                .unwrap_or(0.0)
+                .round() as i32;
+
+            // dwidth/dheight include display aspect and video filters, but
+            // mpv's manual video-rotate is a separate display transform.
+            // Swap the axes for quarter turns so pan bounds match the frame.
+            if rotation.rem_euclid(180) == 90 {
+                std::mem::swap(&mut dw, &mut dh);
+            }
             if dw > 0 && dh > 0 {
                 return Some((dw, dh));
             }
