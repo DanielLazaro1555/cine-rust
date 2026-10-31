@@ -148,6 +148,12 @@ const SHORTCUTS_UI_XML: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
         </child>
         <child>
           <object class="AdwShortcutsItem">
+            <property name="title">Alternar tamaño del video y original</property>
+            <property name="accelerator">r</property>
+          </object>
+        </child>
+        <child>
+          <object class="AdwShortcutsItem">
             <property name="title">Restablecer zoom y encuadre</property>
             <property name="accelerator">0</property>
           </object>

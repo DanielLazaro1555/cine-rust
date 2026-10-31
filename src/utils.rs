@@ -6,9 +6,32 @@
 //
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use std::ffi::c_void;
+use std::os::raw::{c_int, c_ulong};
 use std::path::{Path, PathBuf};
+
+static CENTER_SCRIPT_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
 use std::process::Command;
 use gtk::glib;
+
+#[link(name = "gtk-4")]
+unsafe extern "C" {
+    fn gdk_x11_display_get_type() -> usize;
+    fn gdk_x11_display_get_xdisplay(display: *mut c_void) -> *mut c_void;
+    fn gdk_x11_surface_get_type() -> usize;
+    fn gdk_x11_surface_get_xid(surface: *mut c_void) -> c_ulong;
+}
+
+#[link(name = "gobject-2.0")]
+unsafe extern "C" {
+    fn g_type_check_instance_is_a(instance: *mut c_void, g_type: usize) -> c_int;
+}
+
+#[link(name = "libX11.so.6", modifiers = "+verbatim")]
+unsafe extern "C" {
+    fn XMoveWindow(display: *mut c_void, window: c_ulong, x: c_int, y: c_int) -> c_int;
+    fn XFlush(display: *mut c_void) -> c_int;
+}
 
 pub const VIDEO_EXTENSIONS: &[&str] = &[
     "mp4", "mkv", "webm", "avi", "mov", "flv", "wmv", "m4v", "mpg", "mpeg", "ts", "m2ts", "ogv",
@@ -66,127 +89,153 @@ pub fn watch_history_path() -> PathBuf {
     path
 }
 
-/// Calcula las dimensiones óptimas de la ventana manteniendo exactamente la relación
-/// de aspecto del video (algoritmo de precisión de `utils.py` de Cine para evitar bordes negros).
-pub fn calculate_window_size(vid_w: i32, vid_h: i32, monitor_w: i32, monitor_h: i32) -> (i32, i32) {
+/// Calcula un tamaño proporcional al video y al área del monitor disponible.
+pub fn calculate_window_size(
+    vid_w: i32,
+    vid_h: i32,
+    monitor_w: i32,
+    monitor_h: i32,
+    chrome_w: i32,
+    chrome_h: i32,
+) -> (i32, i32) {
     if vid_w <= 0 || vid_h <= 0 {
         return (1024, 576);
     }
 
-    let mut width = vid_w as f64;
-    let mut height = vid_h as f64;
+    let video_w = vid_w as f64;
+    let video_h = vid_h as f64;
+    let screen_w = monitor_w.max(1) as f64;
+    let screen_h = monitor_h.max(1) as f64;
 
-    // Escalar videos muy pequeños como hace Cine original
-    let scale_tiers = [(144.0, 1.6666), (240.0, 1.50), (360.0, 1.3333), (480.0, 1.15)];
-    let min_dim = width.min(height);
-    for (threshold, mult) in scale_tiers {
-        if min_dim <= threshold {
-            width *= mult;
-            height *= mult;
-            break;
-        }
-    }
+    // Mantener márgenes proporcionales en pantallas pequeñas y grandes.
+    let max_w = (screen_w * 0.90 - chrome_w.max(0) as f64).max(360.0);
+    let max_h = (screen_h * 0.82 - chrome_h.max(0) as f64).max(202.0);
+    let area_scale = ((screen_w * screen_h * 0.60) / (video_w * video_h)).sqrt();
+    let fit_scale = (max_w / video_w).min(max_h / video_h);
+    let min_scale = (360.0 / video_w).max(202.0 / video_h);
+    let scale = area_scale.min(fit_scale).max(min_scale);
 
-    let monitor_area = (monitor_w as f64) * (monitor_h as f64);
-    let occupy_factor = 0.60; // 60% del área de pantalla igual que DEFAULT_OCCUPY_SCREEN en Cine
-    let video_area = width * height;
-    let size_scale = ((monitor_area / video_area) * occupy_factor).sqrt();
-    let target_scale = size_scale.min(1.0);
-
-    let mut new_w = width * target_scale;
-    let mut new_h = height * target_scale;
-
-    let max_w = (monitor_w as f64 - 96.0).max(640.0);
-    if new_w > max_w {
-        new_w = max_w;
-        new_h = height * new_w / width;
-    }
-
-    let max_h = (monitor_h as f64 - 106.0).max(480.0);
-    if new_h > max_h {
-        new_h = max_h;
-        new_w = width * new_h / height;
-    }
-
-    let target_aspect = width / height;
-    let mut final_w = new_w.round() as i32;
-    let mut final_h = new_h.round() as i32;
-
-    for _ in 0..20 {
-        let current_aspect = (final_w as f64) / (final_h.max(1) as f64);
-        if (current_aspect - target_aspect).abs() <= 0.00001 {
-            break;
-        }
-        if current_aspect < target_aspect {
-            final_w += 1;
-        } else {
-            final_h += 1;
-        }
-    }
-
-    // Si el tamaño calculado es menor que el mínimo de la ventana, ampliar ambos
-    // lados con la misma escala para conservar la relación de aspecto del video.
-    let min_scale = (360.0 / final_w as f64)
-        .max(202.0 / final_h as f64)
-        .max(1.0);
     (
-        (final_w as f64 * min_scale).round() as i32,
-        (final_h as f64 * min_scale).round() as i32,
+        (video_w * scale).round() as i32,
+        (video_h * scale).round() as i32,
     )
 }
 
-/// Centra la ventana de Cine en KDE Plasma.
-pub fn center_active_cine_window() {
-    static CENTER_SCRIPT_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
-    std::thread::spawn(|| {
+/// Centra la ventana usando el área de trabajo que KWin asigna a esa ventana.
+/// Así evitamos mezclar coordenadas lógicas de GTK con píxeles del monitor.
+pub fn center_cine_window() {
+    let app_pid = std::process::id();
+    std::thread::spawn(move || {
         let _guard = CENTER_SCRIPT_LOCK.lock().unwrap_or_else(|p| p.into_inner());
-        run_kwin_center_script("/tmp/cine_rust_center.js", "cine_rust_center", r#"
-const cineIds = ["cine", "io.github.diegopvlk.cine"];
-const candidates = workspace.stackingOrder.filter(w => {
-    const rc = String(w.resourceClass || "").toLowerCase();
-    const rn = String(w.resourceName || "").toLowerCase();
-    return cineIds.includes(rc) || cineIds.includes(rn);
-});
-const c = candidates.find(w => w === workspace.activeWindow) || candidates[candidates.length - 1];
-if (c && !c.dialog && !c.popupWindow) {
-    const area = workspace.clientArea(KWin.PlacementArea, c);
+        let script = r#"
+const appPid = __APP_PID__;
+const candidates = workspace.stackingOrder.filter(w =>
+    w && !w.deleted && !w.dialog && !w.popupWindow && Number(w.pid) === appPid
+);
+const active = workspace.activeWindow;
+const c = candidates.find(w => active && String(w.internalId) === String(active.internalId)) || candidates[0];
+if (!c) {
+    print("[CineRust] KWin no encontró una ventana para PID " + appPid);
+} else {
+    workspace.activeWindow = c;
+    workspace.raiseWindow(c);
+    const area = workspace.clientArea(KWin.WorkArea, c);
     const fg = c.frameGeometry;
-    c.frameGeometry = {x: Math.round(area.x + (area.width - fg.width) / 2), y: Math.round(area.y + (area.height - fg.height) / 2), width: fg.width, height: fg.height};
+    const targetX = Math.round(area.x + (area.width - fg.width) / 2);
+    const targetY = Math.round(area.y + (area.height - fg.height) / 2);
+    // En KWin 6 hay que cambiar x/y por separado; asignar el rectángulo
+    // completo no desplaza la ventana.
+    c.frameGeometry.x = targetX;
+    c.frameGeometry.y = targetY;
+    print("[CineRust] KWin centró PID " + appPid + ": actual=" + JSON.stringify(c.frameGeometry) + ", objetivo=" + targetX + "," + targetY + ", área=" + JSON.stringify(area));
 }
-"#);
+
+"#
+        .replace("__APP_PID__", &app_pid.to_string());
+        run_kwin_center_script("/tmp/cine_rust_center.js", "cine_rust_center", &script);
     });
 }
 
-/// Instala antes del primer mapeo un observador persistente de ventanas nuevas.
-pub fn install_cine_window_added_centering() {
-    static INSTALLED: std::sync::OnceLock<()> = std::sync::OnceLock::new();
-    INSTALLED.get_or_init(|| {
-        run_kwin_center_script("/tmp/cine_rust_center_on_add.js", "cine_rust_center_on_add", r#"
-const cineIds = ["cine", "io.github.diegopvlk.cine"];
-function centerCineWindow(c) {
-    if (!c || c.deleted || c.dialog || c.popupWindow) return;
-    const rc = String(c.resourceClass || "").toLowerCase();
-    const rn = String(c.resourceName || "").toLowerCase();
-    if (!cineIds.includes(rc) && !cineIds.includes(rn)) return;
-    const area = workspace.clientArea(KWin.PlacementArea, c);
-    const fg = c.frameGeometry;
-    c.frameGeometry = {x: Math.round(area.x + (area.width - fg.width) / 2), y: Math.round(area.y + (area.height - fg.height) / 2), width: fg.width, height: fg.height};
-}
-workspace.windowAdded.connect(c => centerCineWindow(c));
-for (const c of workspace.stackingOrder) centerCineWindow(c);
-"#);
-    });
+/// Centra una superficie X11/XWayland con posición absoluta.
+pub fn center_x11_surface(display: &gtk::gdk::Display, surface: &gtk::gdk::Surface) -> bool {
+    use glib::object::ObjectType;
+    use gtk::prelude::{DisplayExt, MonitorExt, SurfaceExt};
+
+    let Some(monitor) = display.monitor_at_surface(surface) else {
+        return false;
+    };
+    let display_ptr = display.as_ptr() as *mut c_void;
+    let surface_ptr = surface.as_ptr() as *mut c_void;
+    unsafe {
+        if g_type_check_instance_is_a(display_ptr, gdk_x11_display_get_type()) == 0
+            || g_type_check_instance_is_a(surface_ptr, gdk_x11_surface_get_type()) == 0
+        {
+            return false;
+        }
+
+        let xdisplay = gdk_x11_display_get_xdisplay(display_ptr);
+        let xid = gdk_x11_surface_get_xid(surface_ptr);
+        if xdisplay.is_null() || xid == 0 {
+            return false;
+        }
+
+        let area = monitor.geometry();
+        let x = area.x() + (area.width() - surface.width()) / 2;
+        let y = area.y() + (area.height() - surface.height()) / 2;
+        XMoveWindow(xdisplay, xid, x, y);
+        XFlush(xdisplay);
+        eprintln!(
+            "[CineRust] Centrado X11 aplicado: ventana {xid:#x}, posición ({x},{y}), monitor {}x{}",
+            area.width(),
+            area.height()
+        );
+        true
+    }
 }
 
 fn run_kwin_center_script(script_path: &str, script_name: &str, script: &str) {
-    if std::fs::write(script_path, script).is_err() { return; }
-    let _ = Command::new("gdbus").args(["call", "--session", "--dest", "org.kde.KWin", "--object-path", "/Scripting", "--method", "org.kde.kwin.Scripting.unloadScript", script_name]).output();
-    if let Ok(output) = Command::new("gdbus").args(["call", "--session", "--dest", "org.kde.KWin", "--object-path", "/Scripting", "--method", "org.kde.kwin.Scripting.loadScript", script_path, script_name]).output() {
-        let id = String::from_utf8_lossy(&output.stdout).split(|c: char| !c.is_ascii_digit()).filter(|part| !part.is_empty()).last().unwrap_or("").to_string();
-        if !id.is_empty() {
-            let object_path = format!("/Scripting/Script{id}");
-            let _ = Command::new("gdbus").args(["call", "--session", "--dest", "org.kde.KWin", "--object-path", &object_path, "--method", "org.kde.kwin.Script.run"]).output();
+    if let Err(error) = std::fs::write(script_path, script) {
+        eprintln!("[CineRust] No se pudo escribir el script de centrado: {error}");
+        return;
+    }
+    let unload = Command::new("gdbus")
+        .args(["call", "--session", "--dest", "org.kde.KWin", "--object-path", "/Scripting", "--method", "org.kde.kwin.Scripting.unloadScript", script_name])
+        .output();
+    if let Err(error) = unload {
+        eprintln!("[CineRust] No se pudo contactar KWin para descargar el script: {error}");
+    }
+    let output = match Command::new("gdbus")
+        .args(["call", "--session", "--dest", "org.kde.KWin", "--object-path", "/Scripting", "--method", "org.kde.kwin.Scripting.loadScript", script_path, script_name])
+        .output()
+    {
+        Ok(output) if output.status.success() => output,
+        Ok(output) => {
+            eprintln!("[CineRust] KWin rechazó el script de centrado: {}", String::from_utf8_lossy(&output.stderr));
+            return;
         }
+        Err(error) => {
+            eprintln!("[CineRust] No se pudo iniciar gdbus para centrar la ventana: {error}");
+            return;
+        }
+    };
+    let id = String::from_utf8_lossy(&output.stdout)
+        .split(|c: char| !c.is_ascii_digit())
+        .filter(|part| !part.is_empty())
+        .last()
+        .unwrap_or("")
+        .to_string();
+    if id.is_empty() {
+        eprintln!("[CineRust] KWin no devolvió el ID del script de centrado.");
+        return;
+    }
+    let object_path = format!("/Scripting/Script{id}");
+    match Command::new("gdbus")
+        .args(["call", "--session", "--dest", "org.kde.KWin", "--object-path", &object_path, "--method", "org.kde.kwin.Script.run"])
+        .output()
+    {
+        Ok(output) if output.status.success() => {}
+        Ok(output) => eprintln!("[CineRust] KWin no pudo ejecutar el script: {}", String::from_utf8_lossy(&output.stderr)),
+        Err(error) => eprintln!("[CineRust] No se pudo ejecutar el script de centrado: {error}"),
     }
 }
 

@@ -18,7 +18,6 @@ use crate::utils::config_dir;
 #[derive(Clone, Debug)]
 pub struct AppSettings {
     pub open_new_windows: bool,
-    pub auto_resize_window: bool,
     pub hwdec: bool,
     pub graphics_offload: bool,
     pub normalize_volume: bool,
@@ -38,7 +37,6 @@ impl Default for AppSettings {
     fn default() -> Self {
         Self {
             open_new_windows: true,
-            auto_resize_window: true, // Ajustar la ventana a la relación de aspecto del video
             hwdec: true,              // Activo por defecto para usar GPU (NVDEC / VAAPI / Vulkan)
             graphics_offload: false,
             normalize_volume: false,
@@ -65,9 +63,6 @@ impl AppSettings {
         if keyfile.load_from_file(&path, glib::KeyFileFlags::NONE).is_ok() {
             if let Ok(v) = keyfile.boolean("General", "open_new_windows") {
                 settings.open_new_windows = v;
-            }
-            if let Ok(v) = keyfile.boolean("General", "auto_resize_window") {
-                settings.auto_resize_window = v;
             }
             if let Ok(v) = keyfile.boolean("General", "hwdec") {
                 settings.hwdec = v;
@@ -105,7 +100,6 @@ impl AppSettings {
 
         let keyfile = glib::KeyFile::new();
         keyfile.set_boolean("General", "open_new_windows", self.open_new_windows);
-        keyfile.set_boolean("General", "auto_resize_window", self.auto_resize_window);
         keyfile.set_boolean("General", "hwdec", self.hwdec);
         keyfile.set_boolean("General", "graphics_offload", self.graphics_offload);
         keyfile.set_boolean("General", "normalize_volume", self.normalize_volume);
@@ -167,19 +161,6 @@ pub fn present_preferences_dialog(parent: &gtk::Window, settings: SharedSettings
         });
     }
 
-    let auto_resize_row = adw::SwitchRow::builder()
-        .title("Ajustar ventana al tamaño del video")
-        .subtitle("Redimensiona automáticamente la ventana según la resolución y proporción del video")
-        .active(settings.borrow().auto_resize_window)
-        .build();
-    {
-        let settings = settings.clone();
-        auto_resize_row.connect_active_notify(move |row| {
-            settings.borrow_mut().auto_resize_window = row.is_active();
-            settings.borrow().save_to_disk();
-        });
-    }
-
     let open_new_row = adw::SwitchRow::builder()
         .title("Abrir archivos en ventana nueva")
         .active(settings.borrow().open_new_windows)
@@ -218,7 +199,6 @@ pub fn present_preferences_dialog(parent: &gtk::Window, settings: SharedSettings
 
     group_general.add(&hwdec_row);
     group_general.add(&normalize_volume_row);
-    group_general.add(&auto_resize_row);
     group_general.add(&open_new_row);
     group_general.add(&save_pos_row);
     group_general.add(&save_session_row);

@@ -8,10 +8,20 @@ impl CineWindow {
         key_ctrl.set_propagation_phase(gtk::PropagationPhase::Capture);
         let this = self.clone();
         key_ctrl.connect_key_pressed(move |_, key, _, _| {
-            // Bloquear todas las teclas del reproductor; solo 'L' vuelve a habilitar controles.
+            if matches!(key, gdk::Key::r | gdk::Key::R) && this.resize_key_down.replace(true) {
+                return glib::Propagation::Stop;
+            }
+
+            // Bloquear las teclas del reproductor; L desbloquea y R restaura
+            // el tamaño original antes de desbloquear si estaba ampliado.
             if this.is_locked.get() {
-                if matches!(key, gdk::Key::l | gdk::Key::L) {
-                    this.unlock_controls();
+                match key {
+                    gdk::Key::l | gdk::Key::L => this.unlock_controls(),
+                    gdk::Key::r | gdk::Key::R => {
+                        this.request_video_window_size_toggle();
+                        this.unlock_controls();
+                    }
+                    _ => {}
                 }
                 return glib::Propagation::Stop;
             }
@@ -55,6 +65,10 @@ impl CineWindow {
                     this.video_area.toggle_stats();
                     glib::Propagation::Stop
                 }
+                gdk::Key::r | gdk::Key::R => {
+                    this.request_video_window_size_toggle();
+                    glib::Propagation::Stop
+                }
                 gdk::Key::_0 => {
                     this.options.borrow_mut().video_zoom = 0.0;
                     this.video_area.reset_video_view();
@@ -70,6 +84,12 @@ impl CineWindow {
                     glib::Propagation::Stop
                 }
                 _ => glib::Propagation::Proceed,
+            }
+        });
+        let this = self.clone();
+        key_ctrl.connect_key_released(move |_, key, _, _| {
+            if matches!(key, gdk::Key::r | gdk::Key::R) {
+                this.resize_key_down.set(false);
             }
         });
         self.window.add_controller(key_ctrl);

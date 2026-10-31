@@ -33,6 +33,19 @@ static GRESOURCE_BYTES: &[u8] = include_bytes!("../resources/cine.gresource");
 fn main() -> glib::ExitCode {
     // SAFETY: se configura al arranque en el hilo principal antes de iniciar GTK/hilos.
     unsafe {
+        // KDE sobre Wayland no permite a GTK pedir una posición absoluta de
+        // ventana. XWayland ofrece esa capacidad para centrar Cine sin tocar
+        // el backend del escritorio completo. GDK_BACKEND explícito prevalece.
+        let is_wayland_kde = std::env::var("XDG_SESSION_TYPE")
+            .is_ok_and(|session| session.eq_ignore_ascii_case("wayland"))
+            && std::env::var("XDG_CURRENT_DESKTOP")
+                .is_ok_and(|desktop| desktop.to_ascii_uppercase().contains("KDE"));
+        if is_wayland_kde
+            && std::env::var_os("DISPLAY").is_some()
+            && std::env::var_os("GDK_BACKEND").is_none()
+        {
+            std::env::set_var("GDK_BACKEND", "x11");
+        }
         std::env::set_var("GSK_RENDERER", "gl");
         // Al ser una aplicación nativa fuera de Flatpak, usar el selector nativo de GTK4
         // directamente en proceso sin pasar por xdg-desktop-portal.

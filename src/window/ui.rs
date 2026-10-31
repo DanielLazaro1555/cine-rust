@@ -22,7 +22,6 @@ pub(super) struct PlaybackControlsUi {
 
 pub(super) fn build_playback_controls(
     video_overlay: &gtk::Overlay,
-    toast_overlay: &adw::ToastOverlay,
     window: &adw::ApplicationWindow,
     video_area: &VideoGLArea,
     headerbar: &adw::HeaderBar,
@@ -103,13 +102,7 @@ pub(super) fn build_playback_controls(
         quality_menu_btn.add_css_class("flat");
 
         // Selectores interactivos de pistas de audio y subtítulos
-        let toast_overlay_weak = toast_overlay.downgrade();
-        let toast_notifier = move |msg: &str| {
-            if let Some(ov) = toast_overlay_weak.upgrade() {
-                let toast = adw::Toast::builder().title(msg).timeout(2).build();
-                ov.add_toast(toast);
-            }
-        };
+        let toast_notifier = |_msg: &str| {};
 
         let add_audio_cb = {
             let win_weak = window.downgrade();

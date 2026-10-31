@@ -31,7 +31,6 @@ impl CineWindow {
             );
         }
 
-        let toast_overlay = adw::ToastOverlay::new();
         let video_overlay = gtk::Overlay::new();
         video_overlay.add_css_class("video-overlay");
 
@@ -81,7 +80,6 @@ impl CineWindow {
             fullscreen_btn,
         } = ui::build_playback_controls(
             &video_overlay,
-            &toast_overlay,
             &window,
             &video_area,
             &headerbar,
@@ -93,12 +91,10 @@ impl CineWindow {
         let window_handle = gtk::WindowHandle::builder()
             .child(&video_overlay)
             .build();
-        toast_overlay.set_child(Some(&window_handle));
-        window.set_content(Some(&toast_overlay));
+        window.set_content(Some(&window_handle));
 
         let cine_win = Self {
             window: window.clone(),
-            toast_overlay,
             video_area,
             start_page,
             headerbar: headerbar.clone(),
@@ -114,6 +110,11 @@ impl CineWindow {
             playlist_items: Rc::new(RefCell::new(Vec::new())),
             current_index: Rc::new(Cell::new(0)),
             last_video_dims: Rc::new(Cell::new((0, 0))),
+            initial_window_size: Rc::new(Cell::new(None)),
+            manual_video_size_active: Rc::new(Cell::new(false)),
+            resize_key_down: Rc::new(Cell::new(false)),
+            resize_generation: Rc::new(Cell::new(0)),
+            resize_request_generation: Rc::new(Cell::new(0)),
             options,
             settings: settings.clone(),
             mpris,

@@ -34,14 +34,12 @@ mod surface;
 mod ui;
 
 use crate::utils::{
-    calculate_window_size, center_active_cine_window, collect_media_files, format_time,
-    install_cine_window_added_centering, resolution_badge,
+    center_cine_window, center_x11_surface, collect_media_files, format_time, resolution_badge,
 };
 
 #[derive(Clone)]
 pub struct CineWindow {
     pub window: adw::ApplicationWindow,
-    toast_overlay: adw::ToastOverlay,
     video_area: VideoGLArea,
     start_page: adw::StatusPage,
     headerbar: adw::HeaderBar,
@@ -55,6 +53,11 @@ pub struct CineWindow {
     playlist_items: Rc<RefCell<Vec<PlaylistItem>>>,
     current_index: Rc<Cell<usize>>,
     last_video_dims: Rc<Cell<(i32, i32)>>,
+    initial_window_size: Rc<Cell<Option<(i32, i32)>>>,
+    manual_video_size_active: Rc<Cell<bool>>,
+    resize_key_down: Rc<Cell<bool>>,
+    resize_generation: Rc<Cell<u64>>,
+    resize_request_generation: Rc<Cell<u64>>,
     pub options: Rc<RefCell<PlaybackOptions>>,
     zoom_indicator: gtk::Label,
     zoom_indicator_timer: Rc<RefCell<Option<glib::SourceId>>>,
@@ -74,16 +77,26 @@ pub struct CineWindow {
 
 impl CineWindow {
     pub fn present(&self) {
-        install_cine_window_added_centering();
         self.window.present();
-        glib::timeout_add_local_once(Duration::from_millis(80), || {
-            center_active_cine_window();
-        });
+        for delay in [250, 800] {
+            let this = self.clone();
+            glib::timeout_add_local_once(Duration::from_millis(delay), move || {
+                this.center_on_current_monitor();
+            });
+        }
     }
 
-    pub fn show_toast(&self, msg: &str) {
-        let toast = adw::Toast::builder().title(msg).timeout(2).build();
-        self.toast_overlay.add_toast(toast);
+    pub(super) fn center_on_current_monitor(&self) {
+        if let (Some(display), Some(surface)) = (gdk::Display::default(), self.window.surface()) {
+            if center_x11_surface(&display, &surface) {
+                return;
+            }
+        }
+        center_cine_window();
+    }
+
+    pub fn show_toast(&self, _msg: &str) {
+        // Los avisos emergentes del reproductor están desactivados.
     }
 
     pub fn show_zoom_indicator(&self, zoom: f64) {
