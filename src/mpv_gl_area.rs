@@ -38,7 +38,7 @@ pub struct VideoGLArea {
 }
 
 impl VideoGLArea {
-    pub fn new(enable_offload: bool, hwdec: bool) -> Self {
+    pub fn new(enable_offload: bool, hwdec: bool, volume: i32) -> Self {
         let gl_area = gtk::GLArea::builder()
             .hexpand(true)
             .vexpand(true)
@@ -53,7 +53,7 @@ impl VideoGLArea {
             gtk::GraphicsOffloadEnabled::Disabled
         });
 
-        let mpv = Rc::new(RefCell::new(MpvEngine::new(hwdec)));
+        let mpv = Rc::new(RefCell::new(MpvEngine::new(hwdec, volume)));
         let fbo_width = Rc::new(Cell::new(1920));
         let fbo_height = Rc::new(Cell::new(1080));
         let cb_ctx_ptr = Rc::new(Cell::new(std::ptr::null_mut()));

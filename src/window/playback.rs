@@ -154,11 +154,16 @@ impl CineWindow {
 
         let request_generation = self.resize_request_generation.get().wrapping_add(1);
         self.resize_request_generation.set(request_generation);
-        self.resize_generation
-            .set(self.resize_generation.get().wrapping_add(1));
 
         if self.manual_video_size_active.get() {
             self.toggle_video_window_size(0, 0);
+            return;
+        }
+
+        // Cuando mpv ya publicó las dimensiones, cambiar el tamaño debe ser inmediato.
+        let (cached_w, cached_h) = self.last_video_dims.get();
+        if cached_w > 0 && cached_h > 0 {
+            self.toggle_video_window_size(cached_w, cached_h);
             return;
         }
 
@@ -182,13 +187,10 @@ impl CineWindow {
                 last_dimensions.set(dimensions);
             }
 
-            // Un segundo mínimo deja que mpv publique la orientación final,
-            // sin añadir la espera larga al pulsar R sobre un video estable.
-            let waited_long_enough = attempts.get() >= 10;
-            let stable = stable_samples.get() >= 3;
-            let timed_out = attempts.get() >= 50;
+            let stable = stable_samples.get() >= 2;
+            let timed_out = attempts.get() >= 20;
             if let Some((video_w, video_h)) = dimensions {
-                if (waited_long_enough && stable) || timed_out {
+                if stable || timed_out {
                     eprintln!(
                         "[CineRust] R: dimensiones de video estables {}x{}; calculando para el monitor actual",
                         video_w, video_h
@@ -253,65 +255,6 @@ impl CineWindow {
             (target_w, target_h)
         };
         self.window.set_default_size(target_size.0, target_size.1);
-
-        // Espera a que la superficie alcance el tamaño solicitado y permanezca
-        // estable antes de pedirle a KWin que centre la geometría real.
-        let generation = self.resize_generation.get().wrapping_add(1);
-        self.resize_generation.set(generation);
-        self.center_after_resize_settles(size_before, target_size, generation);
-    }
-
-    fn center_after_resize_settles(
-        &self,
-        size_before: (i32, i32),
-        target_size: (i32, i32),
-        generation: u64,
-    ) {
-        let this = self.clone();
-        let last_size = Rc::new(Cell::new(None::<(i32, i32)>));
-        let stable_samples = Rc::new(Cell::new(0_u8));
-        let attempts = Rc::new(Cell::new(0_u8));
-
-        glib::timeout_add_local(Duration::from_millis(100), move || {
-            if this.resize_generation.get() != generation {
-                return glib::ControlFlow::Break;
-            }
-
-            attempts.set(attempts.get().saturating_add(1));
-            let current_size = this
-                .window
-                .surface()
-                .map(|surface| (surface.width(), surface.height()));
-
-            if current_size == last_size.get() {
-                stable_samples.set(stable_samples.get().saturating_add(1));
-            } else {
-                stable_samples.set(1);
-                last_size.set(current_size);
-            }
-
-            if stable_samples.get() >= 5 {
-                if let Some(size) = current_size {
-                    let is_requested_size = size == target_size;
-                    let changed_from_start = size != size_before;
-                    if is_requested_size || changed_from_start {
-                        this.center_on_current_monitor();
-                        return glib::ControlFlow::Break;
-                    }
-                }
-            }
-
-            if attempts.get() >= 40 {
-                eprintln!(
-                    "[CineRust] El tamaño del reproductor terminó en {:?}; solicitado {:?}",
-                    current_size, target_size
-                );
-                this.center_on_current_monitor();
-                glib::ControlFlow::Break
-            } else {
-                glib::ControlFlow::Continue
-            }
-        });
     }
 
     pub fn sync_inhibit(&self) {

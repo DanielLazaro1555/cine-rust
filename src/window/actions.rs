@@ -1,10 +1,16 @@
 // CineWindow responsibility module.
 use super::*;
+use crate::utils::{save_window_position, x11_surface_position};
 
 impl CineWindow {
     pub(super) fn setup_close_request(&self) {
         let this = self.clone();
         self.window.connect_close_request(move |_| {
+            if let (Some(display), Some(surface)) = (gdk::Display::default(), this.window.surface()) {
+                if let Some((x, y)) = x11_surface_position(&display, &surface) {
+                    save_window_position(x, y);
+                }
+            }
             if this.settings.borrow().save_session {
                 save_playlist_session(&this.playlist_items.borrow());
             }

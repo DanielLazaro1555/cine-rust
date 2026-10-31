@@ -7,6 +7,7 @@ pub(super) struct PlaybackControlsUi {
     pub(super) play_pause_btn: gtk::Button ,
     pub(super) next_btn: gtk::Button ,
     pub(super) vol_scale: gtk::Scale ,
+    pub(super) vol_label: gtk::Label,
     pub(super) quality_menu_btn: gtk::MenuButton,
     pub(super) progress_adj: gtk::Adjustment ,
     pub(super) progress_scale: gtk::Scale ,
@@ -71,7 +72,16 @@ pub(super) fn build_playback_controls(
             .width_request(160)
             .draw_value(false)
             .build();
-        let vol_pop = gtk::Popover::builder().child(&vol_scale).build();
+        let vol_label = gtk::Label::new(Some("100%"));
+        vol_label.add_css_class("dim-label");
+        let volume_box = gtk::Box::new(gtk::Orientation::Horizontal, 8);
+        volume_box.set_margin_start(8);
+        volume_box.set_margin_end(8);
+        volume_box.set_margin_top(8);
+        volume_box.set_margin_bottom(8);
+        volume_box.append(&vol_scale);
+        volume_box.append(&vol_label);
+        let vol_pop = gtk::Popover::builder().child(&volume_box).build();
         let volume_menu_btn = gtk::MenuButton::builder()
             .icon_name("cine-volume-max-symbolic")
             .tooltip_text("Volumen")
@@ -275,6 +285,7 @@ pub(super) fn build_playback_controls(
             play_pause_btn,
             next_btn,
             vol_scale,
+            vol_label,
             quality_menu_btn,
             progress_adj,
             progress_scale,

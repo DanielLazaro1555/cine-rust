@@ -50,6 +50,7 @@ impl CineWindow {
         let video_area = VideoGLArea::new(
             settings.borrow().graphics_offload,
             settings.borrow().hwdec,
+            settings.borrow().volume,
         );
         if settings.borrow().normalize_volume {
             video_area.set_normalize_volume(true);
@@ -67,6 +68,7 @@ impl CineWindow {
             play_pause_btn,
             next_btn,
             vol_scale,
+            vol_label,
             quality_menu_btn,
             progress_adj,
             progress_scale,
@@ -87,6 +89,9 @@ impl CineWindow {
             &zoom_indicator,
             &zoom_indicator_timer,
         );
+        let initial_volume = settings.borrow().volume.clamp(0, 150);
+        vol_scale.set_value(initial_volume as f64);
+        vol_label.set_label(&format!("{initial_volume}%"));
 
         let window_handle = gtk::WindowHandle::builder()
             .child(&video_overlay)
@@ -113,7 +118,6 @@ impl CineWindow {
             initial_window_size: Rc::new(Cell::new(None)),
             manual_video_size_active: Rc::new(Cell::new(false)),
             resize_key_down: Rc::new(Cell::new(false)),
-            resize_generation: Rc::new(Cell::new(0)),
             resize_request_generation: Rc::new(Cell::new(0)),
             options,
             settings: settings.clone(),
@@ -225,8 +229,13 @@ impl CineWindow {
         // Volumen
         {
             let this = cine_win.clone();
+            let vol_label = vol_label.clone();
             vol_scale.connect_value_changed(move |scale| {
-                this.video_area.set_volume(scale.value());
+                let volume = scale.value().round().clamp(0.0, 150.0) as i32;
+                vol_label.set_label(&format!("{volume}%"));
+                this.video_area.set_volume(volume as f64);
+                this.settings.borrow_mut().volume = volume;
+                this.settings.borrow().save_to_disk();
             });
         }
 

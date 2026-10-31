@@ -34,7 +34,8 @@ mod surface;
 mod ui;
 
 use crate::utils::{
-    center_cine_window, center_x11_surface, collect_media_files, format_time, resolution_badge,
+    center_cine_window, center_x11_surface, collect_media_files, format_time, load_window_position,
+    move_x11_surface, resolution_badge,
 };
 
 #[derive(Clone)]
@@ -56,7 +57,6 @@ pub struct CineWindow {
     initial_window_size: Rc<Cell<Option<(i32, i32)>>>,
     manual_video_size_active: Rc<Cell<bool>>,
     resize_key_down: Rc<Cell<bool>>,
-    resize_generation: Rc<Cell<u64>>,
     resize_request_generation: Rc<Cell<u64>>,
     pub options: Rc<RefCell<PlaybackOptions>>,
     zoom_indicator: gtk::Label,
@@ -78,12 +78,16 @@ pub struct CineWindow {
 impl CineWindow {
     pub fn present(&self) {
         self.window.present();
-        for delay in [250, 800] {
-            let this = self.clone();
-            glib::timeout_add_local_once(Duration::from_millis(delay), move || {
-                this.center_on_current_monitor();
-            });
-        }
+        let this = self.clone();
+        glib::timeout_add_local_once(Duration::from_millis(350), move || {
+            if !this.restore_saved_position() { this.center_on_current_monitor(); }
+        });
+    }
+
+    fn restore_saved_position(&self) -> bool {
+        let Some((x, y)) = load_window_position() else { return false; };
+        let (Some(display), Some(surface)) = (gdk::Display::default(), self.window.surface()) else { return false; };
+        move_x11_surface(&display, &surface, x, y)
     }
 
     pub(super) fn center_on_current_monitor(&self) {

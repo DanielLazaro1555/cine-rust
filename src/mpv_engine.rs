@@ -109,7 +109,7 @@ pub struct MpvEngine {
 }
 
 impl MpvEngine {
-    pub fn new(hwdec_enabled: bool) -> Option<Self> {
+    pub fn new(hwdec_enabled: bool, volume: i32) -> Option<Self> {
         unsafe {
             // libmpv requiere LC_NUMERIC=C
             let lc_c = CString::new("C").ok()?;
@@ -142,7 +142,7 @@ impl MpvEngine {
             );
             Self::set_opt(handle, "alang", "es,es-US,es-419,es-ES,spa,Spanish,en");
             Self::set_opt(handle, "slang", "es,es-US,es-419,es-ES,spa,Spanish,en");
-            Self::set_opt(handle, "volume", "100");
+            Self::set_opt(handle, "volume", &volume.clamp(0, 150).to_string());
             Self::set_opt(handle, "mute", "no");
             Self::set_opt(handle, "audio-client-name", "Cine Rust");
             Self::set_opt(handle, "volume-max", "150");

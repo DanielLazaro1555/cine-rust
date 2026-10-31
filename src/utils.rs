@@ -30,6 +30,17 @@ unsafe extern "C" {
 #[link(name = "libX11.so.6", modifiers = "+verbatim")]
 unsafe extern "C" {
     fn XMoveWindow(display: *mut c_void, window: c_ulong, x: c_int, y: c_int) -> c_int;
+    fn XTranslateCoordinates(
+        display: *mut c_void,
+        src_w: c_ulong,
+        dest_w: c_ulong,
+        src_x: c_int,
+        src_y: c_int,
+        dest_x: *mut c_int,
+        dest_y: *mut c_int,
+        child: *mut c_ulong,
+    ) -> c_int;
+    fn XDefaultRootWindow(display: *mut c_void) -> c_ulong;
     fn XFlush(display: *mut c_void) -> c_int;
 }
 
@@ -191,6 +202,67 @@ pub fn center_x11_surface(display: &gtk::gdk::Display, surface: &gtk::gdk::Surfa
         );
         true
     }
+}
+
+/// Obtiene/establece la posición absoluta de una superficie X11/XWayland.
+pub fn x11_surface_position(
+    display: &gtk::gdk::Display,
+    surface: &gtk::gdk::Surface,
+) -> Option<(i32, i32)> {
+    use glib::object::ObjectType;
+    let display_ptr = display.as_ptr() as *mut c_void;
+    let surface_ptr = surface.as_ptr() as *mut c_void;
+    unsafe {
+        if g_type_check_instance_is_a(display_ptr, gdk_x11_display_get_type()) == 0
+            || g_type_check_instance_is_a(surface_ptr, gdk_x11_surface_get_type()) == 0
+        {
+            return None;
+        }
+        let xdisplay = gdk_x11_display_get_xdisplay(display_ptr);
+        let xid = gdk_x11_surface_get_xid(surface_ptr);
+        if xdisplay.is_null() || xid == 0 { return None; }
+        let mut x = 0;
+        let mut y = 0;
+        let mut child = 0;
+        (XTranslateCoordinates(xdisplay, xid, XDefaultRootWindow(xdisplay), 0, 0, &mut x, &mut y, &mut child) != 0).then_some((x, y))
+    }
+}
+
+pub fn move_x11_surface(
+    display: &gtk::gdk::Display,
+    surface: &gtk::gdk::Surface,
+    x: i32,
+    y: i32,
+) -> bool {
+    use glib::object::ObjectType;
+    let display_ptr = display.as_ptr() as *mut c_void;
+    let surface_ptr = surface.as_ptr() as *mut c_void;
+    unsafe {
+        if g_type_check_instance_is_a(display_ptr, gdk_x11_display_get_type()) == 0
+            || g_type_check_instance_is_a(surface_ptr, gdk_x11_surface_get_type()) == 0 { return false; }
+        let xdisplay = gdk_x11_display_get_xdisplay(display_ptr);
+        let xid = gdk_x11_surface_get_xid(surface_ptr);
+        if xdisplay.is_null() || xid == 0 { return false; }
+        XMoveWindow(xdisplay, xid, x, y);
+        XFlush(xdisplay);
+        true
+    }
+}
+
+pub fn save_window_position(x: i32, y: i32) {
+    let dir = config_dir();
+    if std::fs::create_dir_all(&dir).is_err() { return; }
+    let path = dir.join("window.conf");
+    let keyfile = glib::KeyFile::new();
+    keyfile.set_integer("Window", "x", x);
+    keyfile.set_integer("Window", "y", y);
+    let _ = keyfile.save_to_file(path);
+}
+
+pub fn load_window_position() -> Option<(i32, i32)> {
+    let keyfile = glib::KeyFile::new();
+    keyfile.load_from_file(config_dir().join("window.conf"), glib::KeyFileFlags::NONE).ok()?;
+    Some((keyfile.integer("Window", "x").ok()?, keyfile.integer("Window", "y").ok()?))
 }
 
 fn run_kwin_center_script(script_path: &str, script_name: &str, script: &str) {
