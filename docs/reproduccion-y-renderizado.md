@@ -52,13 +52,13 @@ renderizado. Véase [el manual de mpv](https://mpv.io/manual/master/).
    bloqueado el hilo principal esperando su hora objetivo antes de devolver el
    render.
 4. Las métricas locales cuentan avisos, solicitudes, renders, duración de
-   `mpv_render_context_render()` y espera hasta el siguiente dibujo. Cada cinco
-   segundos también consultan los contadores acumulados de mpv: fotogramas
-   descartados por el decodificador y por la salida de video, retrasos y
-   fotogramas fuera de tiempo. Las consultas de contadores se hacen al informar,
-   no en cada fotograma ni mientras se sostiene el mutex de métricas. Mantener
-   ese mutex durante una consulta síncrona a mpv podía bloquear el callback de
-   actualización y congelar el render.
+   `mpv_render_context_render()`, intervalo entre renders y espera hasta el
+   siguiente dibujo. Cada cinco segundos también consultan los contadores
+   acumulados de mpv y la frecuencia del reloj de fotogramas de GTK. Las
+   consultas de contadores se hacen al informar, no en cada fotograma ni
+   mientras se sostiene el mutex de métricas. Mantener ese mutex durante una
+   consulta síncrona a mpv podía bloquear el callback de actualización y
+   congelar el render.
 5. Al iniciar, Cine captura stdout y stderr —incluidos mensajes de mpv y errores
    de pánico— en un archivo persistente. La ruta predeterminada es
    `~/.local/state/cine/cine.log`; si se define `XDG_STATE_HOME`, se usa
@@ -98,8 +98,8 @@ cambio por separado.
   reparte de forma regular en pantallas de 60 o 120 Hz, pero no necesariamente en
   una pantalla con una frecuencia que no sea múltiplo entero de 30. Eso puede
   sentirse como movimiento irregular incluso cuando el render no tarda y mpv no
-  descarta fotogramas. Se añadieron `display-fps`, `estimated-display-fps` y
-  `vsync-ratio` a las métricas para comprobar este caso en cada equipo.
+  descarta fotogramas. El informe registra ahora el refresco estimado por el
+  `GdkFrameClock`, además de los intervalos entre renders.
 - El temporizador de la interfaz consulta posición, duración y pausa cada 250 ms
   para mantener fluido el control de progreso. Las dimensiones y los datos de
   calidad, que cambian mucho menos, se consultan ahora cada segundo. Esto reduce
@@ -124,3 +124,63 @@ cambio por separado.
   requeriría diseñar y sincronizar otro contexto OpenGL; no es un cambio seguro
   de una sola línea.
 - `cargo check` se ejecutó después de los cambios.
+
+## Investigación posterior
+
+La medición nueva informó un reloj de GTK de 60 Hz. En intervalos estables el
+video produjo 150–151 renders en 5 s: aproximadamente 30 FPS, intervalos de
+33,33 ms, render medio de 0,42–0,48 ms y ningún intervalo mayor a 50 ms. mpv no
+sumó descartes después del arranque y la diferencia A/V observada fue menor a
+0,2 ms. El archivo original anuncia 29,6225 FPS y `display-sync=no`; por tanto,
+la ruta de render sostiene el ritmo de la fuente, aunque no medimos una
+sincronización de presentación adaptada a pantalla.
+
+Una reproducción larga de diagnóstico se creó repitiendo el clip con copia de
+paquetes. En esa copia, `ffprobe` encontró saltos de timestamp de 263 ms en cada
+unión de los segmentos, y el render registró saltos de 250–266 ms en los mismos
+puntos. Ese tirón pertenece al archivo de diagnóstico generado; el clip original
+no presenta saltos de timestamp mayores a 50 ms. No se debe contar ese caso como
+un fallo del renderizador.
+
+Queda un intervalo largo al inicio: en una ejecución el temporizador de GTK
+saltó una vez a 659 ms, aunque su callback tardó como máximo 0,4 ms. En una
+ejecución anterior también hubo una espera aislada de 228 ms entre aviso y
+render. Después, el loop volvió a 250 ms y la reproducción sostuvo ~30 FPS. Los
+datos apuntan a una pausa puntual de arranque o cambio de estado, no a falta
+sostenida de capacidad de decodificación/render. Para comprobar la cadencia que
+percibe el usuario falta medir un video suyo donde el tirón sea reproducible,
+especialmente si tiene una tasa distinta o timestamps variables.
+
+## Prueba de sincronización con la pantalla
+
+Se probó habilitar `video-sync=display-resample` e informar a libmpv desde
+`GdkFrameClock::after-paint` cuando GTK terminaba un ciclo de dibujo. En esta
+integración, la reproducción avanzó un solo render y dejó de actualizarse; se
+retiró el cambio y no se instaló esa variante. La API de render de mpv necesita
+realimentación fiable del momento de presentación para activar los modos
+`display-*`; el callback de dibujo de `GtkGLArea` por sí solo no representa el
+intercambio final de la ventana. Habilitar sincronización/interpolación sin una
+señal de presentación comprobada puede bloquear el hilo principal y congelar la
+reproducción. La versión actual conserva el modo estable validado; la mejora
+para monitores de alta frecuencia requiere resolver primero esa realimentación
+sin bloquear GTK y probarla en un monitor con esa frecuencia.
+
+## Desplazamiento al hacer zoom
+
+La ruta del arrastre consultaba dimensiones y rotación de video sincrónicamente
+desde libmpv en cada evento del puntero. Además, `video_pan_for_drag()` volvía a
+consultar las mismas propiedades al limitar el desplazamiento: hasta seis
+lecturas síncronas por evento. Cada lectura podía bloquear el hilo de GTK
+mientras esperaba la respuesta de libmpv y retrasar los siguientes eventos del
+ratón. Las posiciones también se aplicaban con un temporizador fijo de 16 ms,
+que limita el movimiento a unos 62,5 Hz y no queda alineado con la pantalla.
+
+El ajuste captura dimensiones, zoom, límites y posición inicial una vez al
+comenzar el gesto. Durante el arrastre solo calcula coordenadas; la posición más
+reciente queda agrupada y se envía una vez por cuadro usando el reloj de GTK.
+Así se elimina el trabajo síncrono repetido y se adapta la frecuencia de
+actualización al monitor. La compilación con `cargo check` pasó y la prueba
+visual con el clip generado de 120 FPS confirmó que el arrastre se siente
+fluido. En esa misma prueba la pantalla seguía a 60 Hz y mpv descartó cuadros
+por la diferencia entre la fuente y el refresco; eso afecta la reproducción,
+pero es independiente del tirón al arrastrar que corrige este cambio.

@@ -143,34 +143,26 @@ impl CineWindow {
             {
                 let this = self.clone();
                 let overlay = overlay.clone();
-                let start_pan = Rc::new(Cell::new((0.0_f64, 0.0_f64)));
-                let pending_pan = Rc::new(Cell::new((0.0_f64, 0.0_f64)));
-                let pan_update_scheduled = Rc::new(Cell::new(false));
+                let pan_drag = Rc::new(Cell::new(None::<crate::mpv_gl_area::VideoPanDrag>));
                 move |dx, dy, begin| {
                     let zoom = this.options.borrow().video_zoom;
                     if zoom <= 0.0 || this.start_page.is_visible() || this.is_locked.get() {
                         return false;
                     }
                     if begin {
-                        start_pan.set(this.video_area.video_pan());
+                        let (start_x, start_y) = this.video_area.video_pan();
+                        let Some(drag) = this.video_area.begin_video_pan_drag(start_x, start_y, zoom) else {
+                            return false;
+                        };
+                        pan_drag.set(Some(drag));
                         overlay.set_cursor_from_name(Some("grabbing"));
                         return true;
                     }
-                    let (pan_x, pan_y) = start_pan.get();
-                    let (x, y) = this
-                        .video_area
-                        .video_pan_for_drag(pan_x, pan_y, dx, dy, zoom);
-                    pending_pan.set((x, y));
-                    if !pan_update_scheduled.replace(true) {
-                        let this = this.clone();
-                        let pending_pan = pending_pan.clone();
-                        let pan_update_scheduled = pan_update_scheduled.clone();
-                        glib::timeout_add_local_once(Duration::from_millis(16), move || {
-                            pan_update_scheduled.set(false);
-                            let (x, y) = pending_pan.get();
-                            this.video_area.set_video_pan(x, y);
-                        });
-                    }
+                    let Some(drag) = pan_drag.get() else { return false };
+                    let (x, y) = this.video_area.video_pan_for_drag(drag, dx, dy);
+                    // The GLArea's frame-clock callback coalesces pointer events
+                    // and applies the latest pan once per display frame.
+                    this.video_area.set_video_pan(x, y);
                     overlay.set_cursor_from_name(Some("grabbing"));
                     true
                 }

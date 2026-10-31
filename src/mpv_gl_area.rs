@@ -30,6 +30,11 @@ struct RenderStats {
     renders: u64,
     render_time: Duration,
     max_render_time: Duration,
+    frame_intervals: u64,
+    total_frame_interval: Duration,
+    max_frame_interval: Duration,
+    long_frame_gaps: u64,
+    last_render_at: Option<Instant>,
     queue_delay: Duration,
     max_queue_delay: Duration,
     pending_since: Option<Instant>,
@@ -60,6 +65,19 @@ pub struct VideoGLArea {
     pub gl_area: gtk::GLArea,
     pub offload: gtk::GraphicsOffload,
     pub mpv: Rc<RefCell<Option<MpvEngine>>>,
+    pending_pan: Rc<Cell<Option<(f64, f64)>>>,
+}
+
+/// Geometría capturada al comenzar el arrastre. Evita lecturas síncronas de
+/// propiedades de libmpv mientras llegan eventos del puntero.
+#[derive(Clone, Copy)]
+pub struct VideoPanDrag {
+    start_x: f64,
+    start_y: f64,
+    displayed_w: f64,
+    displayed_h: f64,
+    max_pan_x: f64,
+    max_pan_y: f64,
 }
 
 impl VideoGLArea {
@@ -84,6 +102,7 @@ impl VideoGLArea {
         let cb_ctx_ptr = Rc::new(Cell::new(std::ptr::null_mut()));
         let render_queued = Arc::new(AtomicBool::new(false));
         let render_stats = Arc::new(Mutex::new(RenderStats::default()));
+        let pending_pan = Rc::new(Cell::new(None));
 
         // Actualizar dimensiones FBO en resize y cambio de escala HiDPI
         {
@@ -126,7 +145,7 @@ impl VideoGLArea {
             let fbo_w = fbo_width.clone();
             let fbo_h = fbo_height.clone();
             let render_stats = Arc::clone(&render_stats);
-            gl_area.connect_render(move |_area, _context| {
+            gl_area.connect_render(move |area, _context| {
                 let render_started = Instant::now();
                 if let Some(engine) = mpv.borrow().as_ref() {
                     engine.render_frame(fbo_w.get(), fbo_h.get());
@@ -136,6 +155,15 @@ impl VideoGLArea {
                     stats.renders += 1;
                     stats.render_time += render_time;
                     stats.max_render_time = stats.max_render_time.max(render_time);
+                    if let Some(last_render_at) = stats.last_render_at.replace(render_started) {
+                        let interval = render_started.saturating_duration_since(last_render_at);
+                        stats.frame_intervals += 1;
+                        stats.total_frame_interval += interval;
+                        stats.max_frame_interval = stats.max_frame_interval.max(interval);
+                        if interval > Duration::from_millis(50) {
+                            stats.long_frame_gaps += 1;
+                        }
+                    }
                     if let Some(pending_since) = stats.pending_since.take() {
                         let delay = render_started.saturating_duration_since(pending_since);
                         stats.queue_delay += delay;
@@ -152,6 +180,10 @@ impl VideoGLArea {
                             stats.renders,
                             stats.render_time,
                             stats.max_render_time,
+                            stats.frame_intervals,
+                            stats.total_frame_interval,
+                            stats.max_frame_interval,
+                            stats.long_frame_gaps,
                             stats.queue_delay,
                             stats.max_queue_delay,
                         );
@@ -164,7 +196,7 @@ impl VideoGLArea {
                     None
                 };
 
-                if let Some((updates, queued, renders, total_render_time, max_render_time, total_queue_delay, max_queue_delay)) = report {
+                if let Some((updates, queued, renders, total_render_time, max_render_time, frame_intervals, total_frame_interval, max_frame_interval, long_frame_gaps, total_queue_delay, max_queue_delay)) = report {
                     // Never call libmpv while holding render_stats: its update
                     // callback may need that mutex while the core serves reads.
                     let mpv_stats = if let Some(engine) = mpv.borrow().as_ref() {
@@ -173,9 +205,6 @@ impl VideoGLArea {
                             "frame-drop-count",
                             "vo-delayed-frame-count",
                             "mistimed-frame-count",
-                            "display-fps",
-                            "estimated-display-fps",
-                            "vsync-ratio",
                             "avsync",
                             "display-sync-active",
                         ]
@@ -184,14 +213,30 @@ impl VideoGLArea {
                         std::array::from_fn(|_| "?".to_owned())
                     };
                     let render_count = renders.max(1);
+                    let gtk_refresh_hz = area
+                        .frame_clock()
+                        .map(|clock| {
+                            let (refresh_interval, _) = clock.refresh_info(clock.frame_time());
+                            if refresh_interval > 0 {
+                                format!("{:.2}", 1_000_000.0 / refresh_interval as f64)
+                            } else {
+                                "?".to_owned()
+                            }
+                        })
+                        .unwrap_or_else(|| "?".to_owned());
+                    let interval_count = frame_intervals.max(1);
                     eprintln!(
-                        "[CineRust] Render 5s: avisos={updates}, solicitudes GTK={queued}, renders={renders}, promedio={:.2}ms, máximo={:.2}ms, espera promedio={:.2}ms, espera máxima={:.2}ms; mpv acumulado: descartados decodificador/VO={}/{}, retrasados={}, fuera de tiempo={}; pantalla: fps={}, estimado={}, ratio-vsync={}, A/V={}s, display-sync={}",
+                        "[CineRust] Render 5s: avisos={updates}, solicitudes GTK={queued}, renders={renders}, render promedio={:.2}ms/máx={:.2}ms, intervalo promedio={:.2}ms/máx={:.2}ms, pausas >50ms={}, espera GTK promedio={:.2}ms/máx={:.2}ms; GTK refresco={}Hz; mpv descartados decodificador/VO={}/{}, retrasados={}, fuera de tiempo={}, A/V={}s, display-sync={}",
                         total_render_time.as_secs_f64() * 1000.0 / render_count as f64,
                         max_render_time.as_secs_f64() * 1000.0,
+                        total_frame_interval.as_secs_f64() * 1000.0 / interval_count as f64,
+                        max_frame_interval.as_secs_f64() * 1000.0,
+                        long_frame_gaps,
                         total_queue_delay.as_secs_f64() * 1000.0 / render_count as f64,
                         max_queue_delay.as_secs_f64() * 1000.0,
+                        gtk_refresh_hz,
                         mpv_stats[0], mpv_stats[1], mpv_stats[2], mpv_stats[3],
-                        mpv_stats[4], mpv_stats[5], mpv_stats[6], mpv_stats[7], mpv_stats[8],
+                        mpv_stats[4], mpv_stats[5],
                     );
                 }
                 glib::Propagation::Stop
@@ -203,7 +248,15 @@ impl VideoGLArea {
         // makes the GLArea miss display frames under event-loop load.
         {
             let render_queued = Arc::clone(&render_queued);
+            let pending_pan = pending_pan.clone();
+            let mpv = mpv.clone();
             gl_area.add_tick_callback(move |area, _frame_clock| {
+                if let Some((x, y)) = pending_pan.take()
+                    && let Some(engine) = mpv.borrow().as_ref()
+                {
+                    engine.command(&["set", "video-pan-x", &format!("{x:.4}")]);
+                    engine.command(&["set", "video-pan-y", &format!("{y:.4}")]);
+                }
                 if render_queued.swap(false, Ordering::AcqRel) {
                     area.queue_render();
                 }
@@ -233,6 +286,7 @@ impl VideoGLArea {
             gl_area,
             offload,
             mpv,
+            pending_pan,
         }
     }
 
@@ -327,53 +381,45 @@ impl VideoGLArea {
     }
 
     pub fn set_video_pan(&self, x: f64, y: f64) {
-        self.set_property("video-pan-x", &format!("{x:.4}"));
-        self.set_property("video-pan-y", &format!("{y:.4}"));
+        self.pending_pan.set(Some((x, y)));
     }
 
-    pub fn video_pan_for_drag(
+    pub fn begin_video_pan_drag(
         &self,
         start_x: f64,
         start_y: f64,
-        dx: f64,
-        dy: f64,
         zoom: f64,
-    ) -> (f64, f64) {
+    ) -> Option<VideoPanDrag> {
         let Some((video_w, video_h)) = self.video_dimensions() else {
-            return (start_x, start_y);
+            return None;
         };
         let area_w = self.gl_area.width() as f64;
         let area_h = self.gl_area.height() as f64;
         if area_w <= 0.0 || area_h <= 0.0 {
-            return (start_x, start_y);
+            return None;
         }
 
         let fit_scale = (area_w / video_w as f64).min(area_h / video_h as f64);
         let zoom_scale = 2.0_f64.powf(zoom);
         let displayed_w = video_w as f64 * fit_scale * zoom_scale;
         let displayed_h = video_h as f64 * fit_scale * zoom_scale;
-        let pan_x = start_x + dx / displayed_w;
-        let pan_y = start_y + dy / displayed_h;
-        self.clamp_video_pan(pan_x, pan_y, zoom)
+        Some(VideoPanDrag {
+            start_x,
+            start_y,
+            displayed_w,
+            displayed_h,
+            max_pan_x: ((displayed_w - area_w) / (2.0 * displayed_w)).max(0.0),
+            max_pan_y: ((displayed_h - area_h) / (2.0 * displayed_h)).max(0.0),
+        })
     }
 
-    pub fn clamp_video_pan(&self, x: f64, y: f64, zoom: f64) -> (f64, f64) {
-        let Some((video_w, video_h)) = self.video_dimensions() else {
-            return (0.0, 0.0);
-        };
-        let area_w = self.gl_area.width() as f64;
-        let area_h = self.gl_area.height() as f64;
-        if area_w <= 0.0 || area_h <= 0.0 {
-            return (0.0, 0.0);
-        }
-
-        let fit_scale = (area_w / video_w as f64).min(area_h / video_h as f64);
-        let display_w = video_w as f64 * fit_scale * 2.0_f64.powf(zoom);
-        let display_h = video_h as f64 * fit_scale * 2.0_f64.powf(zoom);
-        let max_pan_x = ((display_w - area_w) / (2.0 * display_w)).max(0.0);
-        let max_pan_y = ((display_h - area_h) / (2.0 * display_h)).max(0.0);
-
-        (x.clamp(-max_pan_x, max_pan_x), y.clamp(-max_pan_y, max_pan_y))
+    pub fn video_pan_for_drag(&self, drag: VideoPanDrag, dx: f64, dy: f64) -> (f64, f64) {
+        let x = drag.start_x + dx / drag.displayed_w;
+        let y = drag.start_y + dy / drag.displayed_h;
+        (
+            x.clamp(-drag.max_pan_x, drag.max_pan_x),
+            y.clamp(-drag.max_pan_y, drag.max_pan_y),
+        )
     }
 
     pub fn set_normalize_volume(&self, enabled: bool) {
