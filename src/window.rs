@@ -104,10 +104,12 @@ pub(crate) fn update_zoom_indicator(
         timer.remove();
     }
     let weak_label = label.downgrade();
+    let timer_id_for_callback = timer_id.clone();
     let timer = glib::timeout_add_local_once(Duration::from_millis(1200), move || {
         if let Some(label) = weak_label.upgrade() {
             label.set_visible(false);
         }
+        timer_id_for_callback.borrow_mut().take();
     });
     *timer_id.borrow_mut() = Some(timer);
 }

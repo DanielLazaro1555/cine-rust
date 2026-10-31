@@ -102,7 +102,7 @@ impl CineWindow {
                     }
 
                     let mut options = this.options.borrow_mut();
-                    let next_zoom = (options.video_zoom - direction * 0.1).clamp(0.0, 2.0);
+                    let next_zoom = (options.video_zoom - direction * 0.1).clamp(0.0, 3.0);
                     options.video_zoom = next_zoom;
                     drop(options);
                     this.video_area.set_video_zoom(next_zoom);

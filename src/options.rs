@@ -174,7 +174,7 @@ pub fn create_options_menu_button(
         "Zoom",
         "Restablecer zoom",
         0.0,
-        2.0,
+        3.0,
         0.05,
         2,
         0.0,
