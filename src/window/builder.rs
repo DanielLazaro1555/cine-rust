@@ -69,6 +69,7 @@ impl CineWindow {
             next_btn,
             vol_scale,
             vol_label,
+            rotate_btn,
             quality_menu_btn,
             progress_adj,
             progress_scale,
@@ -115,6 +116,7 @@ impl CineWindow {
             playlist_items: Rc::new(RefCell::new(Vec::new())),
             current_index: Rc::new(Cell::new(0)),
             last_video_dims: Rc::new(Cell::new((0, 0))),
+            video_rotation: Rc::new(Cell::new(0)),
             initial_window_size: Rc::new(Cell::new(None)),
             manual_video_size_active: Rc::new(Cell::new(false)),
             resize_key_down: Rc::new(Cell::new(false)),
@@ -236,6 +238,15 @@ impl CineWindow {
                 this.video_area.set_volume(volume as f64);
                 this.settings.borrow_mut().volume = volume;
                 this.settings.borrow().save_to_disk();
+            });
+        }
+
+        {
+            let this = cine_win.clone();
+            rotate_btn.connect_clicked(move |_| {
+                let rotation = (this.video_rotation.get() + 90) % 360;
+                this.video_rotation.set(rotation);
+                this.video_area.set_video_rotate(rotation);
             });
         }
 

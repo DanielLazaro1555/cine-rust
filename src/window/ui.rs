@@ -8,6 +8,7 @@ pub(super) struct PlaybackControlsUi {
     pub(super) next_btn: gtk::Button ,
     pub(super) vol_scale: gtk::Scale ,
     pub(super) vol_label: gtk::Label,
+    pub(super) rotate_btn: gtk::Button,
     pub(super) quality_menu_btn: gtk::MenuButton,
     pub(super) progress_adj: gtk::Adjustment ,
     pub(super) progress_scale: gtk::Scale ,
@@ -63,6 +64,13 @@ pub(super) fn build_playback_controls(
             .build();
         next_btn.add_css_class("circular");
         next_btn.add_css_class("flat");
+
+        let rotate_btn = gtk::Button::builder()
+            .icon_name("object-rotate-right-symbolic")
+            .tooltip_text("Girar video 90°")
+            .build();
+        rotate_btn.add_css_class("circular");
+        rotate_btn.add_css_class("flat");
 
         // Control de volumen desplegable
         let vol_adj = gtk::Adjustment::new(100.0, 0.0, 150.0, 1.0, 5.0, 0.0);
@@ -209,54 +217,57 @@ pub(super) fn build_playback_controls(
         let progress_row = gtk::Box::builder()
             .orientation(gtk::Orientation::Horizontal)
             .hexpand(true)
+            .spacing(8)
             .margin_start(8)
             .margin_end(8)
             .margin_top(4)
             .margin_bottom(0)
             .build();
+        progress_row.append(&time_elapsed_label);
         progress_row.append(&progress_scale);
+        progress_row.append(&time_total_label);
 
-        let time_box = gtk::Box::builder()
-            .orientation(gtk::Orientation::Horizontal)
-            .spacing(3)
-            .margin_start(4)
-            .valign(gtk::Align::Center)
+        let more_grid = gtk::Grid::builder()
+            .column_spacing(4)
+            .row_spacing(4)
+            .halign(gtk::Align::Center)
+            .margin_start(8)
+            .margin_end(8)
+            .margin_top(8)
+            .margin_bottom(8)
             .build();
-        time_box.append(&time_elapsed_label);
-        let time_sep = gtk::Label::new(Some("/"));
-        time_sep.add_css_class("dim-label");
-        time_box.append(&time_sep);
-        time_box.append(&time_total_label);
+        more_grid.attach(&rotate_btn, 0, 0, 1, 1);
+        more_grid.attach(&quality_menu_btn, 1, 0, 1, 1);
+        more_grid.attach(&options_menu_btn, 2, 0, 1, 1);
+        more_grid.attach(&audio_menu_btn, 0, 1, 1, 1);
+        more_grid.attach(&subtitles_menu_btn, 1, 1, 1, 1);
+        more_grid.attach(&playlist_bar_btn, 2, 1, 1, 1);
+        more_grid.attach(&shuffle_btn, 0, 2, 1, 1);
+        more_grid.attach(&repeat_btn, 1, 2, 1, 1);
+        more_grid.attach(&lock_btn, 2, 2, 1, 1);
+        let more_popover = gtk::Popover::builder().child(&more_grid).build();
+        let more_btn = gtk::MenuButton::builder()
+            .icon_name("view-more-symbolic")
+            .tooltip_text("Más controles")
+            .popover(&more_popover)
+            .direction(gtk::ArrowType::Up)
+            .build();
+        more_btn.add_css_class("circular");
+        more_btn.add_css_class("flat");
 
-        // FlowBox mueve los controles a otra línea cuando la ventana se estrecha.
-        let buttons_row = gtk::FlowBox::builder()
-            .selection_mode(gtk::SelectionMode::None)
-            .row_spacing(2)
-            .column_spacing(2)
-            .homogeneous(false)
-            .halign(gtk::Align::Fill)
-            .margin_start(6)
-            .margin_end(6)
+        let buttons_row = gtk::Box::builder()
+            .orientation(gtk::Orientation::Horizontal)
+            .spacing(4)
+            .halign(gtk::Align::Center)
             .margin_bottom(4)
             .build();
-        buttons_row.add_css_class("controls-wrap");
-
-        // Cada botón puede pasar individualmente a la siguiente línea, sin reservar
-        // espacio para un grupo completo que ya no cabe.
+        buttons_row.add_css_class("controls-row");
         for control in [
             prev_btn.upcast_ref::<gtk::Widget>(),
             play_pause_btn.upcast_ref::<gtk::Widget>(),
             next_btn.upcast_ref::<gtk::Widget>(),
             volume_menu_btn.upcast_ref::<gtk::Widget>(),
-            time_box.upcast_ref::<gtk::Widget>(),
-            quality_menu_btn.upcast_ref::<gtk::Widget>(),
-            audio_menu_btn.upcast_ref::<gtk::Widget>(),
-            subtitles_menu_btn.upcast_ref::<gtk::Widget>(),
-            options_menu_btn.upcast_ref::<gtk::Widget>(),
-            shuffle_btn.upcast_ref::<gtk::Widget>(),
-            repeat_btn.upcast_ref::<gtk::Widget>(),
-            lock_btn.upcast_ref::<gtk::Widget>(),
-            playlist_bar_btn.upcast_ref::<gtk::Widget>(),
+            more_btn.upcast_ref::<gtk::Widget>(),
             fullscreen_btn.upcast_ref::<gtk::Widget>(),
         ] {
             buttons_row.append(control);
@@ -286,6 +297,7 @@ pub(super) fn build_playback_controls(
             next_btn,
             vol_scale,
             vol_label,
+            rotate_btn,
             quality_menu_btn,
             progress_adj,
             progress_scale,

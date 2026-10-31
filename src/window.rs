@@ -54,6 +54,7 @@ pub struct CineWindow {
     playlist_items: Rc<RefCell<Vec<PlaylistItem>>>,
     current_index: Rc<Cell<usize>>,
     last_video_dims: Rc<Cell<(i32, i32)>>,
+    video_rotation: Rc<Cell<i32>>,
     initial_window_size: Rc<Cell<Option<(i32, i32)>>>,
     manual_video_size_active: Rc<Cell<bool>>,
     resize_key_down: Rc<Cell<bool>>,

@@ -230,10 +230,16 @@ where
 
                     let v_clone = va.clone();
                     let t_id = track.id;
+                    let was_selected = track.selected;
                     let p_weak = pop_weak.clone();
 
                     row_btn.connect_clicked(move |_| {
-                        v_clone.command(&["set", "aid", &t_id.to_string()]);
+                        let selected_id = if was_selected {
+                            "no".to_string()
+                        } else {
+                            t_id.to_string()
+                        };
+                        v_clone.command(&["set", "aid", &selected_id]);
                         if let Some(pop) = p_weak.upgrade() {
                             pop.popdown();
                         }
@@ -435,11 +441,17 @@ where
 
                     let v_clone = va.clone();
                     let t_id = track.id;
+                    let was_active = is_active;
                     let p_weak = pop_weak.clone();
 
                     row_btn.connect_clicked(move |_| {
-                        v_clone.command(&["set", "sub-visibility", "yes"]);
-                        v_clone.command(&["set", "sid", &t_id.to_string()]);
+                        if was_active {
+                            v_clone.command(&["set", "sub-visibility", "no"]);
+                            v_clone.command(&["set", "sid", "no"]);
+                        } else {
+                            v_clone.command(&["set", "sub-visibility", "yes"]);
+                            v_clone.command(&["set", "sid", &t_id.to_string()]);
+                        }
                         if let Some(pop) = p_weak.upgrade() {
                             pop.popdown();
                         }
