@@ -4,17 +4,6 @@
   "graph": {},
   "nodes": [
     {
-      "id": "sourceid",
-      "label": "SourceId",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "CineWindow",
-      "file_type": "code",
-      "norm_label": "sourceid",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
       "id": "src_window",
       "label": "window.rs",
       "_origin": "ast",
@@ -45,7 +34,18 @@
       "file_type": "code",
       "norm_label": ".show_toast()",
       "source_file": "src/window.rs",
-      "source_location": "L82"
+      "source_location": "L103"
+    },
+    {
+      "id": "src_window_cinewindow_show_zoom_indicator",
+      "label": ".show_zoom_indicator()",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".show_zoom_indicator()",
+      "source_file": "src/window.rs",
+      "source_location": "L107"
     },
     {
       "id": "src_window_rs_adjustment",
@@ -180,6 +180,17 @@
       "source_location": ""
     },
     {
+      "id": "src_window_rs_sourceid",
+      "label": "SourceId",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": "sourceid",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "src_window_rs_statuspage",
       "label": "StatusPage",
       "_origin": "ast",
@@ -187,17 +198,6 @@
       "community_name": "CineWindow",
       "file_type": "code",
       "norm_label": "statuspage",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_window_rs_toastoverlay",
-      "label": "ToastOverlay",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "CineWindow",
-      "file_type": "code",
-      "norm_label": "toastoverlay",
       "source_file": "",
       "source_location": ""
     },
@@ -224,6 +224,17 @@
       "source_location": ""
     },
     {
+      "id": "src_window_update_zoom_indicator",
+      "label": "update_zoom_indicator()",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": "update_zoom_indicator()",
+      "source_file": "src/window.rs",
+      "source_location": "L112"
+    },
+    {
       "id": "c_char",
       "label": "c_char",
       "_origin": "ast",
@@ -231,17 +242,6 @@
       "community_name": "mpv_engine.rs",
       "file_type": "code",
       "norm_label": "c_char",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "c_int",
-      "label": "c_int",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "mpv_engine.rs",
-      "file_type": "code",
-      "norm_label": "c_int",
       "source_file": "",
       "source_location": ""
     },
@@ -554,17 +554,6 @@
       "source_location": "L294"
     },
     {
-      "id": "src_mpv_engine_mpvengine_drop",
-      "label": ".drop()",
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "mpv_engine.rs",
-      "file_type": "code",
-      "norm_label": ".drop()",
-      "source_file": "src/mpv_engine.rs",
-      "source_location": "L387"
-    },
-    {
       "id": "src_mpv_engine_mpvengine_get_property_bool",
       "label": ".get_property_bool()",
       "_origin": "ast",
@@ -717,6 +706,17 @@
       "norm_label": "mpvrenderparam",
       "source_file": "src/mpv_engine.rs",
       "source_location": "L23"
+    },
+    {
+      "id": "src_mpv_engine_rs_c_int",
+      "label": "c_int",
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "mpv_engine.rs",
+      "file_type": "code",
+      "norm_label": "c_int",
+      "source_file": "",
+      "source_location": ""
     },
     {
       "id": "src_mpv_engine_rs_c_void",
@@ -982,6 +982,17 @@
       "version": "0.1.0"
     },
     {
+      "id": "d",
+      "label": "D",
+      "_origin": "ast",
+      "community": 16,
+      "community_name": "setup_video_gestures",
+      "file_type": "code",
+      "norm_label": "d",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "f",
       "label": "F",
       "_origin": "ast",
@@ -1202,15 +1213,411 @@
       "source_location": "L5"
     },
     {
+      "id": "c_ulong",
+      "label": "c_ulong",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "c_ulong",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "display",
+      "label": "Display",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "display",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "mutex",
+      "label": "Mutex",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "mutex",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "path",
+      "label": "Path",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "path",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_utils",
+      "label": "utils.rs",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "utils.rs",
+      "source_file": "src/utils.rs",
+      "source_location": "L1"
+    },
+    {
+      "id": "src_utils_center_cine_window",
+      "label": "center_cine_window()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "center_cine_window()",
+      "source_file": "src/utils.rs",
+      "source_location": "L137"
+    },
+    {
+      "id": "src_utils_center_script_lock",
+      "label": "CENTER_SCRIPT_LOCK",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "center_script_lock",
+      "source_file": "src/utils.rs",
+      "source_location": "L13"
+    },
+    {
+      "id": "src_utils_center_x11_surface",
+      "label": "center_x11_surface()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "center_x11_surface()",
+      "source_file": "src/utils.rs",
+      "source_location": "L171"
+    },
+    {
+      "id": "src_utils_collect_media_files",
+      "label": "collect_media_files()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "collect_media_files()",
+      "source_file": "src/utils.rs",
+      "source_location": "L323"
+    },
+    {
+      "id": "src_utils_config_dir",
+      "label": "config_dir()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "config_dir()",
+      "source_file": "src/utils.rs",
+      "source_location": "L90"
+    },
+    {
+      "id": "src_utils_g_type_check_instance_is_a",
+      "label": "g_type_check_instance_is_a()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "g_type_check_instance_is_a()",
+      "source_file": "src/utils.rs",
+      "source_location": "L27"
+    },
+    {
+      "id": "src_utils_gdk_x11_display_get_type",
+      "label": "gdk_x11_display_get_type()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "gdk_x11_display_get_type()",
+      "source_file": "src/utils.rs",
+      "source_location": "L19"
+    },
+    {
+      "id": "src_utils_gdk_x11_display_get_xdisplay",
+      "label": "gdk_x11_display_get_xdisplay()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "gdk_x11_display_get_xdisplay()",
+      "source_file": "src/utils.rs",
+      "source_location": "L20"
+    },
+    {
+      "id": "src_utils_gdk_x11_surface_get_type",
+      "label": "gdk_x11_surface_get_type()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "gdk_x11_surface_get_type()",
+      "source_file": "src/utils.rs",
+      "source_location": "L21"
+    },
+    {
+      "id": "src_utils_gdk_x11_surface_get_xid",
+      "label": "gdk_x11_surface_get_xid()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "gdk_x11_surface_get_xid()",
+      "source_file": "src/utils.rs",
+      "source_location": "L22"
+    },
+    {
+      "id": "src_utils_is_media_file",
+      "label": "is_media_file()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "is_media_file()",
+      "source_file": "src/utils.rs",
+      "source_location": "L315"
+    },
+    {
+      "id": "src_utils_load_window_position",
+      "label": "load_window_position()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "load_window_position()",
+      "source_file": "src/utils.rs",
+      "source_location": "L262"
+    },
+    {
+      "id": "src_utils_move_x11_surface",
+      "label": "move_x11_surface()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "move_x11_surface()",
+      "source_file": "src/utils.rs",
+      "source_location": "L231"
+    },
+    {
+      "id": "src_utils_rs_c_int",
+      "label": "c_int",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "c_int",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_utils_rs_c_void",
+      "label": "c_void",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "c_void",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_utils_rs_option",
+      "label": "Option",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "option",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_utils_rs_pathbuf",
+      "label": "PathBuf",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "pathbuf",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_utils_rs_vec",
+      "label": "Vec",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "vec",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_utils_run_kwin_center_script",
+      "label": "run_kwin_center_script()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "run_kwin_center_script()",
+      "source_file": "src/utils.rs",
+      "source_location": "L268"
+    },
+    {
+      "id": "src_utils_save_window_position",
+      "label": "save_window_position()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "save_window_position()",
+      "source_file": "src/utils.rs",
+      "source_location": "L252"
+    },
+    {
+      "id": "src_utils_video_extensions",
+      "label": "VIDEO_EXTENSIONS",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "video_extensions",
+      "source_file": "src/utils.rs",
+      "source_location": "L47"
+    },
+    {
+      "id": "src_utils_x11_surface_position",
+      "label": "x11_surface_position()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "x11_surface_position()",
+      "source_file": "src/utils.rs",
+      "source_location": "L208"
+    },
+    {
+      "id": "src_utils_xdefaultrootwindow",
+      "label": "XDefaultRootWindow()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "xdefaultrootwindow()",
+      "source_file": "src/utils.rs",
+      "source_location": "L43"
+    },
+    {
+      "id": "src_utils_xflush",
+      "label": "XFlush()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "xflush()",
+      "source_file": "src/utils.rs",
+      "source_location": "L44"
+    },
+    {
+      "id": "src_utils_xmovewindow",
+      "label": "XMoveWindow()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "xmovewindow()",
+      "source_file": "src/utils.rs",
+      "source_location": "L32"
+    },
+    {
+      "id": "src_utils_xtranslatecoordinates",
+      "label": "XTranslateCoordinates()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "xtranslatecoordinates()",
+      "source_file": "src/utils.rs",
+      "source_location": "L33"
+    },
+    {
       "id": "src_window_actions",
       "label": "actions.rs",
       "_origin": "ast",
       "community": 18,
-      "community_name": "actions.rs",
+      "community_name": "utils.rs",
       "file_type": "code",
       "norm_label": "actions.rs",
       "source_file": "src/window/actions.rs",
       "source_location": "L1"
+    },
+    {
+      "id": "src_window_actions_cinewindow_setup_close_request",
+      "label": ".setup_close_request()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": ".setup_close_request()",
+      "source_file": "src/window/actions.rs",
+      "source_location": "L6"
+    },
+    {
+      "id": "src_window_cinewindow_center_on_current_monitor",
+      "label": ".center_on_current_monitor()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": ".center_on_current_monitor()",
+      "source_file": "src/window.rs",
+      "source_location": "L94"
+    },
+    {
+      "id": "src_window_cinewindow_present",
+      "label": ".present()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": ".present()",
+      "source_file": "src/window.rs",
+      "source_location": "L80"
+    },
+    {
+      "id": "src_window_cinewindow_restore_saved_position",
+      "label": ".restore_saved_position()",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": ".restore_saved_position()",
+      "source_file": "src/window.rs",
+      "source_location": "L88"
+    },
+    {
+      "id": "surface",
+      "label": "Surface",
+      "_origin": "ast",
+      "community": 18,
+      "community_name": "utils.rs",
+      "file_type": "code",
+      "norm_label": "surface",
+      "source_file": "",
+      "source_location": ""
     },
     {
       "id": "src_window_controls",
@@ -1345,6 +1752,17 @@
       "source_location": "L34"
     },
     {
+      "id": "src_mpv_gl_area_videoglarea_clamp_video_pan",
+      "label": ".clamp_video_pan()",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "VideoGLArea",
+      "file_type": "code",
+      "norm_label": ".clamp_video_pan()",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L221"
+    },
+    {
       "id": "src_mpv_gl_area_videoglarea_command",
       "label": ".command()",
       "_origin": "ast",
@@ -1353,7 +1771,7 @@
       "file_type": "code",
       "norm_label": ".command()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L173"
+      "source_location": "L174"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_get_property_bool",
@@ -1364,7 +1782,7 @@
       "file_type": "code",
       "norm_label": ".get_property_bool()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L253"
+      "source_location": "L292"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_get_property_str",
@@ -1375,7 +1793,7 @@
       "file_type": "code",
       "norm_label": ".get_property_str()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L249"
+      "source_location": "L288"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_load_file",
@@ -1400,6 +1818,17 @@
       "source_location": "L41"
     },
     {
+      "id": "src_mpv_gl_area_videoglarea_reset_video_view",
+      "label": ".reset_video_view()",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "VideoGLArea",
+      "file_type": "code",
+      "norm_label": ".reset_video_view()",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L205"
+    },
+    {
       "id": "src_mpv_gl_area_videoglarea_seek_absolute",
       "label": ".seek_absolute()",
       "_origin": "ast",
@@ -1408,7 +1837,7 @@
       "file_type": "code",
       "norm_label": ".seek_absolute()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L152"
+      "source_location": "L153"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_seek_relative",
@@ -1419,7 +1848,7 @@
       "file_type": "code",
       "norm_label": ".seek_relative()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L159"
+      "source_location": "L160"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_aspect_ratio",
@@ -1430,7 +1859,7 @@
       "file_type": "code",
       "norm_label": ".set_aspect_ratio()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L189"
+      "source_location": "L190"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_audio_delay",
@@ -1441,7 +1870,7 @@
       "file_type": "code",
       "norm_label": ".set_audio_delay()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L217"
+      "source_location": "L256"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_brightness",
@@ -1452,7 +1881,7 @@
       "file_type": "code",
       "norm_label": ".set_brightness()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L225"
+      "source_location": "L264"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_contrast",
@@ -1463,7 +1892,7 @@
       "file_type": "code",
       "norm_label": ".set_contrast()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L221"
+      "source_location": "L260"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_gamma",
@@ -1474,7 +1903,7 @@
       "file_type": "code",
       "norm_label": ".set_gamma()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L229"
+      "source_location": "L268"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_hue",
@@ -1485,7 +1914,7 @@
       "file_type": "code",
       "norm_label": ".set_hue()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L237"
+      "source_location": "L276"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_loop_file",
@@ -1496,7 +1925,7 @@
       "file_type": "code",
       "norm_label": ".set_loop_file()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L241"
+      "source_location": "L280"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_loop_playlist",
@@ -1507,7 +1936,7 @@
       "file_type": "code",
       "norm_label": ".set_loop_playlist()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L245"
+      "source_location": "L284"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_normalize_volume",
@@ -1518,7 +1947,7 @@
       "file_type": "code",
       "norm_label": ".set_normalize_volume()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L201"
+      "source_location": "L240"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_property",
@@ -1529,7 +1958,7 @@
       "file_type": "code",
       "norm_label": ".set_property()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L179"
+      "source_location": "L180"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_saturation",
@@ -1540,7 +1969,7 @@
       "file_type": "code",
       "norm_label": ".set_saturation()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L233"
+      "source_location": "L272"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_speed",
@@ -1551,7 +1980,7 @@
       "file_type": "code",
       "norm_label": ".set_speed()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L185"
+      "source_location": "L186"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_sub_delay",
@@ -1562,7 +1991,18 @@
       "file_type": "code",
       "norm_label": ".set_sub_delay()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L213"
+      "source_location": "L252"
+    },
+    {
+      "id": "src_mpv_gl_area_videoglarea_set_video_pan",
+      "label": ".set_video_pan()",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "VideoGLArea",
+      "file_type": "code",
+      "norm_label": ".set_video_pan()",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L216"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_video_rotate",
@@ -1573,7 +2013,7 @@
       "file_type": "code",
       "norm_label": ".set_video_rotate()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L193"
+      "source_location": "L194"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_video_zoom",
@@ -1584,7 +2024,7 @@
       "file_type": "code",
       "norm_label": ".set_video_zoom()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L197"
+      "source_location": "L198"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_visible",
@@ -1606,7 +2046,7 @@
       "file_type": "code",
       "norm_label": ".set_volume()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L166"
+      "source_location": "L167"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_set_ytdl_format",
@@ -1617,7 +2057,7 @@
       "file_type": "code",
       "norm_label": ".set_ytdl_format()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L315"
+      "source_location": "L354"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_shutdown",
@@ -1628,7 +2068,7 @@
       "file_type": "code",
       "norm_label": ".shutdown()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L321"
+      "source_location": "L360"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_time_pos_and_duration",
@@ -1639,7 +2079,7 @@
       "file_type": "code",
       "norm_label": ".time_pos_and_duration()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L263"
+      "source_location": "L302"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_toggle_pause",
@@ -1650,7 +2090,7 @@
       "file_type": "code",
       "norm_label": ".toggle_pause()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L144"
+      "source_location": "L145"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_toggle_stats",
@@ -1661,7 +2101,7 @@
       "file_type": "code",
       "norm_label": ".toggle_stats()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L257"
+      "source_location": "L296"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_video_dimensions",
@@ -1672,7 +2112,18 @@
       "file_type": "code",
       "norm_label": ".video_dimensions()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L275"
+      "source_location": "L314"
+    },
+    {
+      "id": "src_mpv_gl_area_videoglarea_video_pan",
+      "label": ".video_pan()",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "VideoGLArea",
+      "file_type": "code",
+      "norm_label": ".video_pan()",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L210"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_video_quality_info",
@@ -1683,7 +2134,7 @@
       "file_type": "code",
       "norm_label": ".video_quality_info()",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L288"
+      "source_location": "L327"
     },
     {
       "id": "src_mpv_gl_area_videoglarea_widget",
@@ -1972,50 +2423,6 @@
       "source_location": ""
     },
     {
-      "id": "src_window_input_cinewindow",
-      "label": "CineWindow",
-      "_origin": "ast",
-      "community": 25,
-      "community_name": ".setup_mouse_gestures",
-      "file_type": "code",
-      "norm_label": "cinewindow",
-      "source_file": "src/window/input.rs",
-      "source_location": "L4"
-    },
-    {
-      "id": "src_window_input_cinewindow_setup_keyboard_and_drop",
-      "label": ".setup_keyboard_and_drop()",
-      "_origin": "ast",
-      "community": 25,
-      "community_name": ".setup_mouse_gestures",
-      "file_type": "code",
-      "norm_label": ".setup_keyboard_and_drop()",
-      "source_file": "src/window/input.rs",
-      "source_location": "L5"
-    },
-    {
-      "id": "src_window_input_cinewindow_setup_mouse_gestures",
-      "label": ".setup_mouse_gestures()",
-      "_origin": "ast",
-      "community": 25,
-      "community_name": ".setup_mouse_gestures",
-      "file_type": "code",
-      "norm_label": ".setup_mouse_gestures()",
-      "source_file": "src/window/input.rs",
-      "source_location": "L84"
-    },
-    {
-      "id": "src_window_input_rs_overlay",
-      "label": "Overlay",
-      "_origin": "ast",
-      "community": 25,
-      "community_name": ".setup_mouse_gestures",
-      "file_type": "code",
-      "norm_label": "overlay",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
       "id": "src_window_builder",
       "label": "builder.rs",
       "_origin": "ast",
@@ -2068,7 +2475,7 @@
       "file_type": "code",
       "norm_label": "make_option_row()",
       "source_file": "src/options.rs",
-      "source_location": "L394"
+      "source_location": "L399"
     },
     {
       "id": "src_options_make_spin_row",
@@ -2079,7 +2486,7 @@
       "file_type": "code",
       "norm_label": "make_spin_row()",
       "source_file": "src/options.rs",
-      "source_location": "L421"
+      "source_location": "L426"
     },
     {
       "id": "src_options_playbackoptions",
@@ -2148,6 +2555,17 @@
       "source_location": ""
     },
     {
+      "id": "src_options_rs_label",
+      "label": "Label",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "create_options_menu_button",
+      "file_type": "code",
+      "norm_label": "label",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "src_options_rs_menubutton",
       "label": "MenuButton",
       "_origin": "ast",
@@ -2155,6 +2573,17 @@
       "community_name": "create_options_menu_button",
       "file_type": "code",
       "norm_label": "menubutton",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_options_rs_option",
+      "label": "Option",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "create_options_menu_button",
+      "file_type": "code",
+      "norm_label": "option",
       "source_file": "",
       "source_location": ""
     },
@@ -2188,6 +2617,17 @@
       "community_name": "create_options_menu_button",
       "file_type": "code",
       "norm_label": "self",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_options_rs_sourceid",
+      "label": "SourceId",
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "create_options_menu_button",
+      "file_type": "code",
+      "norm_label": "sourceid",
       "source_file": "",
       "source_location": ""
     },
@@ -2401,6 +2841,39 @@
       "source_location": "L24"
     },
     {
+      "id": "src_shortcuts_present_shortcuts_dialog",
+      "label": "present_shortcuts_dialog()",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "present_playlist_dialog",
+      "file_type": "code",
+      "norm_label": "present_shortcuts_dialog()",
+      "source_file": "src/shortcuts.rs",
+      "source_location": "L168"
+    },
+    {
+      "id": "src_shortcuts_rs_isa",
+      "label": "IsA",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "present_playlist_dialog",
+      "file_type": "code",
+      "norm_label": "isa",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_shortcuts_rs_widget",
+      "label": "Widget",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "present_playlist_dialog",
+      "file_type": "code",
+      "norm_label": "widget",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "src_window_actions_cinewindow",
       "label": "CineWindow",
       "_origin": "ast",
@@ -2409,7 +2882,7 @@
       "file_type": "code",
       "norm_label": "cinewindow",
       "source_file": "src/window/actions.rs",
-      "source_location": "L4"
+      "source_location": "L5"
     },
     {
       "id": "src_window_actions_cinewindow_setup_actions",
@@ -2420,18 +2893,7 @@
       "file_type": "code",
       "norm_label": ".setup_actions()",
       "source_file": "src/window/actions.rs",
-      "source_location": "L18"
-    },
-    {
-      "id": "src_window_actions_cinewindow_setup_close_request",
-      "label": ".setup_close_request()",
-      "_origin": "ast",
-      "community": 4,
-      "community_name": "present_playlist_dialog",
-      "file_type": "code",
-      "norm_label": ".setup_close_request()",
-      "source_file": "src/window/actions.rs",
-      "source_location": "L5"
+      "source_location": "L24"
     },
     {
       "id": "fadd",
@@ -2486,7 +2948,7 @@
       "file_type": "code",
       "norm_label": "create_subtitles_menu_button()",
       "source_file": "src/tracks.rs",
-      "source_location": "L282"
+      "source_location": "L288"
     },
     {
       "id": "src_tracks_format_track_title",
@@ -2585,7 +3047,7 @@
       "file_type": "code",
       "norm_label": "build_playback_controls()",
       "source_file": "src/window/ui.rs",
-      "source_location": "L23"
+      "source_location": "L25"
     },
     {
       "id": "src_window_ui_playbackcontrolsui",
@@ -2676,6 +3138,17 @@
       "source_location": ""
     },
     {
+      "id": "src_window_ui_rs_option",
+      "label": "Option",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "build_playback_controls",
+      "file_type": "code",
+      "norm_label": "option",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "src_window_ui_rs_overlay",
       "label": "Overlay",
       "_origin": "ast",
@@ -2709,6 +3182,17 @@
       "source_location": ""
     },
     {
+      "id": "src_window_ui_rs_sourceid",
+      "label": "SourceId",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "build_playback_controls",
+      "file_type": "code",
+      "norm_label": "sourceid",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "src_window_ui_rs_statuspage",
       "label": "StatusPage",
       "_origin": "ast",
@@ -2716,17 +3200,6 @@
       "community_name": "build_playback_controls",
       "file_type": "code",
       "norm_label": "statuspage",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_window_ui_rs_toastoverlay",
-      "label": "ToastOverlay",
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "build_playback_controls",
-      "file_type": "code",
-      "norm_label": "toastoverlay",
       "source_file": "",
       "source_location": ""
     },
@@ -2871,7 +3344,7 @@
       "file_type": "code",
       "norm_label": ".default()",
       "source_file": "src/preferences.rs",
-      "source_location": "L38"
+      "source_location": "L37"
     },
     {
       "id": "src_preferences_appsettings_load_from_disk",
@@ -2882,7 +3355,7 @@
       "file_type": "code",
       "norm_label": ".load_from_disk()",
       "source_file": "src/preferences.rs",
-      "source_location": "L61"
+      "source_location": "L59"
     },
     {
       "id": "src_preferences_appsettings_save_to_disk",
@@ -2893,7 +3366,7 @@
       "file_type": "code",
       "norm_label": ".save_to_disk()",
       "source_file": "src/preferences.rs",
-      "source_location": "L101"
+      "source_location": "L96"
     },
     {
       "id": "src_preferences_present_preferences_dialog",
@@ -2904,7 +3377,7 @@
       "file_type": "code",
       "norm_label": "present_preferences_dialog()",
       "source_file": "src/preferences.rs",
-      "source_location": "L125"
+      "source_location": "L119"
     },
     {
       "id": "src_preferences_rs_default",
@@ -2962,17 +3435,6 @@
       "source_location": "L1"
     },
     {
-      "id": "src_shortcuts_present_shortcuts_dialog",
-      "label": "present_shortcuts_dialog()",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": ".on_startup",
-      "file_type": "code",
-      "norm_label": "present_shortcuts_dialog()",
-      "source_file": "src/shortcuts.rs",
-      "source_location": "L156"
-    },
-    {
       "id": "src_shortcuts_register_window_accels",
       "label": "register_window_accels()",
       "_origin": "ast",
@@ -2981,7 +3443,7 @@
       "file_type": "code",
       "norm_label": "register_window_accels()",
       "source_file": "src/shortcuts.rs",
-      "source_location": "L164"
+      "source_location": "L176"
     },
     {
       "id": "src_shortcuts_rs_application",
@@ -2991,28 +3453,6 @@
       "community_name": ".on_startup",
       "file_type": "code",
       "norm_label": "application",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_shortcuts_rs_isa",
-      "label": "IsA",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": ".on_startup",
-      "file_type": "code",
-      "norm_label": "isa",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_shortcuts_rs_widget",
-      "label": "Widget",
-      "_origin": "ast",
-      "community": 6,
-      "community_name": ".on_startup",
-      "file_type": "code",
-      "norm_label": "widget",
       "source_file": "",
       "source_location": ""
     },
@@ -3039,13 +3479,35 @@
       "source_location": ""
     },
     {
+      "id": "file",
+      "label": "File",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": ".open_files",
+      "file_type": "code",
+      "norm_label": "file",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
       "id": "fopen",
       "label": "FOpen",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "fopen",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "ftoast",
+      "label": "FToast",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": ".open_files",
+      "file_type": "code",
+      "norm_label": "ftoast",
       "source_file": "",
       "source_location": ""
     },
@@ -3054,7 +3516,7 @@
       "label": "history.rs",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "history.rs",
       "source_file": "src/history.rs",
@@ -3065,7 +3527,7 @@
       "label": "clear_history()",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "clear_history()",
       "source_file": "src/history.rs",
@@ -3076,7 +3538,7 @@
       "label": "HistoryEntry",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "historyentry",
       "source_file": "src/history.rs",
@@ -3087,7 +3549,7 @@
       "label": "parse_json_line()",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "parse_json_line()",
       "source_file": "src/history.rs",
@@ -3098,7 +3560,7 @@
       "label": "present_history_dialog()",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "present_history_dialog()",
       "source_file": "src/history.rs",
@@ -3109,18 +3571,29 @@
       "label": "read_history_entries()",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "read_history_entries()",
       "source_file": "src/history.rs",
       "source_location": "L57"
     },
     {
+      "id": "src_history_record_history_entry",
+      "label": "record_history_entry()",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": ".open_files",
+      "file_type": "code",
+      "norm_label": "record_history_entry()",
+      "source_file": "src/history.rs",
+      "source_location": "L26"
+    },
+    {
       "id": "src_history_rs_isa",
       "label": "IsA",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "isa",
       "source_file": "",
@@ -3131,7 +3604,7 @@
       "label": "Option",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "option",
       "source_file": "",
@@ -3142,7 +3615,7 @@
       "label": "String",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "string",
       "source_file": "",
@@ -3153,7 +3626,7 @@
       "label": "Vec",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "vec",
       "source_file": "",
@@ -3164,347 +3637,39 @@
       "label": "Widget",
       "_origin": "ast",
       "community": 7,
-      "community_name": "history.rs",
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "widget",
       "source_file": "",
       "source_location": ""
     },
     {
-      "id": "path",
-      "label": "Path",
+      "id": "src_mpv_engine_mpvengine_drop",
+      "label": ".drop()",
       "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
+      "community": 7,
+      "community_name": ".open_files",
       "file_type": "code",
-      "norm_label": "path",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_utils",
-      "label": "utils.rs",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "utils.rs",
-      "source_file": "src/utils.rs",
-      "source_location": "L1"
-    },
-    {
-      "id": "src_utils_calculate_window_size",
-      "label": "calculate_window_size()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "calculate_window_size()",
-      "source_file": "src/utils.rs",
-      "source_location": "L71"
-    },
-    {
-      "id": "src_utils_center_active_cine_window",
-      "label": "center_active_cine_window()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "center_active_cine_window()",
-      "source_file": "src/utils.rs",
-      "source_location": "L139"
-    },
-    {
-      "id": "src_utils_collect_media_files",
-      "label": "collect_media_files()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "collect_media_files()",
-      "source_file": "src/utils.rs",
-      "source_location": "L202"
-    },
-    {
-      "id": "src_utils_config_dir",
-      "label": "config_dir()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "config_dir()",
-      "source_file": "src/utils.rs",
-      "source_location": "L56"
-    },
-    {
-      "id": "src_utils_format_time",
-      "label": "format_time()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "format_time()",
-      "source_file": "src/utils.rs",
-      "source_location": "L42"
-    },
-    {
-      "id": "src_utils_install_cine_window_added_centering",
-      "label": "install_cine_window_added_centering()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "install_cine_window_added_centering()",
-      "source_file": "src/utils.rs",
-      "source_location": "L161"
-    },
-    {
-      "id": "src_utils_is_media_file",
-      "label": "is_media_file()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "is_media_file()",
-      "source_file": "src/utils.rs",
-      "source_location": "L194"
-    },
-    {
-      "id": "src_utils_resolution_badge",
-      "label": "resolution_badge()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "resolution_badge()",
-      "source_file": "src/utils.rs",
-      "source_location": "L19"
-    },
-    {
-      "id": "src_utils_rs_pathbuf",
-      "label": "PathBuf",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "pathbuf",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_utils_rs_string",
-      "label": "String",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "string",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_utils_rs_vec",
-      "label": "Vec",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "vec",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_utils_run_kwin_center_script",
-      "label": "run_kwin_center_script()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "run_kwin_center_script()",
-      "source_file": "src/utils.rs",
-      "source_location": "L181"
-    },
-    {
-      "id": "src_utils_video_extensions",
-      "label": "VIDEO_EXTENSIONS",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "video_extensions",
-      "source_file": "src/utils.rs",
-      "source_location": "L13"
+      "norm_label": ".drop()",
+      "source_file": "src/mpv_engine.rs",
+      "source_location": "L387"
     },
     {
       "id": "src_utils_watch_history_path",
       "label": "watch_history_path()",
       "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
+      "community": 7,
+      "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "watch_history_path()",
       "source_file": "src/utils.rs",
-      "source_location": "L63"
-    },
-    {
-      "id": "src_window_cinewindow_present",
-      "label": ".present()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".present()",
-      "source_file": "src/window.rs",
-      "source_location": "L74"
-    },
-    {
-      "id": "src_window_playback_cinewindow",
-      "label": "CineWindow",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": "cinewindow",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L4"
-    },
-    {
-      "id": "src_window_playback_cinewindow_apply_video_window_size",
-      "label": ".apply_video_window_size()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".apply_video_window_size()",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L149"
-    },
-    {
-      "id": "src_window_playback_cinewindow_clear_playlist",
-      "label": ".clear_playlist()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".clear_playlist()",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L123"
-    },
-    {
-      "id": "src_window_playback_cinewindow_play_index",
-      "label": ".play_index()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".play_index()",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L52"
-    },
-    {
-      "id": "src_window_playback_cinewindow_play_next",
-      "label": ".play_next()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".play_next()",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L29"
-    },
-    {
-      "id": "src_window_playback_cinewindow_play_prev",
-      "label": ".play_prev()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".play_prev()",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L22"
-    },
-    {
-      "id": "src_window_playback_cinewindow_remove_playlist_index",
-      "label": ".remove_playlist_index()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".remove_playlist_index()",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L79"
-    },
-    {
-      "id": "src_window_playback_cinewindow_setup_progress_timer",
-      "label": ".setup_progress_timer()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".setup_progress_timer()",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L201"
-    },
-    {
-      "id": "src_window_playback_cinewindow_sync_inhibit",
-      "label": ".sync_inhibit()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".sync_inhibit()",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L176"
-    },
-    {
-      "id": "src_window_playback_cinewindow_toggle_pause",
-      "label": ".toggle_pause()",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "utils.rs",
-      "file_type": "code",
-      "norm_label": ".toggle_pause()",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L5"
-    },
-    {
-      "id": "file",
-      "label": "File",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": ".open_files",
-      "file_type": "code",
-      "norm_label": "file",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "ftoast",
-      "label": "FToast",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": ".open_files",
-      "file_type": "code",
-      "norm_label": "ftoast",
-      "source_file": "",
-      "source_location": ""
-    },
-    {
-      "id": "src_history_record_history_entry",
-      "label": "record_history_entry()",
-      "_origin": "ast",
-      "community": 9,
-      "community_name": ".open_files",
-      "file_type": "code",
-      "norm_label": "record_history_entry()",
-      "source_file": "src/history.rs",
-      "source_location": "L26"
+      "source_location": "L97"
     },
     {
       "id": "src_window_dialogs_cinewindow",
       "label": "CineWindow",
       "_origin": "ast",
-      "community": 9,
+      "community": 7,
       "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "cinewindow",
@@ -3515,18 +3680,18 @@
       "id": "src_window_dialogs_cinewindow_add_external_track_dialog",
       "label": ".add_external_track_dialog()",
       "_origin": "ast",
-      "community": 9,
+      "community": 7,
       "community_name": ".open_files",
       "file_type": "code",
       "norm_label": ".add_external_track_dialog()",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L117"
+      "source_location": "L123"
     },
     {
       "id": "src_window_dialogs_cinewindow_open_file_dialog",
       "label": ".open_file_dialog()",
       "_origin": "ast",
-      "community": 9,
+      "community": 7,
       "community_name": ".open_files",
       "file_type": "code",
       "norm_label": ".open_file_dialog()",
@@ -3537,67 +3702,276 @@
       "id": "src_window_dialogs_cinewindow_open_files",
       "label": ".open_files()",
       "_origin": "ast",
-      "community": 9,
+      "community": 7,
       "community_name": ".open_files",
       "file_type": "code",
       "norm_label": ".open_files()",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L223"
+      "source_location": "L229"
     },
     {
       "id": "src_window_dialogs_cinewindow_open_folder_dialog",
       "label": ".open_folder_dialog()",
       "_origin": "ast",
-      "community": 9,
+      "community": 7,
       "community_name": ".open_files",
       "file_type": "code",
       "norm_label": ".open_folder_dialog()",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L44"
+      "source_location": "L50"
     },
     {
       "id": "src_window_dialogs_cinewindow_open_track_file_dialog",
       "label": ".open_track_file_dialog()",
       "_origin": "ast",
-      "community": 9,
+      "community": 7,
       "community_name": ".open_files",
       "file_type": "code",
       "norm_label": ".open_track_file_dialog()",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L147"
+      "source_location": "L153"
     },
     {
       "id": "src_window_dialogs_cinewindow_open_url",
       "label": ".open_url()",
       "_origin": "ast",
-      "community": 9,
+      "community": 7,
       "community_name": ".open_files",
       "file_type": "code",
       "norm_label": ".open_url()",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L182"
+      "source_location": "L188"
     },
     {
       "id": "src_window_dialogs_cinewindow_open_url_dialog",
       "label": ".open_url_dialog()",
       "_origin": "ast",
-      "community": 9,
+      "community": 7,
       "community_name": ".open_files",
       "file_type": "code",
       "norm_label": ".open_url_dialog()",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L79"
+      "source_location": "L85"
     },
     {
       "id": "src_window_dialogs_rs_applicationwindow",
       "label": "ApplicationWindow",
       "_origin": "ast",
-      "community": 9,
+      "community": 7,
       "community_name": ".open_files",
       "file_type": "code",
       "norm_label": "applicationwindow",
       "source_file": "",
       "source_location": ""
+    },
+    {
+      "id": "src_window_input_cinewindow",
+      "label": "CineWindow",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": ".open_files",
+      "file_type": "code",
+      "norm_label": "cinewindow",
+      "source_file": "src/window/input.rs",
+      "source_location": "L4"
+    },
+    {
+      "id": "src_window_input_cinewindow_setup_keyboard_and_drop",
+      "label": ".setup_keyboard_and_drop()",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": ".open_files",
+      "file_type": "code",
+      "norm_label": ".setup_keyboard_and_drop()",
+      "source_file": "src/window/input.rs",
+      "source_location": "L5"
+    },
+    {
+      "id": "src_window_input_cinewindow_setup_mouse_gestures",
+      "label": ".setup_mouse_gestures()",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": ".open_files",
+      "file_type": "code",
+      "norm_label": ".setup_mouse_gestures()",
+      "source_file": "src/window/input.rs",
+      "source_location": "L110"
+    },
+    {
+      "id": "src_window_input_rs_overlay",
+      "label": "Overlay",
+      "_origin": "ast",
+      "community": 7,
+      "community_name": ".open_files",
+      "file_type": "code",
+      "norm_label": "overlay",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_utils_calculate_window_size",
+      "label": "calculate_window_size()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": "calculate_window_size()",
+      "source_file": "src/utils.rs",
+      "source_location": "L104"
+    },
+    {
+      "id": "src_utils_format_time",
+      "label": "format_time()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": "format_time()",
+      "source_file": "src/utils.rs",
+      "source_location": "L76"
+    },
+    {
+      "id": "src_utils_resolution_badge",
+      "label": "resolution_badge()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": "resolution_badge()",
+      "source_file": "src/utils.rs",
+      "source_location": "L53"
+    },
+    {
+      "id": "src_utils_rs_string",
+      "label": "String",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": "string",
+      "source_file": "",
+      "source_location": ""
+    },
+    {
+      "id": "src_window_playback_cinewindow",
+      "label": "CineWindow",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": "cinewindow",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L5"
+    },
+    {
+      "id": "src_window_playback_cinewindow_clear_playlist",
+      "label": ".clear_playlist()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".clear_playlist()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L124"
+    },
+    {
+      "id": "src_window_playback_cinewindow_play_index",
+      "label": ".play_index()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".play_index()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L53"
+    },
+    {
+      "id": "src_window_playback_cinewindow_play_next",
+      "label": ".play_next()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".play_next()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L30"
+    },
+    {
+      "id": "src_window_playback_cinewindow_play_prev",
+      "label": ".play_prev()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".play_prev()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L23"
+    },
+    {
+      "id": "src_window_playback_cinewindow_remove_playlist_index",
+      "label": ".remove_playlist_index()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".remove_playlist_index()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L80"
+    },
+    {
+      "id": "src_window_playback_cinewindow_request_video_window_size_toggle",
+      "label": ".request_video_window_size_toggle()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".request_video_window_size_toggle()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L150"
+    },
+    {
+      "id": "src_window_playback_cinewindow_setup_progress_timer",
+      "label": ".setup_progress_timer()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".setup_progress_timer()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L285"
+    },
+    {
+      "id": "src_window_playback_cinewindow_sync_inhibit",
+      "label": ".sync_inhibit()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".sync_inhibit()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L260"
+    },
+    {
+      "id": "src_window_playback_cinewindow_toggle_pause",
+      "label": ".toggle_pause()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".toggle_pause()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L6"
+    },
+    {
+      "id": "src_window_playback_cinewindow_toggle_video_window_size",
+      "label": ".toggle_video_window_size()",
+      "_origin": "ast",
+      "community": 8,
+      "community_name": "CineWindow",
+      "file_type": "code",
+      "norm_label": ".toggle_video_window_size()",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L211"
     },
     {
       "id": "DanielLazaro",
@@ -4082,6 +4456,30 @@
       "weight": 1.0
     },
     {
+      "source": "src_mpv_gl_area_videoglarea_clamp_video_pan",
+      "target": "src_mpv_gl_area_videoglarea_video_dimensions",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "src_mpv_gl_area_videoglarea_load_file",
+      "target": "src_mpv_gl_area_videoglarea_set_video_pan",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L139",
+      "weight": 1.0
+    },
+    {
       "source": "src_mpv_gl_area_videoglarea_load_file",
       "target": "src_mpv_gl_area_videoglarea_command",
       "relation": "calls",
@@ -4090,7 +4488,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L140",
+      "source_location": "L141",
       "weight": 1.0
     },
     {
@@ -4106,6 +4504,30 @@
       "weight": 1.0
     },
     {
+      "source": "src_mpv_gl_area_videoglarea_reset_video_view",
+      "target": "src_mpv_gl_area_videoglarea_set_video_zoom",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L206",
+      "weight": 1.0
+    },
+    {
+      "source": "src_mpv_gl_area_videoglarea_reset_video_view",
+      "target": "src_mpv_gl_area_videoglarea_set_video_pan",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L207",
+      "weight": 1.0
+    },
+    {
       "source": "src_mpv_gl_area_videoglarea_seek_absolute",
       "target": "src_mpv_gl_area_videoglarea_command",
       "relation": "calls",
@@ -4114,7 +4536,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L155",
+      "source_location": "L156",
       "weight": 1.0
     },
     {
@@ -4126,7 +4548,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L162",
+      "source_location": "L163",
       "weight": 1.0
     },
     {
@@ -4138,7 +4560,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L190",
+      "source_location": "L191",
       "weight": 1.0
     },
     {
@@ -4150,7 +4572,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L218",
+      "source_location": "L257",
       "weight": 1.0
     },
     {
@@ -4162,7 +4584,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L226",
+      "source_location": "L265",
       "weight": 1.0
     },
     {
@@ -4174,7 +4596,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L222",
+      "source_location": "L261",
       "weight": 1.0
     },
     {
@@ -4186,7 +4608,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L230",
+      "source_location": "L269",
       "weight": 1.0
     },
     {
@@ -4198,7 +4620,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L238",
+      "source_location": "L277",
       "weight": 1.0
     },
     {
@@ -4210,7 +4632,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L242",
+      "source_location": "L281",
       "weight": 1.0
     },
     {
@@ -4222,7 +4644,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L246",
+      "source_location": "L285",
       "weight": 1.0
     },
     {
@@ -4234,7 +4656,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L203",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -4246,7 +4668,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L181",
+      "source_location": "L182",
       "weight": 1.0
     },
     {
@@ -4258,7 +4680,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L234",
+      "source_location": "L273",
       "weight": 1.0
     },
     {
@@ -4270,7 +4692,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L186",
+      "source_location": "L187",
       "weight": 1.0
     },
     {
@@ -4282,7 +4704,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L214",
+      "source_location": "L253",
+      "weight": 1.0
+    },
+    {
+      "source": "src_mpv_gl_area_videoglarea_set_video_pan",
+      "target": "src_mpv_gl_area_videoglarea_set_property",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L217",
       "weight": 1.0
     },
     {
@@ -4294,7 +4728,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L194",
+      "source_location": "L195",
       "weight": 1.0
     },
     {
@@ -4306,7 +4740,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L198",
+      "source_location": "L199",
+      "weight": 1.0
+    },
+    {
+      "source": "src_mpv_gl_area_videoglarea_set_video_zoom",
+      "target": "src_mpv_gl_area_videoglarea_set_video_pan",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -4318,7 +4764,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L169",
+      "source_location": "L170",
       "weight": 1.0
     },
     {
@@ -4330,7 +4776,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L267",
+      "source_location": "L306",
       "weight": 1.0
     },
     {
@@ -4342,7 +4788,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L147",
+      "source_location": "L148",
       "weight": 1.0
     },
     {
@@ -4354,7 +4800,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L259",
+      "source_location": "L298",
+      "weight": 1.0
+    },
+    {
+      "source": "src_mpv_gl_area_videoglarea_video_pan",
+      "target": "src_mpv_gl_area_videoglarea_get_property_str",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L211",
       "weight": 1.0
     },
     {
@@ -4366,7 +4824,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L290",
+      "source_location": "L329",
       "weight": 1.0
     },
     {
@@ -4378,7 +4836,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/options.rs",
-      "source_location": "L171",
+      "source_location": "L173",
       "weight": 1.0
     },
     {
@@ -4390,7 +4848,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/options.rs",
-      "source_location": "L87",
+      "source_location": "L89",
       "weight": 1.0
     },
     {
@@ -4402,7 +4860,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/options.rs",
-      "source_location": "L446",
+      "source_location": "L451",
       "weight": 1.0
     },
     {
@@ -4414,7 +4872,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/preferences.rs",
-      "source_location": "L62",
+      "source_location": "L60",
       "weight": 1.0
     },
     {
@@ -4426,7 +4884,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/preferences.rs",
-      "source_location": "L146",
+      "source_location": "L140",
       "weight": 1.0
     },
     {
@@ -4486,7 +4944,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/tracks.rs",
-      "source_location": "L333",
+      "source_location": "L339",
       "weight": 1.0
     },
     {
@@ -4498,7 +4956,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/tracks.rs",
-      "source_location": "L397",
+      "source_location": "L403",
       "weight": 1.0
     },
     {
@@ -4514,7 +4972,7 @@
       "weight": 1.0
     },
     {
-      "source": "src_utils_center_active_cine_window",
+      "source": "src_utils_center_cine_window",
       "target": "src_utils_run_kwin_center_script",
       "relation": "calls",
       "_origin": "ast",
@@ -4522,7 +4980,91 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/utils.rs",
-      "source_location": "L143",
+      "source_location": "L166",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_center_x11_surface",
+      "target": "src_utils_g_type_check_instance_is_a",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_center_x11_surface",
+      "target": "src_utils_gdk_x11_display_get_type",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L181",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_center_x11_surface",
+      "target": "src_utils_gdk_x11_surface_get_type",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L182",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_center_x11_surface",
+      "target": "src_utils_gdk_x11_display_get_xdisplay",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L187",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_center_x11_surface",
+      "target": "src_utils_gdk_x11_surface_get_xid",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L188",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_center_x11_surface",
+      "target": "src_utils_xmovewindow",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L196",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_center_x11_surface",
+      "target": "src_utils_xflush",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L197",
       "weight": 1.0
     },
     {
@@ -4534,19 +5076,115 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/utils.rs",
-      "source_location": "L217",
+      "source_location": "L325",
       "weight": 1.0
     },
     {
-      "source": "src_utils_install_cine_window_added_centering",
-      "target": "src_utils_run_kwin_center_script",
+      "source": "src_utils_load_window_position",
+      "target": "src_utils_config_dir",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/utils.rs",
-      "source_location": "L164",
+      "source_location": "L264",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_move_x11_surface",
+      "target": "src_utils_g_type_check_instance_is_a",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_move_x11_surface",
+      "target": "src_utils_gdk_x11_display_get_type",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L241",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_move_x11_surface",
+      "target": "src_utils_gdk_x11_surface_get_type",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L242",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_move_x11_surface",
+      "target": "src_utils_gdk_x11_display_get_xdisplay",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L243",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_move_x11_surface",
+      "target": "src_utils_gdk_x11_surface_get_xid",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L244",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_move_x11_surface",
+      "target": "src_utils_xmovewindow",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L246",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_move_x11_surface",
+      "target": "src_utils_xflush",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L247",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_save_window_position",
+      "target": "src_utils_config_dir",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L253",
       "weight": 1.0
     },
     {
@@ -4558,7 +5196,127 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/utils.rs",
-      "source_location": "L64",
+      "source_location": "L98",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "src_utils_g_type_check_instance_is_a",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "src_utils_gdk_x11_display_get_type",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L216",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "src_utils_gdk_x11_surface_get_type",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L217",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "src_utils_gdk_x11_display_get_xdisplay",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L221",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "src_utils_gdk_x11_surface_get_xid",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L222",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "src_utils_xdefaultrootwindow",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L227",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "src_utils_xtranslatecoordinates",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/utils.rs",
+      "source_location": "L227",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow_present",
+      "target": "src_window_cinewindow_center_on_current_monitor",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/window.rs",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow_present",
+      "target": "src_window_cinewindow_restore_saved_position",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/window.rs",
+      "source_location": "L84",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow_show_zoom_indicator",
+      "target": "src_window_update_zoom_indicator",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/window.rs",
+      "source_location": "L108",
       "weight": 1.0
     },
     {
@@ -4690,7 +5448,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L36",
+      "source_location": "L42",
       "weight": 1.0
     },
     {
@@ -4702,7 +5460,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L71",
+      "source_location": "L77",
       "weight": 1.0
     },
     {
@@ -4714,7 +5472,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L109",
+      "source_location": "L115",
       "weight": 1.0
     },
     {
@@ -4726,7 +5484,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L140",
+      "source_location": "L141",
       "weight": 1.0
     },
     {
@@ -4738,7 +5496,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L44",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -4750,7 +5508,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -4762,19 +5520,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L89",
+      "source_location": "L90",
       "weight": 1.0
     },
     {
-      "source": "src_window_playback_cinewindow_setup_progress_timer",
-      "target": "src_window_playback_cinewindow_apply_video_window_size",
+      "source": "src_window_playback_cinewindow_request_video_window_size_toggle",
+      "target": "src_window_playback_cinewindow_toggle_video_window_size",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L207",
+      "source_location": "L159",
       "weight": 1.0
     },
     {
@@ -4786,7 +5544,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L267",
+      "source_location": "L350",
       "weight": 1.0
     },
     {
@@ -4798,7 +5556,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -4851,7 +5609,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_render_param_api_type",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4863,7 +5621,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_render_param_flip_y",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4875,7 +5633,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_render_param_invalid",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4887,7 +5645,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_render_param_opengl_fbo",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4899,7 +5657,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_render_param_opengl_init_params",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4935,7 +5693,7 @@
     },
     {
       "source": "src_mpv_engine_mpvopenglfbo",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4971,7 +5729,7 @@
     },
     {
       "source": "src_mpv_engine_mpvrenderparam",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5062,7 +5820,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/preferences.rs",
-      "source_location": "L34",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -5075,6 +5833,18 @@
       "context": "field",
       "source_file": "src/tracks.rs",
       "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_center_script_lock",
+      "target": "mutex",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "field",
+      "source_file": "src/utils.rs",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -5091,7 +5861,7 @@
     },
     {
       "source": "src_window_cinewindow",
-      "target": "src_window_rs_toastoverlay",
+      "target": "src_mpv_gl_area_videoglarea",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5103,7 +5873,7 @@
     },
     {
       "source": "src_window_cinewindow",
-      "target": "src_mpv_gl_area_videoglarea",
+      "target": "src_window_rs_statuspage",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5115,7 +5885,7 @@
     },
     {
       "source": "src_window_cinewindow",
-      "target": "src_window_rs_statuspage",
+      "target": "src_window_rs_headerbar",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5127,7 +5897,7 @@
     },
     {
       "source": "src_window_cinewindow",
-      "target": "src_window_rs_headerbar",
+      "target": "src_window_rs_windowtitle",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5139,7 +5909,7 @@
     },
     {
       "source": "src_window_cinewindow",
-      "target": "src_window_rs_windowtitle",
+      "target": "src_window_rs_box",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5151,18 +5921,6 @@
     },
     {
       "source": "src_window_cinewindow",
-      "target": "src_window_rs_box",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "field",
-      "source_file": "src/window.rs",
-      "source_location": "L49",
-      "weight": 1.0
-    },
-    {
-      "source": "src_window_cinewindow",
       "target": "src_window_rs_menubutton",
       "relation": "references",
       "_origin": "ast",
@@ -5170,7 +5928,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window.rs",
-      "source_location": "L51",
+      "source_location": "L50",
       "weight": 1.0
     },
     {
@@ -5182,7 +5940,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window.rs",
-      "source_location": "L52",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -5194,7 +5952,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window.rs",
-      "source_location": "L54",
+      "source_location": "L63",
       "weight": 1.0
     },
     {
@@ -5206,7 +5964,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window.rs",
-      "source_location": "L59",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -5218,7 +5976,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window.rs",
-      "source_location": "L60",
+      "source_location": "L66",
       "weight": 1.0
     },
     {
@@ -5230,7 +5988,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window.rs",
-      "source_location": "L67",
+      "source_location": "L73",
       "weight": 1.0
     },
     {
@@ -5242,7 +6000,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window.rs",
-      "source_location": "L70",
+      "source_location": "L76",
       "weight": 1.0
     },
     {
@@ -5254,7 +6012,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window/ui.rs",
-      "source_location": "L10",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -5266,7 +6024,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window/ui.rs",
-      "source_location": "L11",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -5278,7 +6036,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window/ui.rs",
-      "source_location": "L12",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -5290,7 +6048,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window/ui.rs",
-      "source_location": "L14",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -5302,7 +6060,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window/ui.rs",
-      "source_location": "L15",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -5314,7 +6072,7 @@
       "confidence_score": 1.0,
       "context": "field",
       "source_file": "src/window/ui.rs",
-      "source_location": "L20",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -5494,7 +6252,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L249",
+      "source_location": "L288",
       "weight": 1.0
     },
     {
@@ -5506,12 +6264,24 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L288",
+      "source_location": "L327",
       "weight": 1.0
     },
     {
       "source": "src_options_create_options_menu_button",
       "target": "src_options_playbackoptions",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "src/options.rs",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "src_options_create_options_menu_button",
+      "target": "src_options_rs_option",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5534,6 +6304,18 @@
       "weight": 1.0
     },
     {
+      "source": "src_options_create_options_menu_button",
+      "target": "src_options_rs_sourceid",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "src/options.rs",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
       "source": "src_options_make_option_row",
       "target": "src_options_rs_widget",
       "relation": "references",
@@ -5542,7 +6324,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/options.rs",
-      "source_location": "L394",
+      "source_location": "L399",
       "weight": 1.0
     },
     {
@@ -5578,7 +6360,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/shortcuts.rs",
-      "source_location": "L156",
+      "source_location": "L168",
       "weight": 1.0
     },
     {
@@ -5602,7 +6384,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/utils.rs",
-      "source_location": "L202",
+      "source_location": "L323",
       "weight": 1.0
     },
     {
@@ -5614,7 +6396,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/window.rs",
-      "source_location": "L55",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -5626,7 +6408,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/window.rs",
-      "source_location": "L55",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -5638,19 +6420,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/window.rs",
-      "source_location": "L58",
-      "weight": 1.0
-    },
-    {
-      "source": "src_window_cinewindow",
-      "target": "sourceid",
-      "relation": "references",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "generic_arg",
-      "source_file": "src/window.rs",
-      "source_location": "L69",
+      "source_location": "L62",
       "weight": 1.0
     },
     {
@@ -5662,7 +6432,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/window.rs",
-      "source_location": "L69",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -5674,7 +6444,19 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/window.rs",
-      "source_location": "L69",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow",
+      "target": "src_window_rs_sourceid",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "src/window.rs",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -5686,7 +6468,43 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/window.rs",
-      "source_location": "L70",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_ui_build_playback_controls",
+      "target": "src_window_ui_rs_option",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "src/window/ui.rs",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_ui_build_playback_controls",
+      "target": "src_window_ui_rs_refcell",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "src/window/ui.rs",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_ui_build_playback_controls",
+      "target": "src_window_ui_rs_sourceid",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "src/window/ui.rs",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -5698,7 +6516,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/window/ui.rs",
-      "source_location": "L15",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -5710,7 +6528,43 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "src/window/ui.rs",
-      "source_location": "L15",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_update_zoom_indicator",
+      "target": "src_window_rs_option",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "src/window.rs",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_update_zoom_indicator",
+      "target": "src_window_rs_refcell",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "src/window.rs",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_update_zoom_indicator",
+      "target": "src_window_rs_sourceid",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "generic_arg",
+      "source_file": "src/window.rs",
+      "source_location": "L112",
       "weight": 1.0
     },
     {
@@ -5902,6 +6756,18 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/utils.rs",
+      "source_location": "L11",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_rs_c_void",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/utils.rs",
       "source_location": "L9",
       "weight": 1.0
     },
@@ -6038,6 +6904,18 @@
       "weight": 1.0
     },
     {
+      "source": "src_window_actions",
+      "target": "src_utils",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "src/window/actions.rs",
+      "source_location": "L3",
+      "weight": 1.0
+    },
+    {
       "source": "src_application_cineapplication_on_startup",
       "target": "src_application_rs_application",
       "relation": "references",
@@ -6071,6 +6949,18 @@
       "context": "parameter_type",
       "source_file": "src/application.rs",
       "source_location": "L131",
+      "weight": 1.0
+    },
+    {
+      "source": "src_gestures_setup_video_gestures",
+      "target": "d",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/gestures.rs",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -6207,7 +7097,7 @@
     },
     {
       "source": "src_mpv_engine_glgetintegerv",
-      "target": "c_int",
+      "target": "c_uint",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -6219,7 +7109,7 @@
     },
     {
       "source": "src_mpv_engine_glgetintegerv",
-      "target": "c_uint",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -6519,6 +7409,18 @@
     },
     {
       "source": "src_options_create_options_menu_button",
+      "target": "src_options_rs_label",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/options.rs",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "src_options_create_options_menu_button",
       "target": "src_options_rs_rc",
       "relation": "references",
       "_origin": "ast",
@@ -6538,7 +7440,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/options.rs",
-      "source_location": "L394",
+      "source_location": "L399",
       "weight": 1.0
     },
     {
@@ -6550,7 +7452,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/options.rs",
-      "source_location": "L394",
+      "source_location": "L399",
       "weight": 1.0
     },
     {
@@ -6646,7 +7548,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/preferences.rs",
-      "source_location": "L125",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -6658,7 +7560,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/preferences.rs",
-      "source_location": "L125",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -6682,7 +7584,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/shortcuts.rs",
-      "source_location": "L156",
+      "source_location": "L168",
       "weight": 1.0
     },
     {
@@ -6694,7 +7596,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/shortcuts.rs",
-      "source_location": "L164",
+      "source_location": "L176",
       "weight": 1.0
     },
     {
@@ -6730,7 +7632,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/tracks.rs",
-      "source_location": "L282",
+      "source_location": "L288",
       "weight": 1.0
     },
     {
@@ -6742,7 +7644,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/tracks.rs",
-      "source_location": "L282",
+      "source_location": "L288",
       "weight": 1.0
     },
     {
@@ -6770,6 +7672,30 @@
       "weight": 1.0
     },
     {
+      "source": "src_utils_center_x11_surface",
+      "target": "display",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_center_x11_surface",
+      "target": "surface",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L171",
+      "weight": 1.0
+    },
+    {
       "source": "src_utils_collect_media_files",
       "target": "path",
       "relation": "references",
@@ -6778,7 +7704,31 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/utils.rs",
-      "source_location": "L202",
+      "source_location": "L323",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_g_type_check_instance_is_a",
+      "target": "src_utils_rs_c_void",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_gdk_x11_surface_get_xid",
+      "target": "src_utils_rs_c_void",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -6790,7 +7740,127 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/utils.rs",
-      "source_location": "L194",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_move_x11_surface",
+      "target": "display",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L231",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_move_x11_surface",
+      "target": "surface",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L231",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "display",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L208",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "surface",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L208",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xdefaultrootwindow",
+      "target": "src_utils_rs_c_void",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xflush",
+      "target": "src_utils_rs_c_void",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xmovewindow",
+      "target": "c_ulong",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xmovewindow",
+      "target": "src_utils_rs_c_void",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xtranslatecoordinates",
+      "target": "c_ulong",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xtranslatecoordinates",
+      "target": "src_utils_rs_c_void",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -6838,7 +7908,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L223",
+      "source_location": "L229",
       "weight": 1.0
     },
     {
@@ -6850,7 +7920,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L147",
+      "source_location": "L153",
       "weight": 1.0
     },
     {
@@ -6862,7 +7932,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L147",
+      "source_location": "L153",
       "weight": 1.0
     },
     {
@@ -6874,7 +7944,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L147",
+      "source_location": "L153",
       "weight": 1.0
     },
     {
@@ -6898,7 +7968,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/input.rs",
-      "source_location": "L84",
+      "source_location": "L110",
       "weight": 1.0
     },
     {
@@ -6910,7 +7980,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/ui.rs",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -6922,7 +7992,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/ui.rs",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -6934,7 +8004,19 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/ui.rs",
-      "source_location": "L23",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_ui_build_playback_controls",
+      "target": "src_window_ui_rs_label",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/window/ui.rs",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -6946,7 +8028,19 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/ui.rs",
-      "source_location": "L23",
+      "source_location": "L25",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_ui_build_playback_controls",
+      "target": "src_window_ui_rs_rc",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/window/ui.rs",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -6958,19 +8052,31 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/window/ui.rs",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
-      "source": "src_window_ui_build_playback_controls",
-      "target": "src_window_ui_rs_toastoverlay",
+      "source": "src_window_update_zoom_indicator",
+      "target": "src_window_rs_label",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "parameter_type",
-      "source_file": "src/window/ui.rs",
-      "source_location": "L23",
+      "source_file": "src/window.rs",
+      "source_location": "L112",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_update_zoom_indicator",
+      "target": "src_window_rs_rc",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "src/window.rs",
+      "source_location": "L112",
       "weight": 1.0
     },
     {
@@ -7083,7 +8189,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_command",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7095,7 +8201,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_command_async",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7131,7 +8237,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_initialize",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7143,7 +8249,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_render_context_create",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7155,7 +8261,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_render_context_render",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7167,7 +8273,7 @@
     },
     {
       "source": "src_mpv_engine_mpv_set_option_string",
-      "target": "c_int",
+      "target": "src_mpv_engine_rs_c_int",
       "relation": "references",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7234,7 +8340,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L253",
+      "source_location": "L292",
       "weight": 1.0
     },
     {
@@ -7246,7 +8352,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L249",
+      "source_location": "L288",
       "weight": 1.0
     },
     {
@@ -7270,7 +8376,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L275",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -7282,7 +8388,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L288",
+      "source_location": "L327",
       "weight": 1.0
     },
     {
@@ -7318,7 +8424,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/options.rs",
-      "source_location": "L394",
+      "source_location": "L399",
       "weight": 1.0
     },
     {
@@ -7330,7 +8436,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/options.rs",
-      "source_location": "L421",
+      "source_location": "L426",
       "weight": 1.0
     },
     {
@@ -7342,7 +8448,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/options.rs",
-      "source_location": "L421",
+      "source_location": "L426",
       "weight": 1.0
     },
     {
@@ -7354,7 +8460,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/options.rs",
-      "source_location": "L421",
+      "source_location": "L426",
       "weight": 1.0
     },
     {
@@ -7378,7 +8484,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/preferences.rs",
-      "source_location": "L38",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -7390,7 +8496,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/preferences.rs",
-      "source_location": "L61",
+      "source_location": "L59",
       "weight": 1.0
     },
     {
@@ -7438,7 +8544,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/tracks.rs",
-      "source_location": "L282",
+      "source_location": "L288",
       "weight": 1.0
     },
     {
@@ -7486,7 +8592,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/utils.rs",
-      "source_location": "L202",
+      "source_location": "L323",
       "weight": 1.0
     },
     {
@@ -7498,7 +8604,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/utils.rs",
-      "source_location": "L56",
+      "source_location": "L90",
       "weight": 1.0
     },
     {
@@ -7510,7 +8616,55 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/utils.rs",
-      "source_location": "L42",
+      "source_location": "L76",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_g_type_check_instance_is_a",
+      "target": "src_utils_rs_c_int",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_gdk_x11_display_get_xdisplay",
+      "target": "src_utils_rs_c_void",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_gdk_x11_surface_get_xid",
+      "target": "c_ulong",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_load_window_position",
+      "target": "src_utils_rs_option",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L262",
       "weight": 1.0
     },
     {
@@ -7522,7 +8676,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/utils.rs",
-      "source_location": "L19",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -7534,7 +8688,67 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/utils.rs",
-      "source_location": "L63",
+      "source_location": "L97",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_x11_surface_position",
+      "target": "src_utils_rs_option",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L208",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xdefaultrootwindow",
+      "target": "c_ulong",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xflush",
+      "target": "src_utils_rs_c_int",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xmovewindow",
+      "target": "src_utils_rs_c_int",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L32",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils_xtranslatecoordinates",
+      "target": "src_utils_rs_c_int",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "return_type",
+      "source_file": "src/utils.rs",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -7594,7 +8808,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/window/ui.rs",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -8144,7 +9358,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/options.rs",
-      "source_location": "L394",
+      "source_location": "L399",
       "weight": 1.0
     },
     {
@@ -8155,7 +9369,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/options.rs",
-      "source_location": "L421",
+      "source_location": "L426",
       "weight": 1.0
     },
     {
@@ -8199,7 +9413,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/preferences.rs",
-      "source_location": "L125",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -8265,7 +9479,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/shortcuts.rs",
-      "source_location": "L156",
+      "source_location": "L168",
       "weight": 1.0
     },
     {
@@ -8276,7 +9490,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/shortcuts.rs",
-      "source_location": "L164",
+      "source_location": "L176",
       "weight": 1.0
     },
     {
@@ -8320,7 +9534,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/tracks.rs",
-      "source_location": "L282",
+      "source_location": "L288",
       "weight": 1.0
     },
     {
@@ -8347,7 +9561,18 @@
     },
     {
       "source": "src_utils",
-      "target": "src_utils_video_extensions",
+      "target": "src_utils_calculate_window_size",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_center_script_lock",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -8358,40 +9583,29 @@
     },
     {
       "source": "src_utils",
-      "target": "src_utils_center_active_cine_window",
+      "target": "src_utils_center_cine_window",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/utils.rs",
-      "source_location": "L139",
+      "source_location": "L137",
       "weight": 1.0
     },
     {
       "source": "src_utils",
-      "target": "src_utils_install_cine_window_added_centering",
+      "target": "src_utils_center_x11_surface",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/utils.rs",
-      "source_location": "L161",
+      "source_location": "L171",
       "weight": 1.0
     },
     {
       "source": "src_utils",
-      "target": "src_utils_run_kwin_center_script",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/utils.rs",
-      "source_location": "L181",
-      "weight": 1.0
-    },
-    {
-      "source": "src_utils",
-      "target": "src_utils_resolution_badge",
+      "target": "src_utils_gdk_x11_display_get_type",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -8402,13 +9616,123 @@
     },
     {
       "source": "src_utils",
+      "target": "src_utils_gdk_x11_display_get_xdisplay",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_x11_surface_position",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L208",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_gdk_x11_surface_get_type",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_gdk_x11_surface_get_xid",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_move_x11_surface",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L231",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_save_window_position",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L252",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_load_window_position",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L262",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_run_kwin_center_script",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L268",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_g_type_check_instance_is_a",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
       "target": "src_utils_is_media_file",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/utils.rs",
-      "source_location": "L194",
+      "source_location": "L315",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_xmovewindow",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -8419,7 +9743,62 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/utils.rs",
-      "source_location": "L202",
+      "source_location": "L323",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_xtranslatecoordinates",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_xdefaultrootwindow",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_xflush",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_video_extensions",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "src_utils",
+      "target": "src_utils_resolution_badge",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/utils.rs",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -8430,7 +9809,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/utils.rs",
-      "source_location": "L42",
+      "source_location": "L76",
       "weight": 1.0
     },
     {
@@ -8441,7 +9820,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/utils.rs",
-      "source_location": "L56",
+      "source_location": "L90",
       "weight": 1.0
     },
     {
@@ -8452,18 +9831,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/utils.rs",
-      "source_location": "L63",
+      "source_location": "L97",
       "weight": 1.0
     },
     {
-      "source": "src_utils",
-      "target": "src_utils_calculate_window_size",
+      "source": "src_window",
+      "target": "src_window_update_zoom_indicator",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "src/utils.rs",
-      "source_location": "L71",
+      "source_file": "src/window.rs",
+      "source_location": "L112",
       "weight": 1.0
     },
     {
@@ -8507,7 +9886,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/ui.rs",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -8573,7 +9952,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/preferences.rs",
-      "source_location": "L37",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -8837,7 +10216,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L144",
+      "source_location": "L145",
       "weight": 1.0
     },
     {
@@ -8848,7 +10227,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L152",
+      "source_location": "L153",
       "weight": 1.0
     },
     {
@@ -8859,7 +10238,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L159",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -8870,7 +10249,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L166",
+      "source_location": "L167",
       "weight": 1.0
     },
     {
@@ -8881,7 +10260,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L173",
+      "source_location": "L174",
       "weight": 1.0
     },
     {
@@ -8892,7 +10271,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L179",
+      "source_location": "L180",
       "weight": 1.0
     },
     {
@@ -8903,7 +10282,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L185",
+      "source_location": "L186",
       "weight": 1.0
     },
     {
@@ -8914,7 +10293,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L189",
+      "source_location": "L190",
       "weight": 1.0
     },
     {
@@ -8925,7 +10304,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L193",
+      "source_location": "L194",
       "weight": 1.0
     },
     {
@@ -8936,45 +10315,45 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L197",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
       "source": "src_mpv_gl_area_videoglarea",
-      "target": "src_mpv_gl_area_videoglarea_set_normalize_volume",
+      "target": "src_mpv_gl_area_videoglarea_reset_video_view",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L201",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
       "source": "src_mpv_gl_area_videoglarea",
-      "target": "src_mpv_gl_area_videoglarea_set_sub_delay",
+      "target": "src_mpv_gl_area_videoglarea_video_pan",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L213",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
       "source": "src_mpv_gl_area_videoglarea",
-      "target": "src_mpv_gl_area_videoglarea_set_audio_delay",
+      "target": "src_mpv_gl_area_videoglarea_set_video_pan",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L217",
+      "source_location": "L216",
       "weight": 1.0
     },
     {
       "source": "src_mpv_gl_area_videoglarea",
-      "target": "src_mpv_gl_area_videoglarea_set_contrast",
+      "target": "src_mpv_gl_area_videoglarea_clamp_video_pan",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -8985,13 +10364,57 @@
     },
     {
       "source": "src_mpv_gl_area_videoglarea",
+      "target": "src_mpv_gl_area_videoglarea_set_normalize_volume",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L240",
+      "weight": 1.0
+    },
+    {
+      "source": "src_mpv_gl_area_videoglarea",
+      "target": "src_mpv_gl_area_videoglarea_set_sub_delay",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L252",
+      "weight": 1.0
+    },
+    {
+      "source": "src_mpv_gl_area_videoglarea",
+      "target": "src_mpv_gl_area_videoglarea_set_audio_delay",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L256",
+      "weight": 1.0
+    },
+    {
+      "source": "src_mpv_gl_area_videoglarea",
+      "target": "src_mpv_gl_area_videoglarea_set_contrast",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/mpv_gl_area.rs",
+      "source_location": "L260",
+      "weight": 1.0
+    },
+    {
+      "source": "src_mpv_gl_area_videoglarea",
       "target": "src_mpv_gl_area_videoglarea_set_brightness",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L225",
+      "source_location": "L264",
       "weight": 1.0
     },
     {
@@ -9002,7 +10425,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L229",
+      "source_location": "L268",
       "weight": 1.0
     },
     {
@@ -9013,7 +10436,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L233",
+      "source_location": "L272",
       "weight": 1.0
     },
     {
@@ -9024,7 +10447,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L237",
+      "source_location": "L276",
       "weight": 1.0
     },
     {
@@ -9035,7 +10458,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L241",
+      "source_location": "L280",
       "weight": 1.0
     },
     {
@@ -9046,7 +10469,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L245",
+      "source_location": "L284",
       "weight": 1.0
     },
     {
@@ -9057,7 +10480,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L249",
+      "source_location": "L288",
       "weight": 1.0
     },
     {
@@ -9068,7 +10491,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L253",
+      "source_location": "L292",
       "weight": 1.0
     },
     {
@@ -9079,7 +10502,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L257",
+      "source_location": "L296",
       "weight": 1.0
     },
     {
@@ -9090,7 +10513,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L263",
+      "source_location": "L302",
       "weight": 1.0
     },
     {
@@ -9101,7 +10524,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L275",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -9112,7 +10535,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L288",
+      "source_location": "L327",
       "weight": 1.0
     },
     {
@@ -9123,7 +10546,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L315",
+      "source_location": "L354",
       "weight": 1.0
     },
     {
@@ -9134,7 +10557,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/mpv_gl_area.rs",
-      "source_location": "L321",
+      "source_location": "L360",
       "weight": 1.0
     },
     {
@@ -9161,24 +10584,13 @@
     },
     {
       "source": "src_preferences_appsettings",
-      "target": "src_preferences_appsettings_save_to_disk",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/preferences.rs",
-      "source_location": "L101",
-      "weight": 1.0
-    },
-    {
-      "source": "src_preferences_appsettings",
       "target": "src_preferences_appsettings_default",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/preferences.rs",
-      "source_location": "L38",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -9189,7 +10601,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/preferences.rs",
-      "source_location": "L61",
+      "source_location": "L59",
+      "weight": 1.0
+    },
+    {
+      "source": "src_preferences_appsettings",
+      "target": "src_preferences_appsettings_save_to_disk",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/preferences.rs",
+      "source_location": "L96",
       "weight": 1.0
     },
     {
@@ -9200,7 +10623,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/actions.rs",
-      "source_location": "L18",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -9211,7 +10634,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/actions.rs",
-      "source_location": "L5",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -9227,24 +10650,57 @@
     },
     {
       "source": "src_window_cinewindow",
-      "target": "src_window_cinewindow_present",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/window.rs",
-      "source_location": "L74",
-      "weight": 1.0
-    },
-    {
-      "source": "src_window_cinewindow",
       "target": "src_window_cinewindow_show_toast",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window.rs",
-      "source_location": "L82",
+      "source_location": "L103",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow",
+      "target": "src_window_cinewindow_show_zoom_indicator",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/window.rs",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow",
+      "target": "src_window_cinewindow_present",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/window.rs",
+      "source_location": "L80",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow",
+      "target": "src_window_cinewindow_restore_saved_position",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/window.rs",
+      "source_location": "L88",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow",
+      "target": "src_window_cinewindow_center_on_current_monitor",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/window.rs",
+      "source_location": "L94",
       "weight": 1.0
     },
     {
@@ -9354,7 +10810,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L117",
+      "source_location": "L123",
       "weight": 1.0
     },
     {
@@ -9365,7 +10821,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L147",
+      "source_location": "L153",
       "weight": 1.0
     },
     {
@@ -9376,7 +10832,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L182",
+      "source_location": "L188",
       "weight": 1.0
     },
     {
@@ -9387,7 +10843,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L223",
+      "source_location": "L229",
       "weight": 1.0
     },
     {
@@ -9398,7 +10854,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L44",
+      "source_location": "L50",
       "weight": 1.0
     },
     {
@@ -9420,7 +10876,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L79",
+      "source_location": "L85",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_input_cinewindow",
+      "target": "src_window_input_cinewindow_setup_mouse_gestures",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/window/input.rs",
+      "source_location": "L110",
       "weight": 1.0
     },
     {
@@ -9435,17 +10902,6 @@
       "weight": 1.0
     },
     {
-      "source": "src_window_input_cinewindow",
-      "target": "src_window_input_cinewindow_setup_mouse_gestures",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/window/input.rs",
-      "source_location": "L84",
-      "weight": 1.0
-    },
-    {
       "source": "src_window_playback_cinewindow",
       "target": "src_window_playback_cinewindow_clear_playlist",
       "relation": "method",
@@ -9453,40 +10909,29 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/playback.rs",
-      "source_location": "L123",
+      "source_location": "L124",
       "weight": 1.0
     },
     {
       "source": "src_window_playback_cinewindow",
-      "target": "src_window_playback_cinewindow_apply_video_window_size",
+      "target": "src_window_playback_cinewindow_request_video_window_size_toggle",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/playback.rs",
-      "source_location": "L149",
+      "source_location": "L150",
       "weight": 1.0
     },
     {
       "source": "src_window_playback_cinewindow",
-      "target": "src_window_playback_cinewindow_sync_inhibit",
+      "target": "src_window_playback_cinewindow_toggle_video_window_size",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/playback.rs",
-      "source_location": "L176",
-      "weight": 1.0
-    },
-    {
-      "source": "src_window_playback_cinewindow",
-      "target": "src_window_playback_cinewindow_setup_progress_timer",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/window/playback.rs",
-      "source_location": "L201",
+      "source_location": "L211",
       "weight": 1.0
     },
     {
@@ -9497,7 +10942,29 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/playback.rs",
-      "source_location": "L22",
+      "source_location": "L23",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_playback_cinewindow",
+      "target": "src_window_playback_cinewindow_sync_inhibit",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/window/playback.rs",
+      "source_location": "L260",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_playback_cinewindow",
+      "target": "src_window_playback_cinewindow_setup_progress_timer",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/window/playback.rs",
+      "source_location": "L285",
       "weight": 1.0
     },
     {
@@ -9508,18 +10975,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/playback.rs",
-      "source_location": "L29",
-      "weight": 1.0
-    },
-    {
-      "source": "src_window_playback_cinewindow",
-      "target": "src_window_playback_cinewindow_toggle_pause",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/window/playback.rs",
-      "source_location": "L5",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -9530,7 +10986,18 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/playback.rs",
-      "source_location": "L52",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_playback_cinewindow",
+      "target": "src_window_playback_cinewindow_toggle_pause",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/window/playback.rs",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -9541,7 +11008,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/window/playback.rs",
-      "source_location": "L79",
+      "source_location": "L80",
       "weight": 1.0
     },
     {
@@ -9613,7 +11080,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/preferences.rs",
-      "source_location": "L63",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -9625,7 +11092,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/preferences.rs",
-      "source_location": "L102",
+      "source_location": "L97",
       "weight": 1.0
     },
     {
@@ -9649,7 +11116,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/actions.rs",
-      "source_location": "L106",
+      "source_location": "L112",
       "weight": 1.0
     },
     {
@@ -9661,7 +11128,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/actions.rs",
-      "source_location": "L127",
+      "source_location": "L133",
       "weight": 1.0
     },
     {
@@ -9673,7 +11140,31 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/actions.rs",
-      "source_location": "L144",
+      "source_location": "L150",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_actions_cinewindow_setup_close_request",
+      "target": "src_utils_x11_surface_position",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "src/window/actions.rs",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_actions_cinewindow_setup_close_request",
+      "target": "src_utils_save_window_position",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "src/window/actions.rs",
+      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -9685,7 +11176,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/actions.rs",
-      "source_location": "L9",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -9697,31 +11188,55 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/builder.rs",
-      "source_location": "L245",
+      "source_location": "L282",
       "weight": 1.0
     },
     {
-      "source": "src_window_cinewindow_present",
-      "target": "src_utils_install_cine_window_added_centering",
+      "source": "src_window_cinewindow_center_on_current_monitor",
+      "target": "src_utils_center_cine_window",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window.rs",
-      "source_location": "L75",
+      "source_location": "L100",
       "weight": 1.0
     },
     {
-      "source": "src_window_cinewindow_present",
-      "target": "src_utils_center_active_cine_window",
+      "source": "src_window_cinewindow_center_on_current_monitor",
+      "target": "src_utils_center_x11_surface",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window.rs",
-      "source_location": "L78",
+      "source_location": "L96",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow_restore_saved_position",
+      "target": "src_utils_load_window_position",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "src/window.rs",
+      "source_location": "L89",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_cinewindow_restore_saved_position",
+      "target": "src_utils_move_x11_surface",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "src/window.rs",
+      "source_location": "L91",
       "weight": 1.0
     },
     {
@@ -9733,7 +11248,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L227",
+      "source_location": "L233",
       "weight": 1.0
     },
     {
@@ -9745,7 +11260,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L253",
+      "source_location": "L254",
       "weight": 1.0
     },
     {
@@ -9757,7 +11272,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L268",
+      "source_location": "L269",
       "weight": 1.0
     },
     {
@@ -9769,7 +11284,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L270",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -9781,7 +11296,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L184",
+      "source_location": "L190",
       "weight": 1.0
     },
     {
@@ -9793,7 +11308,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L204",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -9805,7 +11320,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/dialogs.rs",
-      "source_location": "L206",
+      "source_location": "L212",
       "weight": 1.0
     },
     {
@@ -9817,31 +11332,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/input.rs",
-      "source_location": "L99",
-      "weight": 1.0
-    },
-    {
-      "source": "src_window_playback_cinewindow_apply_video_window_size",
-      "target": "src_utils_calculate_window_size",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "call",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L169",
-      "weight": 1.0
-    },
-    {
-      "source": "src_window_playback_cinewindow_apply_video_window_size",
-      "target": "src_utils_center_active_cine_window",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "context": "call",
-      "source_file": "src/window/playback.rs",
-      "source_location": "L172",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -9853,7 +11344,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L143",
+      "source_location": "L144",
       "weight": 1.0
     },
     {
@@ -9865,7 +11356,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L62",
+      "source_location": "L63",
       "weight": 1.0
     },
     {
@@ -9877,7 +11368,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L119",
+      "source_location": "L120",
       "weight": 1.0
     },
     {
@@ -9889,7 +11380,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L88",
+      "source_location": "L89",
       "weight": 1.0
     },
     {
@@ -9901,7 +11392,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L237",
+      "source_location": "L320",
       "weight": 1.0
     },
     {
@@ -9913,7 +11404,19 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/playback.rs",
-      "source_location": "L254",
+      "source_location": "L337",
+      "weight": 1.0
+    },
+    {
+      "source": "src_window_playback_cinewindow_toggle_video_window_size",
+      "target": "src_utils_calculate_window_size",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "call",
+      "source_file": "src/window/playback.rs",
+      "source_location": "L250",
       "weight": 1.0
     },
     {
@@ -9925,7 +11428,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/ui.rs",
-      "source_location": "L134",
+      "source_location": "L147",
       "weight": 1.0
     },
     {
@@ -9937,7 +11440,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/ui.rs",
-      "source_location": "L135",
+      "source_location": "L148",
       "weight": 1.0
     },
     {
@@ -9949,7 +11452,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/ui.rs",
-      "source_location": "L152",
+      "source_location": "L165",
       "weight": 1.0
     },
     {
@@ -9961,7 +11464,7 @@
       "confidence_score": 0.85,
       "context": "call",
       "source_file": "src/window/ui.rs",
-      "source_location": "L159",
+      "source_location": "L172",
       "weight": 1.0
     },
     {
@@ -10002,5 +11505,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "30b378599d22fbdbf88395a7d75442b8928b2e23"
+  "built_at_commit": "e5dadfea2904d205425b8668ca898b9b2f1fe073"
 }
