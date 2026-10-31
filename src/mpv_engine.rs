@@ -125,6 +125,10 @@ impl MpvEngine {
             Self::set_opt(handle, "vo", "libmpv");
             Self::set_opt(handle, "ao", "pipewire,pulse,alsa");
             Self::set_opt(handle, "hwdec", if hwdec_enabled { "auto" } else { "no" });
+            // GTK's frame clock schedules the GLArea presentation. Avoid mpv's
+            // audio-sync wait inside mpv_render_context_render(), which would
+            // otherwise block GTK's main thread for much of each frame period.
+            Self::set_opt(handle, "video-timing-offset", "0");
             Self::set_opt(handle, "keep-open", "yes");
             Self::set_opt(handle, "osc", "no");
             Self::set_opt(handle, "load-console", "no");

@@ -8,6 +8,8 @@
 use std::cell::{Cell, RefCell};
 use std::ffi::c_void;
 use std::rc::Rc;
+use std::sync::{Arc, Mutex, atomic::{AtomicBool, Ordering}};
+use std::time::{Duration, Instant};
 
 use gtk::glib;
 use gtk::prelude::*;
@@ -16,18 +18,41 @@ use crate::mpv_engine::MpvEngine;
 
 /// Callback invocado desde el hilo de renderizado de `libmpv` cuando hay un nuevo
 /// fotograma listo para dibujarse en el `GtkGLArea`.
+struct MpvRenderCallbackContext {
+    render_queued: Arc<AtomicBool>,
+    stats: Arc<Mutex<RenderStats>>,
+}
+
+#[derive(Default)]
+struct RenderStats {
+    update_callbacks: u64,
+    queued_redraws: u64,
+    renders: u64,
+    render_time: Duration,
+    max_render_time: Duration,
+    queue_delay: Duration,
+    max_queue_delay: Duration,
+    pending_since: Option<Instant>,
+    last_report: Option<Instant>,
+}
+
 unsafe extern "C" fn on_mpv_render_update(ctx: *mut c_void) {
     if ctx.is_null() {
         return;
     }
-    // Obtenemos una copia temporal del WeakRef sin consumir el Box original
-    let weak_ptr = ctx as *const glib::SendWeakRef<gtk::GLArea>;
-    let weak_clone = unsafe { (*weak_ptr).clone() };
-    glib::idle_add_once(move || {
-        if let Some(area) = weak_clone.upgrade() {
-            area.queue_render();
-        }
-    });
+    let callback_context = unsafe { &*(ctx as *const MpvRenderCallbackContext) };
+    if let Ok(mut stats) = callback_context.stats.lock() {
+        stats.update_callbacks += 1;
+    }
+    // mpv puede notificar varias veces antes de que GTK alcance a dibujar.
+    // Agrupa esos avisos para no acumular renders viejos en la cola de eventos.
+    if callback_context.render_queued.swap(true, Ordering::AcqRel) {
+        return;
+    }
+    if let Ok(mut stats) = callback_context.stats.lock() {
+        stats.queued_redraws += 1;
+        stats.pending_since = Some(Instant::now());
+    }
 }
 
 #[derive(Clone)]
@@ -57,6 +82,8 @@ impl VideoGLArea {
         let fbo_width = Rc::new(Cell::new(1920));
         let fbo_height = Rc::new(Cell::new(1080));
         let cb_ctx_ptr = Rc::new(Cell::new(std::ptr::null_mut()));
+        let render_queued = Arc::new(AtomicBool::new(false));
+        let render_stats = Arc::new(Mutex::new(RenderStats::default()));
 
         // Actualizar dimensiones FBO en resize y cambio de escala HiDPI
         {
@@ -73,14 +100,18 @@ impl VideoGLArea {
         {
             let mpv = mpv.clone();
             let cb_ctx_ptr = cb_ctx_ptr.clone();
+            let callback_render_queued = Arc::clone(&render_queued);
+            let callback_render_stats = Arc::clone(&render_stats);
             gl_area.connect_realize(move |area| {
                 area.make_current();
                 if area.error().is_some() {
                     return;
                 }
-                let weak_area = glib::SendWeakRef::from(area.downgrade());
-                let boxed_weak = Box::new(weak_area);
-                let raw_ptr = Box::into_raw(boxed_weak) as *mut c_void;
+                let callback_context = Box::new(MpvRenderCallbackContext {
+                    render_queued: callback_render_queued.clone(),
+                    stats: callback_render_stats.clone(),
+                });
+                let raw_ptr = Box::into_raw(callback_context) as *mut c_void;
                 cb_ctx_ptr.set(raw_ptr);
 
                 if let Some(engine) = mpv.borrow_mut().as_mut() {
@@ -94,11 +125,89 @@ impl VideoGLArea {
             let mpv = mpv.clone();
             let fbo_w = fbo_width.clone();
             let fbo_h = fbo_height.clone();
+            let render_stats = Arc::clone(&render_stats);
             gl_area.connect_render(move |_area, _context| {
+                let render_started = Instant::now();
                 if let Some(engine) = mpv.borrow().as_ref() {
                     engine.render_frame(fbo_w.get(), fbo_h.get());
                 }
+                let render_time = render_started.elapsed();
+                let report = if let Ok(mut stats) = render_stats.lock() {
+                    stats.renders += 1;
+                    stats.render_time += render_time;
+                    stats.max_render_time = stats.max_render_time.max(render_time);
+                    if let Some(pending_since) = stats.pending_since.take() {
+                        let delay = render_started.saturating_duration_since(pending_since);
+                        stats.queue_delay += delay;
+                        stats.max_queue_delay = stats.max_queue_delay.max(delay);
+                    }
+
+                    let now = Instant::now();
+                    let should_report = stats.last_report
+                        .is_none_or(|last| now.duration_since(last) >= Duration::from_secs(5));
+                    if should_report {
+                        let snapshot = (
+                            stats.update_callbacks,
+                            stats.queued_redraws,
+                            stats.renders,
+                            stats.render_time,
+                            stats.max_render_time,
+                            stats.queue_delay,
+                            stats.max_queue_delay,
+                        );
+                        *stats = RenderStats { last_report: Some(now), ..RenderStats::default() };
+                        Some(snapshot)
+                    } else {
+                        None
+                    }
+                } else {
+                    None
+                };
+
+                if let Some((updates, queued, renders, total_render_time, max_render_time, total_queue_delay, max_queue_delay)) = report {
+                    // Never call libmpv while holding render_stats: its update
+                    // callback may need that mutex while the core serves reads.
+                    let mpv_stats = if let Some(engine) = mpv.borrow().as_ref() {
+                        [
+                            "decoder-frame-drop-count",
+                            "frame-drop-count",
+                            "vo-delayed-frame-count",
+                            "mistimed-frame-count",
+                            "display-fps",
+                            "estimated-display-fps",
+                            "vsync-ratio",
+                            "avsync",
+                            "display-sync-active",
+                        ]
+                            .map(|property| engine.get_property_str(property).unwrap_or_else(|| "?".into()))
+                    } else {
+                        std::array::from_fn(|_| "?".to_owned())
+                    };
+                    let render_count = renders.max(1);
+                    eprintln!(
+                        "[CineRust] Render 5s: avisos={updates}, solicitudes GTK={queued}, renders={renders}, promedio={:.2}ms, máximo={:.2}ms, espera promedio={:.2}ms, espera máxima={:.2}ms; mpv acumulado: descartados decodificador/VO={}/{}, retrasados={}, fuera de tiempo={}; pantalla: fps={}, estimado={}, ratio-vsync={}, A/V={}s, display-sync={}",
+                        total_render_time.as_secs_f64() * 1000.0 / render_count as f64,
+                        max_render_time.as_secs_f64() * 1000.0,
+                        total_queue_delay.as_secs_f64() * 1000.0 / render_count as f64,
+                        max_queue_delay.as_secs_f64() * 1000.0,
+                        mpv_stats[0], mpv_stats[1], mpv_stats[2], mpv_stats[3],
+                        mpv_stats[4], mpv_stats[5], mpv_stats[6], mpv_stats[7], mpv_stats[8],
+                    );
+                }
                 glib::Propagation::Stop
+            });
+        }
+
+        // Consume mpv redraw requests on GTK's frame clock. Scheduling a low
+        // priority GLib idle for every video update can add uneven latency and
+        // makes the GLArea miss display frames under event-loop load.
+        {
+            let render_queued = Arc::clone(&render_queued);
+            gl_area.add_tick_callback(move |area, _frame_clock| {
+                if render_queued.swap(false, Ordering::AcqRel) {
+                    area.queue_render();
+                }
+                glib::ControlFlow::Continue
             });
         }
 
@@ -114,7 +223,7 @@ impl VideoGLArea {
                 let ptr = cb_ctx_ptr.replace(std::ptr::null_mut());
                 if !ptr.is_null() {
                     unsafe {
-                        let _ = Box::from_raw(ptr as *mut glib::SendWeakRef<gtk::GLArea>);
+                        let _ = Box::from_raw(ptr as *mut MpvRenderCallbackContext);
                     }
                 }
             });

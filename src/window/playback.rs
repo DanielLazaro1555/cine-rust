@@ -284,48 +284,77 @@ impl CineWindow {
 
     pub(super) fn setup_progress_timer(&self) {
         let this = self.clone();
+        let timer_report_at = Rc::new(Cell::new(std::time::Instant::now()));
+        let timer_total = Rc::new(Cell::new(Duration::ZERO));
+        let timer_max = Rc::new(Cell::new(Duration::ZERO));
+        let timer_samples = Rc::new(Cell::new(0_u64));
+        let timer_last_callback = Rc::new(Cell::new(std::time::Instant::now()));
+        let timer_max_gap = Rc::new(Cell::new(Duration::ZERO));
+        let timer_slow_gaps = Rc::new(Cell::new(0_u64));
+        let metadata_polled_at = Rc::new(Cell::new(None::<std::time::Instant>));
+        let report_at = timer_report_at.clone();
+        let total = timer_total.clone();
+        let max = timer_max.clone();
+        let samples = timer_samples.clone();
+        let last_callback = timer_last_callback.clone();
+        let max_gap = timer_max_gap.clone();
+        let slow_gaps = timer_slow_gaps.clone();
+        let metadata_at = metadata_polled_at.clone();
         glib::timeout_add_local(Duration::from_millis(250), move || {
-            if let Some(dims) = this.video_area.video_dimensions() {
-                if dims != this.last_video_dims.get() {
-                    this.last_video_dims.set(dims);
-                }
+            let callback_started = std::time::Instant::now();
+            let callback_gap = callback_started.duration_since(last_callback.replace(callback_started));
+            max_gap.set(max_gap.get().max(callback_gap));
+            if callback_gap > Duration::from_millis(300) {
+                slow_gaps.set(slow_gaps.get() + 1);
             }
-
-            let (q_info, media_title) = this.video_area.video_quality_info();
-            if let Some(title) = media_title {
-                if !title.is_empty() && this.title_widget.title() != title {
-                    this.window.set_title(Some(&title));
-                    this.title_widget.set_title(&title);
+            let now = std::time::Instant::now();
+            let metadata_due = metadata_at
+                .get()
+                .is_none_or(|last| now.duration_since(last) >= Duration::from_secs(1));
+            if metadata_due {
+                metadata_at.set(Some(now));
+                if let Some(dims) = this.video_area.video_dimensions() {
+                    if dims != this.last_video_dims.get() {
+                        this.last_video_dims.set(dims);
+                    }
                 }
-            }
-            if let Some((w, h, fps, codec, hwdec)) = q_info {
-                let is_network_stream = this
-                    .playlist_items
-                    .borrow()
-                    .get(this.current_index.get())
-                    .map(|item| {
-                        let path = item.path.to_string_lossy();
-                        path.starts_with("http://") || path.starts_with("https://")
-                    })
-                    .unwrap_or(false);
 
-                if is_network_stream && h > this.max_detected_height.get() {
-                    this.max_detected_height.set(h);
-                    this.update_quality_menu(h);
-                } else if !is_network_stream && this.max_detected_height.replace(0) != 0 {
-                    // Los archivos locales solo tienen la calidad original; no ofrecer
-                    // límites de resolución que no corresponden a variantes disponibles.
-                    this.update_quality_menu(0);
+                let (q_info, media_title) = this.video_area.video_quality_info();
+                if let Some(title) = media_title {
+                    if !title.is_empty() && this.title_widget.title() != title {
+                        this.window.set_title(Some(&title));
+                        this.title_widget.set_title(&title);
+                    }
                 }
-                let badge = resolution_badge(w, h);
-                let short_badge = badge.split_whitespace().next().unwrap_or("HD");
-                this.quality_menu_btn.set_label(short_badge);
-                let subtitle = if fps > 0.0 {
-                    format!("{badge} · {fps:.0} FPS · {codec} · GPU: {hwdec}")
-                } else {
-                    format!("{badge} · {codec} · GPU: {hwdec}")
-                };
-                this.title_widget.set_subtitle(&subtitle);
+                if let Some((w, h, fps, codec, hwdec)) = q_info {
+                    let is_network_stream = this
+                        .playlist_items
+                        .borrow()
+                        .get(this.current_index.get())
+                        .map(|item| {
+                            let path = item.path.to_string_lossy();
+                            path.starts_with("http://") || path.starts_with("https://")
+                        })
+                        .unwrap_or(false);
+
+                    if is_network_stream && h > this.max_detected_height.get() {
+                        this.max_detected_height.set(h);
+                        this.update_quality_menu(h);
+                    } else if !is_network_stream && this.max_detected_height.replace(0) != 0 {
+                        // Los archivos locales solo tienen la calidad original; no ofrecer
+                        // límites de resolución que no corresponden a variantes disponibles.
+                        this.update_quality_menu(0);
+                    }
+                    let badge = resolution_badge(w, h);
+                    let short_badge = badge.split_whitespace().next().unwrap_or("HD");
+                    this.quality_menu_btn.set_label(short_badge);
+                    let subtitle = if fps > 0.0 {
+                        format!("{badge} · {fps:.0} FPS · {codec} · GPU: {hwdec}")
+                    } else {
+                        format!("{badge} · {codec} · GPU: {hwdec}")
+                    };
+                    this.title_widget.set_subtitle(&subtitle);
+                }
             }
 
             let (pos, dur, paused) = this.video_area.time_pos_and_duration();
@@ -350,6 +379,28 @@ impl CineWindow {
                         this.play_next();
                     }
                 }
+            }
+            let elapsed = callback_started.elapsed();
+            total.set(total.get() + elapsed);
+            max.set(max.get().max(elapsed));
+            samples.set(samples.get() + 1);
+            let now = std::time::Instant::now();
+            if now.duration_since(report_at.get()) >= Duration::from_secs(5) {
+                let count = samples.get().max(1);
+                eprintln!(
+                    "[CineRust] Timer de progreso GTK: callbacks={}, promedio={:.2}ms, máximo={:.2}ms, intervalo máximo={:.2}ms, intervalos >300ms={}",
+                    samples.get(),
+                    total.get().as_secs_f64() * 1000.0 / count as f64,
+                    max.get().as_secs_f64() * 1000.0,
+                    max_gap.get().as_secs_f64() * 1000.0,
+                    slow_gaps.get(),
+                );
+                report_at.set(now);
+                total.set(Duration::ZERO);
+                max.set(Duration::ZERO);
+                samples.set(0);
+                max_gap.set(Duration::ZERO);
+                slow_gaps.set(0);
             }
             glib::ControlFlow::Continue
         });

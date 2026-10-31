@@ -8,6 +8,7 @@
 pub mod application;
 pub mod gestures;
 pub mod history;
+pub mod logging;
 pub mod mpris;
 pub mod mpv_engine;
 pub mod mpv_gl_area;
@@ -31,6 +32,7 @@ pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 static GRESOURCE_BYTES: &[u8] = include_bytes!("../resources/cine.gresource");
 
 fn main() -> glib::ExitCode {
+    logging::init();
     // SAFETY: se configura al arranque en el hilo principal antes de iniciar GTK/hilos.
     unsafe {
         // KDE sobre Wayland no permite a GTK pedir una posición absoluta de

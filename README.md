@@ -12,6 +12,8 @@ Reescritura nativa en **Rust** (`gtk4-rs` + `libadwaita-rs` + `libmpv` FFI) del 
 - `src/main.rs`: Punto de entrada, registro de recursos embebidos (`cine.gresource`), configuración de `Adw::Application` y acciones globales (`app.new-window`, `app.preferences`, `app.about`, `app.quit`).
 - `src/window.rs` y `src/window/`: Ventana principal (`CineWindow`) y módulos separados para interfaz, reproducción, controles, diálogos y acciones.
 - `src/mpv_gl_area.rs`: Integración FFI con `libmpv` y `libEGL`/`libGL` sobre `GtkGLArea`.
+- `src/logging.rs`: Captura persistente de stdout/stderr y rotación del log por usuario.
+- `docs/reproduccion-y-renderizado.md`: Flujo de renderizado, causa del tirón y mediciones de la mejora.
 - `install.sh`: Compila e instala Cine en el perfil del usuario, incluyendo el lanzador del menú.
 - `resources/`: Archivos de interfaz `.blp` / `.ui`, hojas de estilo `style.css` y shaders.
 - `data/`: Iconos, archivo `.desktop`, esquema `GSettings` y metadatos AppStream.
