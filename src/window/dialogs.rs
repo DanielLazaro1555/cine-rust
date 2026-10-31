@@ -22,6 +22,12 @@ impl CineWindow {
         );
         dialog.set_modal(true);
         dialog.set_select_multiple(true);
+        let filter = gtk::FileFilter::new();
+        filter.set_name(Some("Video y audio"));
+        for ext in crate::utils::VIDEO_EXTENSIONS {
+            filter.add_suffix(ext);
+        }
+        dialog.add_filter(&filter);
 
         let this = self.clone();
         dialog.connect_response(move | dlg, response | {
@@ -224,12 +230,7 @@ impl CineWindow {
         let mut media_paths = Vec::new();
         for gfile in files {
             if let Some(path) = gfile.path() {
-                let collected = collect_media_files(&path);
-                if collected.is_empty() && path.is_file() {
-                    media_paths.push(path);
-                } else {
-                    media_paths.extend(collected);
-                }
+                media_paths.extend(collect_media_files(&path));
             }
         }
 

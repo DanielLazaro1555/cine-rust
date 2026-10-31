@@ -9,17 +9,19 @@ use std::cell::Cell;
 use std::rc::Rc;
 
 /// Instala rueda de zoom, doble clic para pantalla completa y movimiento para mostrar controles.
-pub fn setup_video_gestures<F, L, M>(
+pub fn setup_video_gestures<F, D, L, M>(
     overlay: &gtk::Overlay,
     window: &adw::ApplicationWindow,
     start_page: &adw::StatusPage,
     is_locked: &Rc<Cell<bool>>,
     on_zoom_scroll: F,
+    on_pan_drag: D,
     on_locked_motion: L,
     on_unlocked_motion: M,
 )
 where
     F: Fn(f64) -> gtk::glib::Propagation + 'static,
+    D: Fn(f64, f64, bool) -> bool + 'static,
     L: Fn() + 'static,
     M: Fn() + 'static,
 {
@@ -34,6 +36,40 @@ where
         }
     });
     overlay.add_controller(controller);
+
+    let drag = gtk::GestureDrag::new();
+    drag.set_button(gtk::gdk::BUTTON_PRIMARY);
+    drag.set_propagation_phase(gtk::PropagationPhase::Capture);
+    let on_pan_drag = std::rc::Rc::new(on_pan_drag);
+    let pan_active = Rc::new(Cell::new(false));
+    let on_begin = on_pan_drag.clone();
+    let pan_active_begin = pan_active.clone();
+    let drag_begin = drag.clone();
+    drag.connect_drag_begin(move |_, _, _| {
+        let active = on_begin(0.0, 0.0, true);
+        pan_active_begin.set(active);
+        if !active {
+            drag_begin.set_state(gtk::EventSequenceState::Denied);
+        } else {
+            drag_begin.set_state(gtk::EventSequenceState::Claimed);
+        }
+    });
+    let on_update = on_pan_drag.clone();
+    let drag_update = drag.clone();
+    drag.connect_drag_update(move |_, dx, dy| {
+        if !on_update(dx, dy, false) {
+            drag_update.set_state(gtk::EventSequenceState::Denied);
+        } else {
+            drag_update.set_state(gtk::EventSequenceState::Claimed);
+        }
+    });
+    let overlay_for_end = overlay.clone();
+    drag.connect_drag_end(move |_, _, _| {
+        if pan_active.replace(false) {
+            overlay_for_end.set_cursor_from_name(Some("grab"));
+        }
+    });
+    overlay.add_controller(drag);
 
     let click_gesture = gtk::GestureClick::new();
     click_gesture.set_button(gtk::gdk::BUTTON_PRIMARY);
@@ -50,7 +86,7 @@ where
             window.fullscreen();
         }
     });
-    overlay.add_controller(click_gesture);
+    overlay.add_controller(click_gesture.clone());
 
     let motion_controller = gtk::EventControllerMotion::new();
     let start_page = start_page.clone();

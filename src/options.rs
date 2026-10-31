@@ -48,6 +48,8 @@ impl Default for PlaybackOptions {
 pub fn create_options_menu_button(
     video_area: VideoGLArea,
     options: Rc<RefCell<PlaybackOptions>>,
+    zoom_indicator: gtk::Label,
+    zoom_indicator_timer: Rc<RefCell<Option<glib::SourceId>>>,
 ) -> gtk::MenuButton {
     let content_box = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
@@ -171,8 +173,8 @@ pub fn create_options_menu_button(
     let (zoom_row, zoom_spin, zoom_reset_btn) = make_spin_row(
         "Zoom",
         "Restablecer zoom",
-        -3.0,
-        3.0,
+        0.0,
+        2.0,
         0.05,
         2,
         0.0,
@@ -182,10 +184,13 @@ pub fn create_options_menu_button(
     {
         let va = video_area.clone();
         let opts = options.clone();
+        let indicator = zoom_indicator.clone();
+        let indicator_timer = zoom_indicator_timer.clone();
         let spin = zoom_spin.clone();
         zoom_spin.connect_value_changed(move |s| {
             opts.borrow_mut().video_zoom = s.value();
             va.set_video_zoom(s.value());
+            crate::window::update_zoom_indicator(&indicator, &indicator_timer, s.value());
         });
         zoom_reset_btn.connect_clicked(move |_| {
             spin.set_value(0.0);

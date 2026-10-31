@@ -146,6 +146,12 @@ const SHORTCUTS_UI_XML: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
             <property name="accelerator">i</property>
           </object>
         </child>
+        <child>
+          <object class="AdwShortcutsItem">
+            <property name="title">Restablecer zoom y encuadre</property>
+            <property name="accelerator">0</property>
+          </object>
+        </child>
       </object>
     </child>
   </object>

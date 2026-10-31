@@ -27,6 +27,8 @@ pub(super) fn build_playback_controls(
     video_area: &VideoGLArea,
     headerbar: &adw::HeaderBar,
     start_page: &adw::StatusPage,
+    zoom_indicator: &gtk::Label,
+    zoom_indicator_timer: &Rc<RefCell<Option<glib::SourceId>>>,
 ) -> PlaybackControlsUi {
         // Barra inferior de controles (OSD)
         let controls_box = gtk::Box::builder()
@@ -156,7 +158,12 @@ pub(super) fn build_playback_controls(
 
         // Botón de opciones de video y transformación
         let options = Rc::new(RefCell::new(PlaybackOptions::default()));
-        let options_menu_btn = create_options_menu_button(video_area.clone(), options.clone());
+        let options_menu_btn = create_options_menu_button(
+            video_area.clone(),
+            options.clone(),
+            zoom_indicator.clone(),
+            zoom_indicator_timer.clone(),
+        );
 
         // Botón de reproducción aleatoria (Shuffle)
         let shuffle_btn = gtk::Button::builder()

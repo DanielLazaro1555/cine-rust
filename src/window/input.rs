@@ -55,6 +55,12 @@ impl CineWindow {
                     this.video_area.toggle_stats();
                     glib::Propagation::Stop
                 }
+                gdk::Key::_0 => {
+                    this.options.borrow_mut().video_zoom = 0.0;
+                    this.video_area.reset_video_view();
+                    this.show_zoom_indicator(0.0);
+                    glib::Propagation::Stop
+                }
                 gdk::Key::a | gdk::Key::A => {
                     this.video_area.command(&["cycle", "audio"]);
                     glib::Propagation::Stop
@@ -88,17 +94,52 @@ impl CineWindow {
             &self.window,
             &self.start_page,
             &self.is_locked,
-            move |direction| {
-            if this.start_page.is_visible() || this.is_locked.get() {
-                return glib::Propagation::Proceed;
-            }
+            {
+                let overlay = overlay.clone();
+                move |direction| {
+                    if this.start_page.is_visible() || this.is_locked.get() {
+                        return glib::Propagation::Proceed;
+                    }
 
-            let mut options = this.options.borrow_mut();
-            let next_zoom = (options.video_zoom - direction * 0.15).clamp(-3.0, 3.0);
-            options.video_zoom = next_zoom;
-            drop(options);
-            this.video_area.set_video_zoom(next_zoom);
-            glib::Propagation::Stop
+                    let mut options = this.options.borrow_mut();
+                    let next_zoom = (options.video_zoom - direction * 0.1).clamp(0.0, 2.0);
+                    options.video_zoom = next_zoom;
+                    drop(options);
+                    this.video_area.set_video_zoom(next_zoom);
+                    this.show_zoom_indicator(next_zoom);
+                    overlay.set_cursor_from_name(Some(if next_zoom > 0.0 {
+                        "grab"
+                    } else {
+                        "default"
+                    }));
+                    glib::Propagation::Stop
+                }
+            },
+            {
+                let this = self.clone();
+                let overlay = overlay.clone();
+                let start_pan = Rc::new(Cell::new((0.0_f64, 0.0_f64)));
+                move |dx, dy, begin| {
+                    let zoom = this.options.borrow().video_zoom;
+                    if zoom <= 0.0 || this.start_page.is_visible() || this.is_locked.get() {
+                        return false;
+                    }
+                    if begin {
+                        start_pan.set(this.video_area.video_pan());
+                        overlay.set_cursor_from_name(Some("grabbing"));
+                        return true;
+                    }
+                    let (pan_x, pan_y) = start_pan.get();
+                    if let Some((video_w, video_h)) = this.video_area.video_dimensions() {
+                        let scale = 2.0_f64.powf(zoom);
+                        let x = pan_x + dx / (video_w as f64 * scale);
+                        let y = pan_y + dy / (video_h as f64 * scale);
+                        let (x, y) = this.video_area.clamp_video_pan(x, y, zoom);
+                        this.video_area.set_video_pan(x, y);
+                    }
+                    overlay.set_cursor_from_name(Some("grabbing"));
+                    true
+                }
             },
             {
                 let this = self.clone();
@@ -106,7 +147,13 @@ impl CineWindow {
             },
             {
                 let this = self.clone();
+                let overlay = overlay.clone();
                 move || {
+                    overlay.set_cursor_from_name(Some(if this.options.borrow().video_zoom > 0.0 {
+                        "grab"
+                    } else {
+                        "default"
+                    }));
                     if !this.controls_box.is_visible() || !this.headerbar.is_visible() {
                         this.set_controls_visible(true);
                     }

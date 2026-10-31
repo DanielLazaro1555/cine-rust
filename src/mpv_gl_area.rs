@@ -136,6 +136,7 @@ impl VideoGLArea {
     }
 
     pub fn load_file(&self, path: &str, mode: &str) {
+        self.set_video_pan(0.0, 0.0);
         if let Some(engine) = self.mpv.borrow().as_ref() {
             engine.command(&["loadfile", path, mode]);
         }
@@ -196,6 +197,44 @@ impl VideoGLArea {
 
     pub fn set_video_zoom(&self, zoom: f64) {
         self.set_property("video-zoom", &format!("{zoom:.2}"));
+        if zoom <= 0.0 {
+            self.set_video_pan(0.0, 0.0);
+        }
+    }
+
+    pub fn reset_video_view(&self) {
+        self.set_video_zoom(0.0);
+        self.set_video_pan(0.0, 0.0);
+    }
+
+    pub fn video_pan(&self) -> (f64, f64) {
+        let x = self.get_property_str("video-pan-x").and_then(|v| v.parse().ok()).unwrap_or(0.0);
+        let y = self.get_property_str("video-pan-y").and_then(|v| v.parse().ok()).unwrap_or(0.0);
+        (x, y)
+    }
+
+    pub fn set_video_pan(&self, x: f64, y: f64) {
+        self.set_property("video-pan-x", &format!("{x:.4}"));
+        self.set_property("video-pan-y", &format!("{y:.4}"));
+    }
+
+    pub fn clamp_video_pan(&self, x: f64, y: f64, zoom: f64) -> (f64, f64) {
+        let Some((video_w, video_h)) = self.video_dimensions() else {
+            return (0.0, 0.0);
+        };
+        let area_w = self.gl_area.width() as f64;
+        let area_h = self.gl_area.height() as f64;
+        if area_w <= 0.0 || area_h <= 0.0 {
+            return (0.0, 0.0);
+        }
+
+        let fit_scale = (area_w / video_w as f64).min(area_h / video_h as f64);
+        let display_w = video_w as f64 * fit_scale * 2.0_f64.powf(zoom);
+        let display_h = video_h as f64 * fit_scale * 2.0_f64.powf(zoom);
+        let max_pan_x = ((display_w - area_w) / (2.0 * display_w)).max(0.0);
+        let max_pan_y = ((display_h - area_h) / (2.0 * display_h)).max(0.0);
+
+        (x.clamp(-max_pan_x, max_pan_x), y.clamp(-max_pan_y, max_pan_y))
     }
 
     pub fn set_normalize_volume(&self, enabled: bool) {

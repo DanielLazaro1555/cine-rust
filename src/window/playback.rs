@@ -168,7 +168,7 @@ impl CineWindow {
 
         let (target_w, target_h) = calculate_window_size(vid_w, vid_h, mon_w, mon_h);
         self.window.set_default_size(target_w, target_h);
-        glib::timeout_add_local_once(Duration::from_millis(150), || {
+        glib::timeout_add_local_once(Duration::from_millis(400), || {
             center_active_cine_window();
         });
     }

@@ -56,6 +56,8 @@ pub struct CineWindow {
     current_index: Rc<Cell<usize>>,
     last_video_dims: Rc<Cell<(i32, i32)>>,
     pub options: Rc<RefCell<PlaybackOptions>>,
+    zoom_indicator: gtk::Label,
+    zoom_indicator_timer: Rc<RefCell<Option<glib::SourceId>>>,
     pub settings: SharedSettings,
     pub mpris: MprisController,
     inhibit_cookie: Rc<Cell<u32>>,
@@ -84,5 +86,28 @@ impl CineWindow {
         self.toast_overlay.add_toast(toast);
     }
 
+    pub fn show_zoom_indicator(&self, zoom: f64) {
+        update_zoom_indicator(&self.zoom_indicator, &self.zoom_indicator_timer, zoom);
+    }
+}
 
+pub(crate) fn update_zoom_indicator(
+    label: &gtk::Label,
+    timer_id: &Rc<RefCell<Option<glib::SourceId>>>,
+    zoom: f64,
+) {
+    let percent = 100.0 * 2.0_f64.powf(zoom);
+    label.set_label(&format!("{percent:.0}%"));
+    label.set_visible(true);
+
+    if let Some(timer) = timer_id.borrow_mut().take() {
+        timer.remove();
+    }
+    let weak_label = label.downgrade();
+    let timer = glib::timeout_add_local_once(Duration::from_millis(1200), move || {
+        if let Some(label) = weak_label.upgrade() {
+            label.set_visible(false);
+        }
+    });
+    *timer_id.borrow_mut() = Some(timer);
 }

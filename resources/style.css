@@ -38,6 +38,14 @@ toast {
   color: white;
 }
 
+.zoom-indicator {
+  padding: 7px 14px;
+  border-radius: 999px;
+  background-color: rgba(0, 0, 0, 0.68);
+  color: white;
+  font-weight: 700;
+}
+
 .header-bar {
   background: linear-gradient(
     180deg,

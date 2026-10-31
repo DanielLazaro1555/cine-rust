@@ -201,7 +201,7 @@ pub fn is_media_file(path: &Path) -> bool {
 /// Recolecta todos los archivos multimedia dentro de un archivo o carpeta (ordenados por nombre).
 pub fn collect_media_files(path: &Path) -> Vec<PathBuf> {
     if path.is_file() {
-        return vec![path.to_path_buf()];
+        return if is_media_file(path) { vec![path.to_path_buf()] } else { Vec::new() };
     }
     let mut result = Vec::new();
     if path.is_dir() {

@@ -35,6 +35,18 @@ impl CineWindow {
         let video_overlay = gtk::Overlay::new();
         video_overlay.add_css_class("video-overlay");
 
+        let zoom_indicator = gtk::Label::builder()
+            .label("100%")
+            .halign(gtk::Align::Center)
+            .valign(gtk::Align::Start)
+            .margin_top(58)
+            .can_target(false)
+            .visible(false)
+            .build();
+        zoom_indicator.add_css_class("zoom-indicator");
+        video_overlay.add_overlay(&zoom_indicator);
+        let zoom_indicator_timer = Rc::new(RefCell::new(None));
+
         // Área OpenGL modularizada en `mpv_gl_area.rs` + `mpv_engine.rs`
         let video_area = VideoGLArea::new(
             settings.borrow().graphics_offload,
@@ -74,6 +86,8 @@ impl CineWindow {
             &video_area,
             &headerbar,
             &start_page,
+            &zoom_indicator,
+            &zoom_indicator_timer,
         );
 
         let window_handle = gtk::WindowHandle::builder()
@@ -93,6 +107,8 @@ impl CineWindow {
             play_pause_btn: play_pause_btn.clone(),
             quality_menu_btn: quality_menu_btn.clone(),
             progress_adj: progress_adj.clone(),
+            zoom_indicator: zoom_indicator.clone(),
+            zoom_indicator_timer,
             time_elapsed_label,
             time_total_label,
             playlist_items: Rc::new(RefCell::new(Vec::new())),
